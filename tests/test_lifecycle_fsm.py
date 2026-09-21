@@ -1,15 +1,24 @@
+"""
+Lifecycle FSM & Gatekeeper Tests
+Verifies the 14-stage opportunity lifecycle FSM, all 6 QC gates,
+the Tasks & Exceptions priority router, and the Lifecycle Coordinator Service.
+
+Transplanted from backend/app/tests/test_lifecycle_fsm.py.
+All imports rewritten from app.* to gieni_os.*
+"""
+
 import uuid
 from unittest.mock import MagicMock
 import pytest
-from app.models.enums import LifecycleStage, AuthorityTier, PriorityTier
-from app.models.intelligence import Opportunity
-from app.services.fsm import OpportunityLifecycleFSM, InvalidStateTransitionError
-from app.services.gatekeeper import QualityControlGatekeeper
-from app.services.exceptions import TaskExceptionRouter, ExceptionPriority
-from app.services.lifecycle import LifecycleCoordinatorService
-from app.engines.pas import ParcelAttributionResult, PASCategory
-from app.engines.equity import EquityWaterfallResult, EquityTier
-from app.engines.scoring import OpportunityScoringResult
+from gieni_os.domain.enums import LifecycleStage, AuthorityTier, PriorityTier, ExceptionPriority
+from gieni_os.models.orm import Opportunity
+from gieni_os.lifecycle.fsm import OpportunityLifecycleFSM, InvalidStateTransitionError
+from gieni_os.validation.gatekeeper import QualityControlGatekeeper
+from gieni_os.workflow.exceptions import TaskExceptionRouter
+from gieni_os.lifecycle.coordinator import LifecycleCoordinatorService
+from gieni_os.engines.pas import ParcelAttributionResult, PASCategory
+from gieni_os.engines.equity import EquityWaterfallResult, EquityTier
+from gieni_os.engines.scoring import OpportunityScoringResult
 
 
 # =====================================================================
@@ -67,6 +76,33 @@ def test_fsm_terminal_and_same_stage():
     )
     assert OpportunityLifecycleFSM.is_terminal(LifecycleStage.ARCHIVED) is True
     assert OpportunityLifecycleFSM.is_terminal(LifecycleStage.SCORED) is False
+
+
+def test_fsm_archive_from_any_stage():
+    """Verify ARCHIVED is reachable from all pre-terminal stages."""
+    archivable_stages = [
+        LifecycleStage.DISCOVERED,
+        LifecycleStage.PROPERTY_IDENTIFIED,
+        LifecycleStage.OWNERSHIP_RESOLVED,
+        LifecycleStage.CONTROL_MAPPED,
+        LifecycleStage.AUTHORITY_RESOLVED,
+        LifecycleStage.SCORED,
+        LifecycleStage.QC_CERTIFIED,
+        LifecycleStage.DELIVERED,
+        LifecycleStage.CONTACTED,
+        LifecycleStage.APPOINTMENT,
+        LifecycleStage.OFFER,
+    ]
+    for stage in archivable_stages:
+        OpportunityLifecycleFSM.validate_transition(stage, LifecycleStage.ARCHIVED)
+
+
+def test_fsm_terminal_prevents_exit():
+    """Verify ARCHIVED terminal state rejects all further transitions."""
+    with pytest.raises(InvalidStateTransitionError):
+        OpportunityLifecycleFSM.validate_transition(
+            LifecycleStage.ARCHIVED, LifecycleStage.DISCOVERED
+        )
 
 
 # =====================================================================

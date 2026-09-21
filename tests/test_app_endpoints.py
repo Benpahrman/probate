@@ -54,6 +54,7 @@ def setup_seed_data():
             db.add(opp)
         else:
             opp.workflow_stage = "QC"
+            opp.score = 92
         db.commit()
 
         yield opp

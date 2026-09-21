@@ -113,7 +113,7 @@ def test_azure_client_generate_success():
     )
     mock_chat_completion.choices = [mock_choice]
 
-    with patch("src.gieni_os.llm.clients.azure_client.AzureOpenAI") as mock_openai_cls:
+    with patch("gieni_os.llm.clients.azure_client.AzureOpenAI") as mock_openai_cls:
         mock_instance = MagicMock()
         mock_instance.chat.completions.create.return_value = mock_chat_completion
         mock_openai_cls.return_value = mock_instance

@@ -1,8 +1,23 @@
 """
 Gieni OS Domain Layer
-Pure business entities and value objects
+Pure business entities, value objects, and canonical enums.
 """
 
+# ── Canonical Enums (single source of truth) ──────────────────────────────────
+from gieni_os.domain.enums import (
+    LifecycleStage,
+    PriorityTier,
+    AuthorityTier,
+    LettersStatus,
+    PowerScope,
+    ControlArchetype,
+    VestingType,
+    PropertyClass,
+    DeliveryChannel,
+    ExceptionPriority,
+)
+
+# ── Legacy Domain Models (retained for backward compatibility) ─────────────────
 from gieni_os.domain.probate import DocketRecord, CaseStatus
 from gieni_os.domain.property import SitusAddress, PropertyRecord
 from gieni_os.domain.ownership import VestingType, EquityWaterfall, OwnershipRecord

@@ -14,11 +14,18 @@ dist/
 build/
 *.egg-info/
 
+# Binary documents & compiled assets
+*.pdf
+
 # Databases & local exports
+*.db
+*.sqlite
+*.sqlite3
 database/*.db
 database/*.sqlite
 exports/*.pdf
 exports/*.json
+backend/database/
 
 # Node & package managers
 node_modules/

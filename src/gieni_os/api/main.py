@@ -95,6 +95,7 @@ WORKBENCH_DIR = os.path.join(APPS_DIR, "workbench")
 INVESTIGATOR_DIR = os.path.join(APPS_DIR, "investigator")
 PORTAL_DIR = os.path.join(APPS_DIR, "client-portal")
 COUNTIES_DIR = os.path.join(APPS_DIR, "county-intelligence")
+FRONTEND_DIR = os.path.join(REPO_ROOT, "frontend")
 
 # Shared Static Assets (/static/css/style.css, etc.)
 if os.path.exists(DASHBOARD_DIR):
@@ -119,6 +120,10 @@ if os.path.exists(PORTAL_DIR):
 # Mount App 5: County Intelligence (/counties)
 if os.path.exists(COUNTIES_DIR):
     app.mount("/counties", StaticFiles(directory=COUNTIES_DIR, html=True), name="county_intelligence")
+
+# Unified SPA frontend at /app
+if os.path.exists(FRONTEND_DIR):
+    app.mount("/app", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend_app")
 
 # Route Handlers for Root & Clean Slash Navigation
 @app.get("/")

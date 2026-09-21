@@ -17,13 +17,16 @@ if config.config_file_name is not None:
 import sys
 from pathlib import Path
 
-# Ensure repository root is on sys.path
+# Ensure repository root + src/ are on sys.path
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-if str(REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT))
+SRC_DIR = REPO_ROOT / "src"
+for p in [str(REPO_ROOT), str(SRC_DIR)]:
+    if p not in sys.path:
+        sys.path.insert(0, p)
 
-from src.gieni_os.database.models import Base
-from src.gieni_os.config import DATABASE_URL
+# Import the canonical 17-table ORM Base (single source of truth)
+from gieni_os.models.orm import Base  # noqa: E402
+from gieni_os.config import DATABASE_URL  # noqa: E402
 
 # add your model's MetaData object here
 # for 'autogenerate' support

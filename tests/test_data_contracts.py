@@ -1,24 +1,36 @@
+"""
+Data Contract Tests
+Verifies SQLAlchemy ORM metadata registration (all 17 canonical tables)
+and Pydantic v2 event DTO serialization contracts.
+
+Transplanted from backend/app/tests/test_data_contracts.py.
+All imports rewritten from app.* to gieni_os.*
+"""
+
 import uuid
 from datetime import datetime, timezone
 import pytest
-from app.core.database import Base
-from app.models.enums import (
+
+from gieni_os.models.orm import Base
+from gieni_os.domain.enums import (
     LifecycleStage,
     PriorityTier,
     AuthorityTier,
     LettersStatus,
     PowerScope,
-    VestingType
+    VestingType,
 )
-from app.schemas.events import (
+from gieni_os.events.dtos import (
     PropertyIdentifiedEvent,
     OwnershipUpdatedEvent,
     AuthorityUpdatedEvent,
     OpportunityScoredEvent,
     SitusAddressDTO,
-    FiduciaryContactDTO
+    FiduciaryContactDTO,
 )
-import app.models  # Ensure all models are registered on Base.metadata
+
+# Trigger ORM registration by importing all models
+import gieni_os.models.orm  # noqa: F401
 
 
 def test_sqlalchemy_metadata_registration():
@@ -44,7 +56,19 @@ def test_sqlalchemy_metadata_registration():
         "tasks_exceptions"
     ]
     for table in required_tables:
-        assert table in registered_tables, f"Missing table {table} in metadata."
+        assert table in registered_tables, f"Missing table '{table}' in Base.metadata."
+
+
+def test_unique_constraints_present():
+    """Verify the three canonical unique constraints are registered."""
+    tables = Base.metadata.tables
+    probate_cases_constraints = {c.name for c in tables["probate_cases"].constraints}
+    properties_constraints = {c.name for c in tables["properties"].constraints}
+    territory_constraints = {c.name for c in tables["territory_agreements"].constraints}
+
+    assert "uq_case_per_county" in probate_cases_constraints, "uq_case_per_county missing"
+    assert "uq_apn_per_county" in properties_constraints, "uq_apn_per_county missing"
+    assert "uq_single_partner_per_county" in territory_constraints, "uq_single_partner_per_county missing"
 
 
 def test_property_identified_event_contract():
@@ -131,3 +155,20 @@ def test_opportunity_scored_event_contract():
     assert payload["eventType"] == "Opportunity.Scored"
     assert payload["compositeViabilityScore"] == 88
     assert payload["priorityTier"] == "PRIORITY_A"
+
+
+def test_event_extra_fields_rejected():
+    """Verify that extra fields on event DTOs are rejected (ConfigDict extra='forbid')."""
+    with pytest.raises(Exception):  # Pydantic ValidationError
+        PropertyIdentifiedEvent(
+            eventId=uuid.uuid4(),
+            timestamp=datetime.now(timezone.utc),
+            caseId=uuid.uuid4(),
+            propertyId=uuid.uuid4(),
+            countyFips="48201",
+            apn="041-280-001-002",
+            situsAddress=SitusAddressDTO(street="123 Main", city="Seattle", state="WA", zip="98101"),
+            pasScore=80.0,
+            attributionMethod="MANUAL",
+            unexpectedField="should_fail"  # This must trigger validation error
+        )

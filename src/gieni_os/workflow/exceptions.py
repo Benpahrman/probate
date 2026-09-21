@@ -1,7 +1,16 @@
+"""
+Gieni OS Task Exception Router
+Routes pipeline gate failures to the Tasks & Exceptions database with
+SLA-tiered priority assignment.
+
+Transplanted from backend/app/services/exceptions.py.
+Imports rewritten: app.models.* → gieni_os.models.orm / gieni_os.domain.enums
+"""
+
 import uuid
 from sqlalchemy.orm import Session
-from app.models.evidence import TaskException
-from app.models.enums import ExceptionPriority
+from gieni_os.models.orm import TaskException
+from gieni_os.domain.enums import ExceptionPriority
 
 
 class TaskExceptionRouter:

@@ -1,8 +1,18 @@
+"""
+Gieni OS Canonical Enums
+Single source of truth for all lifecycle stages, priority tiers, authority
+tiers, and domain classification flags used by the FSM, Gatekeeper, engines,
+and the test suite.
+
+Transplanted from backend/app/models/enums.py and extended with any values
+present in the legacy src/gieni_os domain layer.
+"""
+
 from enum import Enum
 
 
 class LifecycleStage(str, Enum):
-    """The canonical 14-stage OLE lifecycle state machine."""
+    """The canonical 14-stage OLE lifecycle state machine (15 values including ARCHIVED)."""
     DISCOVERED = "DISCOVERED"
     PROPERTY_IDENTIFIED = "PROPERTY_IDENTIFIED"
     OWNERSHIP_RESOLVED = "OWNERSHIP_RESOLVED"
@@ -28,10 +38,10 @@ class PriorityTier(str, Enum):
 
 
 class AuthorityTier(str, Enum):
-    TIER_1_CONFIRMED = "TIER_1_CONFIRMED"                      # Letters Issued with Independent Powers
-    TIER_2_LIKELY = "TIER_2_LIKELY"                            # Nominated in Will / Uncontested Petitioner
-    TIER_3_STAKEHOLDER_CONSENSUS = "TIER_3_STAKEHOLDER_CONSENSUS" # Intestate Multi-Heir Co-Tenancy
-    TIER_4_UNRESOLVED = "TIER_4_UNRESOLVED"                    # Contested Petitions / Active Caveat
+    TIER_1_CONFIRMED = "TIER_1_CONFIRMED"                          # Letters Issued with Independent Powers
+    TIER_2_LIKELY = "TIER_2_LIKELY"                                # Nominated in Will / Uncontested Petitioner
+    TIER_3_STAKEHOLDER_CONSENSUS = "TIER_3_STAKEHOLDER_CONSENSUS"  # Intestate Multi-Heir Co-Tenancy
+    TIER_4_UNRESOLVED = "TIER_4_UNRESOLVED"                        # Contested Petitions / Active Caveat
 
 
 class LettersStatus(str, Enum):

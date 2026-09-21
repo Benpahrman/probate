@@ -11,9 +11,49 @@ from fastapi.testclient import TestClient
 from gieni_os.api.main import app
 
 from gieni_os.database.connection import SessionLocal
-from gieni_os.database.models import OpportunityModel
+from gieni_os.database.models import OpportunityModel, CountyModel, ProbateCaseModel
 
 client = TestClient(app)
+
+@pytest.fixture(scope="module", autouse=True)
+def setup_e2e_seed_data():
+    db = SessionLocal()
+    try:
+        county = db.query(CountyModel).filter(CountyModel.id == "cty_pierce").first()
+        if not county:
+            county = CountyModel(id="cty_pierce", name="Pierce", state="WA", tier="TIER_1", status="ACTIVE")
+            db.add(county)
+            db.commit()
+
+        case = db.query(ProbateCaseModel).filter(ProbateCaseModel.id == "case_001").first()
+        if not case:
+            case = ProbateCaseModel(
+                id="case_001",
+                case_number="26-4-00123-1",
+                county_id=county.id,
+                decedent="Harold Vance",
+                status="OPEN"
+            )
+            db.add(case)
+            db.commit()
+
+        opp = db.query(OpportunityModel).filter(OpportunityModel.id == "opp_001").first()
+        if not opp:
+            opp = OpportunityModel(
+                id="opp_001",
+                case_id=case.id,
+                county_id=county.id,
+                workflow_stage="NEW",
+                priority="Priority A",
+                authority_status="Tier 1: Court Certified",
+                score=90
+            )
+            db.add(opp)
+        else:
+            opp.workflow_stage = "NEW"
+        db.commit()
+    finally:
+        db.close()
 
 def test_pof_html_direct_and_alias():
     headers = {"x-clerk-user-id": "user_operator_lead"}

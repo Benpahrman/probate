@@ -1,10 +1,19 @@
+"""
+Gieni OS Six-Gate Quality Control Gatekeeper
+Executes the Six Deterministic Quality Assurance Gates from Chapter 15.
+A failure at any single gate intercepts the pipeline and halts delivery.
+
+Transplanted from backend/app/services/gatekeeper.py.
+Imports rewritten: app.engines.* → gieni_os.engines.*, app.models.enums → gieni_os.domain.enums
+"""
+
 import re
 from typing import List, Optional
 from pydantic import BaseModel, Field
-from app.engines.pas import ParcelAttributionResult
-from app.engines.equity import EquityWaterfallResult
-from app.engines.scoring import OpportunityScoringResult
-from app.models.enums import AuthorityTier, PriorityTier
+from gieni_os.engines.pas import ParcelAttributionResult
+from gieni_os.engines.equity import EquityWaterfallResult
+from gieni_os.engines.scoring import OpportunityScoringResult
+from gieni_os.domain.enums import AuthorityTier, PriorityTier
 
 
 class GateCheckResult(BaseModel):

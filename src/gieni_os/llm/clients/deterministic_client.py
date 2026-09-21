@@ -121,7 +121,7 @@ class DeterministicStatutoryClient(BaseLLMClient):
             narrative = (
                 f"Statutory authority path: Classified as {auth_tier}. "
                 f"Governed under {statutory_basis}. "
-                "Letters Testamentary have been granted by the Superior Court. With nonintervention powers intact, "
+                "Letters Testamentary have been granted by the Superior Court. With Nonintervention powers intact (RCW 11.68), "
                 "the estate representative has direct testamentary authority to execute Bargain and Sale Deeds to transfer marketable title."
             )
             citations = [
