@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gieni OS | Operations Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-badge">G</div>
+        <div class="brand-text">
+          <span class="brand-title">GIENI OS</span>
+          <span class="brand-subtitle">OPS CENTER</span>
+        </div>
+      </div>
+
+      <div class="nav-section-title">Applications Hub</div>
+      <nav class="nav-menu">
+        <a href="/ops" class="nav-item active highlight-app">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          Operations Center
+          <span class="badge badge-accent">App 1</span>
+        </a>
+        <a href="/workbench" class="nav-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+          Opportunity Workbench
+          <span class="badge badge-success">App 2</span>
+        </a>
+        <a href="/investigator" class="nav-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          AI Investigator
+          <span class="badge badge-warning">App 3</span>
+        </a>
+        <a href="/portal" class="nav-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          Client Portal
+          <span class="badge badge-cyan">App 4</span>
+        </a>
+        <a href="/counties" class="nav-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+          County Intelligence
+          <span class="badge badge-purple">App 5</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="role-selector">
+          <label>Clerk Operator Role:</label>
+          <select id="clerk-role-select">
+            <option value="Platform Admin" selected>Platform Admin (Founder)</option>
+            <option value="Research Lead">Research Lead</option>
+            <option value="Research Analyst">Research Analyst</option>
+            <option value="QC Analyst">QC Analyst</option>
+          </select>
+        </div>
+        <div class="status-indicator">
+          <span class="pulse-dot"></span> Clerk Identity Active
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main class="main-content">
+      <header class="top-header">
+        <div>
+          <h1>Operations Center</h1>
+          <p class="header-subtitle">Platform operations: Intake, 6 operational queues & 9-stage pipeline lifecycle</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-secondary" id="btn-refresh">Refresh</button>
+          <button class="btn btn-primary" id="btn-open-ingest-hub" style="background: linear-gradient(135deg, #06b6d4, #6366f1); border: none; font-weight: 700;">⚡ Docket Harvester Hub</button>
+          <button class="btn btn-secondary" id="btn-open-create-case">+ Manual Case</button>
+        </div>
+      </header>
+
+      <!-- 6 Executive Metrics -->
+      <div class="metrics-grid-6">
+        <div class="metric-card">
+          <div class="metric-header"><span class="metric-label">Cases Processed</span><span>📁</span></div>
+          <div class="metric-value" id="metric-total-cases">-</div>
+          <div class="metric-footer">Ingested court filings</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-header"><span class="metric-label">Opportunities</span><span>⚡</span></div>
+          <div class="metric-value text-accent" id="metric-total-opps">-</div>
+          <div class="metric-footer">Active deals in flight</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-header"><span class="metric-label">Authority Accuracy</span><span>⚖️</span></div>
+          <div class="metric-value text-emerald" id="metric-auth-accuracy">98.4%</div>
+          <div class="metric-footer">RCW Title 11 verified</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-header"><span class="metric-label">QC Pass Rate</span><span>🛡️</span></div>
+          <div class="metric-value text-emerald" id="metric-qc-pass-rate">96.8%</div>
+          <div class="metric-footer">6-gate certified deals</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-header"><span class="metric-label">Delivered Opps</span><span>🚀</span></div>
+          <div class="metric-value text-cyan" id="metric-delivered-opps">-</div>
+          <div class="metric-footer">Dispatched to wholesalers</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-header"><span class="metric-label">Counties Active</span><span>🏛️</span></div>
+          <div class="metric-value" id="metric-active-counties">-</div>
+          <div class="metric-footer">Monitored jurisdictions</div>
+        </div>
+      </div>
+
+      <!-- 9-Stage Pipeline Stepper -->
+      <div class="pipeline-stepper" id="pipeline-stepper">
+        <div class="pipeline-step active" data-stage="NEW"><span class="step-num">1</span> NEW</div>
+        <span class="pipeline-arrow">▶</span>
+        <div class="pipeline-step" data-stage="PROPERTY_MATCH"><span class="step-num">2</span> PROPERTY_MATCH</div>
+        <span class="pipeline-arrow">▶</span>
+        <div class="pipeline-step" data-stage="OWNERSHIP"><span class="step-num">3</span> OWNERSHIP</div>
+        <span class="pipeline-arrow">▶</span>
+        <div class="pipeline-step" data-stage="AUTHORITY"><span class="step-num">4</span> AUTHORITY</div>
+        <span class="pipeline-arrow">▶</span>
+        <div class="pipeline-step" data-stage="ENRICHMENT"><span class="step-num">5</span> ENRICHMENT</div>
+        <span class="pipeline-arrow">▶</span>
+        <div class="pipeline-step" data-stage="SCORING"><span class="step-num">6</span> SCORING</div>
+        <span class="pipeline-arrow">▶</span>
+        <div class="pipeline-step qc-gate" data-stage="QC"><span class="step-num">7</span> QC GATE</div>
+        <span class="pipeline-arrow">▶</span>
+        <div class="pipeline-step" data-stage="READY"><span class="step-num">8</span> READY</div>
+        <span class="pipeline-arrow">▶</span>
+        <div class="pipeline-step" data-stage="DELIVERED"><span class="step-num">9</span> DELIVERED</div>
+      </div>
+
+      <!-- 6 Operational Queue Tabs -->
+      <div class="queue-tabs-bar">
+        <button class="queue-tab-btn active" data-queue="all-pipeline">⚡ All Pipeline (<span id="c-all">0</span>)</button>
+        <button class="queue-tab-btn" data-queue="property-queue">📍 Property Queue (<span id="c-prop">0</span>)</button>
+        <button class="queue-tab-btn" data-queue="ownership-queue">📜 Ownership Queue (<span id="c-own">0</span>)</button>
+        <button class="queue-tab-btn" data-queue="authority-queue">⚖️ Authority Queue (<span id="c-auth">0</span>)</button>
+        <button class="queue-tab-btn" data-queue="qc-queue">🛡️ QC Review Queue (<span id="c-qc">0</span>)</button>
+        <button class="queue-tab-btn" data-queue="exception-queue">⚠️ Exceptions (<span id="c-exc">0</span>)</button>
+        <button class="queue-tab-btn" data-queue="delivery-queue">📦 Delivery Queue (<span id="c-del">0</span>)</button>
+      </div>
+
+      <!-- Data Table -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 id="queue-title">Operational Queues</h2>
+            <p class="text-muted">Directly aligned with deterministic state machine.</p>
+          </div>
+          <input type="text" id="queue-search" class="form-control" placeholder="Filter case, county, or stage..." style="width: 240px;">
+        </div>
+        <div class="card-body">
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Opp ID</th>
+                  <th>Case Docket</th>
+                  <th>County</th>
+                  <th>Stage</th>
+                  <th>Authority</th>
+                  <th>Score</th>
+                  <th>Priority</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-ops">
+                <tr><td colspan="8" class="text-center text-muted" style="padding: 30px;">Loading queues...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Slide Drawer -->
+  <aside class="slide-drawer" id="drawer-detail">
+    <div class="drawer-header">
+      <div><h3>Deal Details</h3><span class="code-badge" id="drawer-id">-</span></div>
+      <button class="btn-close" id="btn-close-drawer">&times;</button>
+    </div>
+    <div class="drawer-body">
+      <div class="info-row"><span class="info-label">Case Number:</span><span class="info-val mono" id="drawer-case">-</span></div>
+      <div class="info-row"><span class="info-label">County:</span><span class="info-val" id="drawer-county">-</span></div>
+      <div class="info-row"><span class="info-label">Workflow Stage:</span><span class="info-val badge badge-accent" id="drawer-stage">-</span></div>
+      <div class="info-row"><span class="info-label">Score:</span><span class="info-val text-accent mono" id="drawer-score">-</span></div>
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <button class="btn btn-primary" id="btn-open-wb" style="flex: 1;">Open in Workbench ➔</button>
+      </div>
+      <h4 style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-top: 20px;">Audit Log</h4>
+      <div class="audit-timeline" id="drawer-timeline"></div>
+    </div>
+  </aside>
+
+  <!-- Ingest Case Modal -->
+  <div class="modal-overlay" id="modal-create-case">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Ingest Single Case</h3>
+        <button class="btn-close" onclick="closeModal('modal-create-case')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group"><label>Case Number *</label><input type="text" id="case-num" class="form-control" placeholder="26-4-01999-0"></div>
+        <div class="form-group"><label>County *</label><select id="case-county" class="form-control"></select></div>
+        <div class="form-group"><label>Decedent Full Name *</label><input type="text" id="case-decedent" class="form-control" placeholder="Eleanor Vance"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-create-case')">Cancel</button>
+        <button class="btn btn-primary" id="btn-submit-case">Ingest Docket</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Municipal Ingestion & Docket Harvester Hub Modal -->
+  <div class="modal-overlay" id="modal-ingest-hub">
+    <div class="modal-box modal-box-large" style="max-width: 850px;">
+      <div class="modal-header">
+        <div>
+          <h3 style="display: flex; align-items: center; gap: 8px;">
+            <span style="color: var(--accent-cyan);">⚡</span> Municipal Ingestion & Docket Harvester
+          </h3>
+          <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+            Automated courthouse scraping, Notice to Creditors, and County Auditor non-probate discovery.
+          </p>
+        </div>
+        <button class="btn-close" onclick="closeModal('modal-ingest-hub')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Harvester Mode Tabs -->
+        <div style="display: flex; gap: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 16px;">
+          <button class="btn btn-secondary btn-sm active" id="tab-live-harvest" style="font-size: 12px;">🏛️ Live County Harvester</button>
+          <button class="btn btn-secondary btn-sm" id="tab-bulk-import" style="font-size: 12px;">📋 Bulk Blotter / CSV Import</button>
+          <button class="btn btn-secondary btn-sm" id="tab-channel-health" style="font-size: 12px;">📡 Monitored Scrapers Status</button>
+        </div>
+
+        <!-- Section 1: Live Harvester -->
+        <div id="section-live-harvest">
+          <div style="display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: 12px; margin-bottom: 16px;">
+            <div class="form-group">
+              <label style="font-size: 12px;">Target Jurisdiction:</label>
+              <select id="harvest-county-select" class="form-control">
+                <option value="cty_pierce">Pierce County (Tacoma)</option>
+                <option value="cty_king">King County (Seattle)</option>
+                <option value="cty_thurston">Thurston County (Olympia)</option>
+                <option value="cty_snohomish">Snohomish County (Everett)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label style="font-size: 12px;">Public Records Channel:</label>
+              <select id="harvest-channel-select" class="form-control">
+                <option value="SUPERIOR_COURT_DOCKET">🏛️ Superior Court Petitions (LINX / Odyssey Case Type 4)</option>
+                <option value="NOTICE_TO_CREDITORS">📰 Published Notice to Creditors (RCW 11.40 - DJC / Daily Index)</option>
+                <option value="AUDITOR_NON_PROBATE">📜 County Auditor Non-Probate (Lack of Probate LOPA & TODD)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label style="font-size: 12px;">Lookback Window:</label>
+              <select id="harvest-days-select" class="form-control">
+                <option value="3">Last 3 Days</option>
+                <option value="7" selected>Last 7 Days (Standard)</option>
+                <option value="14">Last 14 Days (Backfill)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <span style="font-size: 12px; color: var(--text-muted);">
+              Runs municipal scraper parser, deduplicates case numbers, and auto-dispatches to Opportunity pipeline.
+            </span>
+            <button class="btn btn-primary" id="btn-run-live-harvest" style="background: linear-gradient(135deg, #06b6d4, #6366f1); font-weight: 600;">
+              🚀 Run Live Municipal Harvest
+            </button>
+          </div>
+        </div>
+
+        <!-- Section 2: Bulk CSV / Blotter Import (hidden by default) -->
+        <div id="section-bulk-import" style="display: none;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+            <div class="form-group">
+              <label style="font-size: 12px;">Target County:</label>
+              <select id="bulk-county-select" class="form-control">
+                <option value="cty_pierce">Pierce County</option>
+                <option value="cty_king">King County</option>
+                <option value="cty_thurston">Thurston County</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label style="font-size: 12px;">Record Classification:</label>
+              <select id="bulk-channel-select" class="form-control">
+                <option value="SUPERIOR_COURT_DOCKET">Formal Probate Petitions (RCW Title 11)</option>
+                <option value="AUDITOR_NON_PROBATE">Non-Probate Affidavits (LOPA / TODD)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label style="font-size: 12px;">Paste Blotter / CSV Rows (Format: CaseNumber, Decedent, Petitioner, Attorney, PropertyAddress):</label>
+            <textarea id="bulk-import-text" class="form-control" rows="4" placeholder="26-4-01992-3, Harold Jenkins, Emily Jenkins, Eisenhower Carlson, 4201 N 28th St Tacoma WA&#10;26-4-01993-4, Clara Bell Smith, Donald Smith, Gordon Thomas Honeywell, 1104 S Proctor St Tacoma WA"></textarea>
+          </div>
+          <button class="btn btn-primary" id="btn-submit-bulk-import">
+            📥 Ingest & Process Batch
+          </button>
+        </div>
+
+        <!-- Section 3: Channel Health & Scraper Feeds (hidden by default) -->
+        <div id="section-channel-health" style="display: none;">
+          <div id="channel-health-cards" style="display: flex; flex-direction: column; gap: 10px;">
+            <!-- Loaded dynamically via API -->
+          </div>
+        </div>
+
+        <!-- Live Terminal Stream Output -->
+        <div style="margin-top: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em;">Harvester Pipeline Stream</span>
+            <span class="badge badge-accent mono" id="harvester-status-badge">Idle</span>
+          </div>
+          <div id="harvester-terminal" style="background: #060910; border: 1px solid var(--border-color); border-radius: 6px; padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6; color: #a5b4fc; height: 180px; overflow-y: auto;">
+            [READY] Municipal Ingestion Harvester initialized. Select jurisdiction and click "Run Live Municipal Harvest".
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-ingest-hub')">Close Hub</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/ops/app.js"></script>
+</body>
+</html>

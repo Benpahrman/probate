@@ -1,0 +1,45 @@
+# Environment & Secrets
+.env
+*.env
+!.env.example
+
+# Python cache & build
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Databases & local exports
+database/*.db
+database/*.sqlite
+exports/*.pdf
+exports/*.json
+
+# Node & package managers
+node_modules/
+.pnpm-store/
+
+# IDE & OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Logs
+*.log
+
+# Linters and testing caches
+.tox/
+.mypy_cache/
+.ruff_cache/

@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gieni-os"
+version = "2.0.0"
+description = "Gieni OS - Production Operating System for Municipal Probate Intelligence"
+authors = [{ name = "Gieni Platform Team" }]
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.100.0",
+    "uvicorn>=0.23.0",
+    "pydantic>=2.0.0",
+    "sqlalchemy>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "cryptography>=41.0.0",
+    "PyJWT>=2.8.0",
+    "httpx>=0.24.0",
+    "requests>=2.31.0"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["src/gieni_os"]
+omit = ["tests/*", "scripts/*"]
+

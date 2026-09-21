@@ -1,0 +1,5141 @@
+[
+  {
+    "file": "src\\gieni_os\\config.py",
+    "classes": [],
+    "functions": [
+      "validate_environment"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "scripts\\run_production_simulation.py",
+      "scripts\\test_pof_deliverable.py",
+      "src\\gieni_os\\database\\connection.py",
+      "src\\gieni_os\\events\\bus.py",
+      "src\\gieni_os\\integrations\\notion_publisher.py",
+      "src\\gieni_os\\llm\\gateway.py",
+      "src\\gieni_os\\security\\governance.py",
+      "src\\gieni_os\\llm\\clients\\azure_client.py",
+      "src\\gieni_os\\llm\\clients\\ollama_client.py",
+      "src\\gieni_os\\research\\providers\\contacts_provider.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\__init__.py",
+    "classes": [],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 30,
+      "authenticity": 100,
+      "overall": 82
+    },
+    "verdict": "DEPRECATE_AND_PURGE",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\agents\\authority_agent.py",
+    "classes": [
+      "AuthorityAgent"
+    ],
+    "functions": [
+      "__init__",
+      "validate",
+      "execute",
+      "return_result"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_clerk_tenancy_and_apps.py",
+      "tests\\test_llm_gateway.py",
+      "src\\gieni_os\\agents\\__init__.py",
+      "src\\gieni_os\\workflows\\authority_workflow.py",
+      "src\\gieni_os\\api\\routes\\ai_investigator.py",
+      "src\\gieni_os\\llm\\clients\\azure_client.py",
+      "src\\gieni_os\\llm\\clients\\base.py",
+      "src\\gieni_os\\llm\\clients\\deterministic_client.py",
+      "src\\gieni_os\\llm\\clients\\ollama_client.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\agents\\base.py",
+    "classes": [
+      "BaseAgent"
+    ],
+    "functions": [
+      "__init__",
+      "validate",
+      "execute",
+      "return_result"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [
+      "validate",
+      "execute",
+      "return_result"
+    ],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_llm_gateway.py",
+      "tests\\test_research_hub.py",
+      "tests\\test_sprint1_foundation.py",
+      "src\\gieni_os\\agents\\authority_agent.py",
+      "src\\gieni_os\\agents\\contact_agent.py",
+      "src\\gieni_os\\agents\\control_agent.py",
+      "src\\gieni_os\\agents\\delivery_agent.py",
+      "src\\gieni_os\\agents\\expansion_agent.py",
+      "src\\gieni_os\\agents\\intake_agent.py",
+      "src\\gieni_os\\agents\\ownership_agent.py",
+      "src\\gieni_os\\agents\\property_agent.py",
+      "src\\gieni_os\\agents\\qc_agent.py",
+      "src\\gieni_os\\agents\\scoring_agent.py",
+      "src\\gieni_os\\agents\\telemetry_agent.py",
+      "src\\gieni_os\\agents\\__init__.py",
+      "src\\gieni_os\\api\\main.py",
+      "src\\gieni_os\\llm\\gateway.py",
+      "src\\gieni_os\\research\\service.py",
+      "src\\gieni_os\\workflows\\authority_workflow.py",
+      "src\\gieni_os\\workflows\\contact_workflow.py",
+      "src\\gieni_os\\workflows\\control_workflow.py",
+      "src\\gieni_os\\workflows\\delivery_workflow.py",
+      "src\\gieni_os\\workflows\\intake_workflow.py",
+      "src\\gieni_os\\workflows\\ownership_workflow.py",
+      "src\\gieni_os\\workflows\\property_workflow.py",
+      "src\\gieni_os\\workflows\\qc_workflow.py",
+      "src\\gieni_os\\workflows\\scoring_workflow.py",
+      "src\\gieni_os\\workflows\\telemetry_workflow.py",
+      "src\\gieni_os\\workflows\\__init__.py",
+      "src\\gieni_os\\llm\\clients\\azure_client.py",
+      "src\\gieni_os\\llm\\clients\\deterministic_client.py",
+      "src\\gieni_os\\llm\\clients\\ollama_client.py",
+      "src\\gieni_os\\llm\\clients\\__init__.py",
+      "src\\gieni_os\\research\\providers\\authority_provider.py",
+      "src\\gieni_os\\research\\providers\\contacts_provider.py",
+      "src\\gieni_os\\research\\providers\\title_provider.py",
+      "src\\gieni_os\\research\\providers\\valuation_provider.py"
+    ],
+    "scores": {
+      "completeness": 70,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 90
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\agents\\contact_agent.py",
+    "classes": [
+      "ContactAgent"
+    ],
+    "functions": [
+      "__init__",
+      "validate",
+      "execute",
+      "return_result"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "src\\gieni_os\\agents\\__init__.py",
+      "src\\gieni_os\\workflows\\contact_workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\agents\\control_agent.py",
+    "classes": [
+      "ControlAgent"
+    ],
+    "functions": [
+      "__init__",
+      "validate",
+      "execute",
+      "return_result"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_wiring_e2e.py",
+      "src\\gieni_os\\agents\\__init__.py",
+      "src\\gieni_os\\workflows\\control_workflow.py",
+      "src\\gieni_os\\api\\routes\\ai_investigator.py",
+      "src\\gieni_os\\llm\\clients\\deterministic_client.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\agents\\delivery_agent.py",
+    "classes": [
+      "DeliveryAgent"
+    ],
+    "functions": [
+      "__init__",
+      "validate",
+      "execute",
+      "return_result"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "src\\gieni_os\\agents\\__init__.py",
+      "src\\gieni_os\\workflows\\delivery_workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\agents\\expansion_agent.py",
+    "classes": [
+      "ExpansionAgent"
+    ],
+    "functions": [
+      "__init__",
+      "validate",
+      "execute",
+      "return_result"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "src\\gieni_os\\agents\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 60,
+      "authenticity": 100,
+      "overall": 90
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\agents\\intake_agent.py",
+    "classes": [
+      "ProbateIntakeAgent"
+    ],
+    "functions": [
+      "__init__",
+      "validate",
+      "execute",
+      "return_result"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "run_sprint1_demo.py",
+      "tests\\test_sprint1_foundation.py",
+      "src\\gieni_os\\agents\\__init__.py",
+      "src\\gieni_os\\workflows\\intake_workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\agents\\ownership_agent.py",
+    "classes": [
+      "OwnershipAgent"
+    ],
+    "functions": [
+      "__init__",
+      "validate",
+      "execute",
+      "return_result"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "src\\gieni_os\\agents\\__init__.py",
+      "src\\gieni_os\\workflows\\ownership_workflow.py",
+      "src\\gieni_os\\api\\routes\\ai_investigator.py",
+      "src\\gieni_os\\llm\\clients\\azure_client.py",
+      "src\\gieni_os\\llm\\clients\\base.py",
+      "src\\gieni_os\\llm\\clients\\deterministic_client.py",
+      "src\\gieni_os\\llm\\clients\\ollama_client.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\agents\\property_agent.py",
+    "classes": [
+      "PropertyAgent"
+    ],
+    "functions": [
+      "__init__",
+      "validate",
+      "execute",
+      "return_result"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "src\\gieni_os\\agents\\__init__.py",
+      "src\\gieni_os\\workflows\\property_workflow.py",
+      "src\\gieni_os\\llm\\clients\\deterministic_client.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\agents\\qc_agent.py",
+    "classes": [
+      "QCAgent"
+    ],
+    "functions": [
+      "__init__",
+      "validate",
+      "execute",
+      "return_result"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "run_sprint1_demo.py",
+      "src\\gieni_os\\agents\\__init__.py",
+      "src\\gieni_os\\workflows\\qc_workflow.py",
+      "src\\gieni_os\\api\\routes\\ai_investigator.py",
+      "src\\gieni_os\\llm\\clients\\deterministic_client.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\agents\\registry.py",
+    "classes": [
+      "AgentRegistry"
+    ],
+    "functions": [
+      "register_agent",
+      "heartbeat",
+      "list_agents"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "run_sprint1_demo.py",
+      "tests\\test_intelligence_context.py",
+      "tests\\test_sprint1_foundation.py",
+      "src\\gieni_os\\agents\\__init__.py",
+      "src\\gieni_os\\intelligence\\context.py",
+      "src\\gieni_os\\intelligence\\__init__.py",
+      "src\\gieni_os\\intelligence\\prompts\\__init__.py",
+      "src\\gieni_os\\intelligence\\reasoning\\service.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\agents\\scoring_agent.py",
+    "classes": [
+      "ScoringAgent"
+    ],
+    "functions": [
+      "__init__",
+      "validate",
+      "execute",
+      "return_result"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_wiring_e2e.py",
+      "src\\gieni_os\\agents\\__init__.py",
+      "src\\gieni_os\\workflows\\scoring_workflow.py",
+      "src\\gieni_os\\api\\routes\\ai_investigator.py",
+      "src\\gieni_os\\llm\\clients\\deterministic_client.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\agents\\telemetry_agent.py",
+    "classes": [
+      "TelemetryAgent"
+    ],
+    "functions": [
+      "__init__",
+      "validate",
+      "execute",
+      "return_result"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "src\\gieni_os\\agents\\__init__.py",
+      "src\\gieni_os\\workflows\\telemetry_workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\agents\\__init__.py",
+    "classes": [],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 30,
+      "authenticity": 100,
+      "overall": 82
+    },
+    "verdict": "DEPRECATE_AND_PURGE",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\api\\deps.py",
+    "classes": [
+      "ClerkUserContext"
+    ],
+    "functions": [
+      "get",
+      "__getitem__",
+      "get_current_user",
+      "get_clerk_county_contract",
+      "require_operator_role",
+      "require_security_context"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "src\\gieni_os\\api\\routes\\cases.py",
+      "src\\gieni_os\\api\\routes\\clients.py",
+      "src\\gieni_os\\api\\routes\\client_portal.py",
+      "src\\gieni_os\\api\\routes\\counties.py",
+      "src\\gieni_os\\api\\routes\\exceptions.py",
+      "src\\gieni_os\\api\\routes\\ingestion.py",
+      "src\\gieni_os\\api\\routes\\intelligence.py",
+      "src\\gieni_os\\api\\routes\\llm.py",
+      "src\\gieni_os\\api\\routes\\opportunities.py",
+      "src\\gieni_os\\api\\routes\\research.py",
+      "src\\gieni_os\\api\\routes\\workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\api\\main.py",
+    "classes": [
+      "RequestCorrelationMiddleware"
+    ],
+    "functions": [
+      "dispatch",
+      "serve_launchpad",
+      "health_check",
+      "pof_html_alias"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "tests\\test_app_endpoints.py",
+      "tests\\test_clerk_tenancy_and_apps.py",
+      "tests\\test_client_portal_suite.py",
+      "tests\\test_ingestion_hub.py",
+      "tests\\test_intelligence_context.py",
+      "tests\\test_llm_gateway.py",
+      "tests\\test_research_hub.py",
+      "tests\\test_sprint1_foundation.py",
+      "tests\\test_wiring_e2e.py",
+      "src\\gieni_os\\api\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\api\\__init__.py",
+    "classes": [],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\contexts\\__init__.py",
+    "classes": [],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 30,
+      "authenticity": 100,
+      "overall": 82
+    },
+    "verdict": "DEPRECATE_AND_PURGE",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\database\\connection.py",
+    "classes": [],
+    "functions": [
+      "get_db",
+      "init_db"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "run_sprint1_demo.py",
+      "run_sprint2_pipeline_demo.py",
+      "run_sprint3_demo.py",
+      "run_sprint4_demo.py",
+      "run_sprint5_demo.py",
+      "run_sprint6_demo.py",
+      "tests\\test_app_endpoints.py",
+      "tests\\test_clerk_tenancy_and_apps.py",
+      "tests\\test_client_portal_suite.py",
+      "tests\\test_ingestion_hub.py",
+      "tests\\test_intelligence_context.py",
+      "tests\\test_research_hub.py",
+      "tests\\test_sprint1_foundation.py",
+      "tests\\test_wiring_e2e.py",
+      "src\\gieni_os\\api\\main.py",
+      "src\\gieni_os\\database\\__init__.py",
+      "src\\gieni_os\\intelligence\\context.py",
+      "src\\gieni_os\\api\\routes\\ai_investigator.py",
+      "src\\gieni_os\\api\\routes\\cases.py",
+      "src\\gieni_os\\api\\routes\\clients.py",
+      "src\\gieni_os\\api\\routes\\client_portal.py",
+      "src\\gieni_os\\api\\routes\\counties.py",
+      "src\\gieni_os\\api\\routes\\dashboard.py",
+      "src\\gieni_os\\api\\routes\\exceptions.py",
+      "src\\gieni_os\\api\\routes\\ingestion.py",
+      "src\\gieni_os\\api\\routes\\intelligence.py",
+      "src\\gieni_os\\api\\routes\\opportunities.py",
+      "src\\gieni_os\\api\\routes\\research.py",
+      "src\\gieni_os\\api\\routes\\workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\database\\models.py",
+    "classes": [
+      "CountyModel",
+      "ClientModel",
+      "ProbateCaseModel",
+      "OpportunityModel",
+      "ExceptionModel",
+      "KnowledgeBaseModel",
+      "WorkflowAuditLogModel",
+      "CRMDispatchLogModel",
+      "TelemetryDispositionModel",
+      "AgentRegistryModel",
+      "MemoryEntryModel",
+      "MemoryObservationModel",
+      "KnowledgeArticleModel",
+      "LearningEventModel",
+      "CountyCalibrationModel",
+      "VectorEmbeddingModel"
+    ],
+    "functions": [
+      "gen_uuid",
+      "utc_now"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "run_sprint1_demo.py",
+      "run_sprint2_pipeline_demo.py",
+      "run_sprint3_demo.py",
+      "run_sprint4_demo.py",
+      "run_sprint5_demo.py",
+      "run_sprint6_demo.py",
+      "tests\\test_app_endpoints.py",
+      "tests\\test_authenticity_remediation.py",
+      "tests\\test_clerk_tenancy_and_apps.py",
+      "tests\\test_client_portal_suite.py",
+      "tests\\test_ingestion_hub.py",
+      "tests\\test_intelligence_context.py",
+      "tests\\test_intelligence_pipeline.py",
+      "tests\\test_llm_gateway.py",
+      "tests\\test_phase7_market_validation.py",
+      "tests\\test_research_hub.py",
+      "tests\\test_sprint1_foundation.py",
+      "tests\\test_sprint3_control_and_contact.py",
+      "tests\\test_sprint4_scoring_and_qc.py",
+      "tests\\test_sprint5_delivery_and_pof.py",
+      "tests\\test_sprint6_telemetry_and_expansion.py",
+      "tests\\test_wiring_e2e.py",
+      "src\\gieni_os\\agents\\registry.py",
+      "src\\gieni_os\\database\\connection.py",
+      "src\\gieni_os\\database\\__init__.py",
+      "src\\gieni_os\\ingestion\\pipeline.py",
+      "src\\gieni_os\\intelligence\\context.py",
+      "src\\gieni_os\\intelligence\\__init__.py",
+      "src\\gieni_os\\llm\\gateway.py",
+      "src\\gieni_os\\llm\\__init__.py",
+      "src\\gieni_os\\research\\service.py",
+      "src\\gieni_os\\services\\pof_resolver.py",
+      "src\\gieni_os\\validation\\conversation_tracker.py",
+      "src\\gieni_os\\validation\\county_validator.py",
+      "src\\gieni_os\\validation\\decision_maker_verifier.py",
+      "src\\gieni_os\\validation\\weekly_operating_rhythm.py",
+      "src\\gieni_os\\validation\\__init__.py",
+      "src\\gieni_os\\workflow\\engine.py",
+      "src\\gieni_os\\workflows\\authority_workflow.py",
+      "src\\gieni_os\\workflows\\base.py",
+      "src\\gieni_os\\workflows\\intake_workflow.py",
+      "src\\gieni_os\\workflows\\qc_workflow.py",
+      "src\\gieni_os\\api\\routes\\ai_investigator.py",
+      "src\\gieni_os\\api\\routes\\cases.py",
+      "src\\gieni_os\\api\\routes\\clients.py",
+      "src\\gieni_os\\api\\routes\\client_portal.py",
+      "src\\gieni_os\\api\\routes\\counties.py",
+      "src\\gieni_os\\api\\routes\\dashboard.py",
+      "src\\gieni_os\\api\\routes\\exceptions.py",
+      "src\\gieni_os\\api\\routes\\ingestion.py",
+      "src\\gieni_os\\api\\routes\\intelligence.py",
+      "src\\gieni_os\\api\\routes\\llm.py",
+      "src\\gieni_os\\api\\routes\\opportunities.py",
+      "src\\gieni_os\\api\\routes\\research.py",
+      "src\\gieni_os\\api\\routes\\workflow.py",
+      "src\\gieni_os\\ingestion\\harvesters\\auditor_harvester.py",
+      "src\\gieni_os\\ingestion\\harvesters\\legal_notices_harvester.py",
+      "src\\gieni_os\\ingestion\\harvesters\\linx_harvester.py",
+      "src\\gieni_os\\intelligence\\embeddings\\vector_service.py",
+      "src\\gieni_os\\intelligence\\knowledge\\service.py",
+      "src\\gieni_os\\intelligence\\learning\\service.py",
+      "src\\gieni_os\\intelligence\\memory\\service.py",
+      "src\\gieni_os\\intelligence\\reasoning\\service.py",
+      "src\\gieni_os\\intelligence\\recommendations\\service.py",
+      "src\\gieni_os\\intelligence\\retrieval\\service.py",
+      "src\\gieni_os\\llm\\clients\\azure_client.py",
+      "src\\gieni_os\\llm\\clients\\base.py",
+      "src\\gieni_os\\llm\\clients\\deterministic_client.py",
+      "src\\gieni_os\\llm\\clients\\ollama_client.py",
+      "src\\gieni_os\\research\\providers\\authority_provider.py",
+      "src\\gieni_os\\research\\providers\\base.py",
+      "src\\gieni_os\\research\\providers\\contacts_provider.py",
+      "src\\gieni_os\\research\\providers\\title_provider.py",
+      "src\\gieni_os\\research\\providers\\valuation_provider.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\database\\__init__.py",
+    "classes": [],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 30,
+      "authenticity": 100,
+      "overall": 82
+    },
+    "verdict": "DEPRECATE_AND_PURGE",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\domain\\authority.py",
+    "classes": [
+      "AuthorityTier",
+      "LettersType",
+      "FiduciaryAuthorityRecord"
+    ],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_intelligence_pipeline.py",
+      "tests\\test_sprint4_scoring_and_qc.py",
+      "src\\gieni_os\\agents\\scoring_agent.py",
+      "src\\gieni_os\\domain\\__init__.py",
+      "src\\gieni_os\\engines\\authority_engine.py",
+      "src\\gieni_os\\engines\\qc_engine.py",
+      "src\\gieni_os\\engines\\scoring_engine.py",
+      "src\\gieni_os\\models\\entities.py",
+      "src\\gieni_os\\validation\\decision_maker_verifier.py",
+      "src\\gieni_os\\workflows\\qc_workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\domain\\contact.py",
+    "classes": [
+      "LineType",
+      "PhoneRecord",
+      "ContactEnrichmentRecord"
+    ],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "src\\gieni_os\\domain\\__init__.py",
+      "src\\gieni_os\\engines\\contact_engine.py",
+      "src\\gieni_os\\engines\\qc_engine.py",
+      "src\\gieni_os\\workflows\\qc_workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\domain\\control.py",
+    "classes": [
+      "ControlArchetype",
+      "OccupancyStatus",
+      "DecisionMaker",
+      "ControlProfile"
+    ],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_sprint3_control_and_contact.py",
+      "tests\\test_sprint4_scoring_and_qc.py",
+      "src\\gieni_os\\agents\\contact_agent.py",
+      "src\\gieni_os\\agents\\scoring_agent.py",
+      "src\\gieni_os\\domain\\__init__.py",
+      "src\\gieni_os\\engines\\contact_engine.py",
+      "src\\gieni_os\\engines\\control_engine.py",
+      "src\\gieni_os\\engines\\qc_engine.py",
+      "src\\gieni_os\\engines\\scoring_engine.py",
+      "src\\gieni_os\\pof\\builder.py",
+      "src\\gieni_os\\workflows\\qc_workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\domain\\delivery.py",
+    "classes": [
+      "DeliveryChannel",
+      "CRMPlatform",
+      "FlashAlert",
+      "DeliveryDispatchRecord"
+    ],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_sprint5_delivery_and_pof.py",
+      "src\\gieni_os\\agents\\delivery_agent.py",
+      "src\\gieni_os\\domain\\__init__.py",
+      "src\\gieni_os\\engines\\delivery_engine.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\domain\\expansion.py",
+    "classes": [
+      "ExpansionStatus",
+      "CountyFeasibility"
+    ],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_sprint6_telemetry_and_expansion.py",
+      "src\\gieni_os\\domain\\__init__.py",
+      "src\\gieni_os\\engines\\expansion_engine.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\domain\\ownership.py",
+    "classes": [
+      "VestingType",
+      "EquityWaterfall",
+      "OwnershipRecord"
+    ],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_intelligence_pipeline.py",
+      "tests\\test_sprint4_scoring_and_qc.py",
+      "src\\gieni_os\\agents\\scoring_agent.py",
+      "src\\gieni_os\\domain\\__init__.py",
+      "src\\gieni_os\\engines\\ownership_engine.py",
+      "src\\gieni_os\\engines\\qc_engine.py",
+      "src\\gieni_os\\engines\\scoring_engine.py",
+      "src\\gieni_os\\workflows\\qc_workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\domain\\probate.py",
+    "classes": [
+      "CaseStatus",
+      "DocketRecord"
+    ],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "scripts\\populate_pierce_kb.py",
+      "src\\gieni_os\\agents\\intake_agent.py",
+      "src\\gieni_os\\domain\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\domain\\property.py",
+    "classes": [
+      "SitusAddress",
+      "PropertyRecord"
+    ],
+    "functions": [
+      "full_address"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "src\\gieni_os\\domain\\__init__.py",
+      "src\\gieni_os\\engines\\property_engine.py",
+      "src\\gieni_os\\engines\\qc_engine.py",
+      "src\\gieni_os\\validation\\county_validator.py",
+      "src\\gieni_os\\workflows\\qc_workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\domain\\qc.py",
+    "classes": [
+      "GateResult",
+      "QCValidationReport"
+    ],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "src\\gieni_os\\domain\\__init__.py",
+      "src\\gieni_os\\engines\\qc_engine.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\domain\\scoring.py",
+    "classes": [
+      "PriorityTier",
+      "DealStrategy",
+      "DealFrictionScore",
+      "OpportunityScore"
+    ],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_sprint4_scoring_and_qc.py",
+      "src\\gieni_os\\domain\\__init__.py",
+      "src\\gieni_os\\engines\\qc_engine.py",
+      "src\\gieni_os\\engines\\scoring_engine.py",
+      "src\\gieni_os\\models\\entities.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\domain\\telemetry.py",
+    "classes": [
+      "DispositionStage",
+      "DispositionRecord",
+      "CountyCalibrationProfile"
+    ],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_sprint6_telemetry_and_expansion.py",
+      "src\\gieni_os\\agents\\telemetry_agent.py",
+      "src\\gieni_os\\domain\\__init__.py",
+      "src\\gieni_os\\engines\\telemetry_engine.py",
+      "src\\gieni_os\\workflows\\telemetry_workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\domain\\__init__.py",
+    "classes": [],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\engines\\authority_engine.py",
+    "classes": [
+      "AuthorityEngine"
+    ],
+    "functions": [
+      "evaluate_authority"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_intelligence_pipeline.py",
+      "src\\gieni_os\\agents\\authority_agent.py",
+      "src\\gieni_os\\engines\\__init__.py",
+      "src\\gieni_os\\validation\\decision_maker_verifier.py",
+      "src\\gieni_os\\workflows\\authority_workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\engines\\contact_engine.py",
+    "classes": [
+      "ContactEngine"
+    ],
+    "functions": [
+      "enrich_decision_maker"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_sprint3_control_and_contact.py",
+      "src\\gieni_os\\agents\\contact_agent.py",
+      "src\\gieni_os\\engines\\__init__.py",
+      "src\\gieni_os\\workflows\\contact_workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\engines\\control_engine.py",
+    "classes": [
+      "ControlEngine"
+    ],
+    "functions": [
+      "classify_control_archetype",
+      "build_social_graph"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_authenticity_remediation.py",
+      "tests\\test_sprint3_control_and_contact.py",
+      "src\\gieni_os\\agents\\control_agent.py",
+      "src\\gieni_os\\engines\\__init__.py",
+      "src\\gieni_os\\services\\control_service.py",
+      "src\\gieni_os\\validation\\decision_maker_verifier.py",
+      "src\\gieni_os\\workflows\\control_workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\engines\\delivery_engine.py",
+    "classes": [
+      "CRMAdapter",
+      "DeliveryEngine"
+    ],
+    "functions": [
+      "to_podio",
+      "to_gohighlevel",
+      "to_salesforce",
+      "to_rei_blackbook",
+      "compute_hmac_signature",
+      "assemble_pof_from_context",
+      "dispatch"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "httpx"
+    ],
+    "callers": [
+      "tests\\test_sprint5_delivery_and_pof.py",
+      "src\\gieni_os\\agents\\delivery_agent.py",
+      "src\\gieni_os\\engines\\__init__.py",
+      "src\\gieni_os\\workflows\\delivery_workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\engines\\expansion_engine.py",
+    "classes": [
+      "ExpansionEngine"
+    ],
+    "functions": [
+      "evaluate_county",
+      "generate_scraper_script"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "run_sprint6_demo.py",
+      "tests\\test_sprint6_telemetry_and_expansion.py",
+      "src\\gieni_os\\agents\\expansion_agent.py",
+      "src\\gieni_os\\engines\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\engines\\ownership_engine.py",
+    "classes": [
+      "OwnershipEngine"
+    ],
+    "functions": [
+      "calculate_equity_waterfall",
+      "analyze_vesting"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_intelligence_pipeline.py",
+      "src\\gieni_os\\agents\\ownership_agent.py",
+      "src\\gieni_os\\engines\\__init__.py",
+      "src\\gieni_os\\workflows\\ownership_workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\engines\\property_engine.py",
+    "classes": [
+      "PropertyEngine"
+    ],
+    "functions": [
+      "standardize_address",
+      "reconcile_parcel"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_authenticity_remediation.py",
+      "tests\\test_intelligence_pipeline.py",
+      "src\\gieni_os\\agents\\property_agent.py",
+      "src\\gieni_os\\engines\\__init__.py",
+      "src\\gieni_os\\validation\\county_validator.py",
+      "src\\gieni_os\\workflows\\property_workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\engines\\qc_engine.py",
+    "classes": [
+      "QCEngine"
+    ],
+    "functions": [
+      "validate_opportunity"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_sprint4_scoring_and_qc.py",
+      "src\\gieni_os\\agents\\qc_agent.py",
+      "src\\gieni_os\\engines\\__init__.py",
+      "src\\gieni_os\\workflows\\qc_workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\engines\\scoring_engine.py",
+    "classes": [
+      "ScoringEngine"
+    ],
+    "functions": [
+      "calculate_deal_friction",
+      "calculate_score"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_sprint4_scoring_and_qc.py",
+      "src\\gieni_os\\agents\\scoring_agent.py",
+      "src\\gieni_os\\engines\\__init__.py",
+      "src\\gieni_os\\workflows\\scoring_workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\engines\\telemetry_engine.py",
+    "classes": [
+      "TelemetryEngine"
+    ],
+    "functions": [
+      "__init__",
+      "record_disposition",
+      "recalibrate_county"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_sprint6_telemetry_and_expansion.py",
+      "src\\gieni_os\\agents\\telemetry_agent.py",
+      "src\\gieni_os\\engines\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\engines\\__init__.py",
+    "classes": [],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 30,
+      "authenticity": 100,
+      "overall": 82
+    },
+    "verdict": "DEPRECATE_AND_PURGE",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\events\\bus.py",
+    "classes": [
+      "DeadLetterQueue",
+      "EventBus"
+    ],
+    "functions": [
+      "__init__",
+      "push",
+      "size",
+      "pop",
+      "__init__",
+      "subscribe",
+      "publish"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "redis"
+    ],
+    "callers": [
+      "run_sprint1_demo.py",
+      "run_sprint2_pipeline_demo.py",
+      "run_sprint3_demo.py",
+      "run_sprint4_demo.py",
+      "run_sprint5_demo.py",
+      "run_sprint6_demo.py",
+      "scripts\\run_production_simulation.py",
+      "tests\\test_authenticity_remediation.py",
+      "tests\\test_event_bus.py",
+      "tests\\test_intelligence_engines.py",
+      "tests\\test_intelligence_pipeline.py",
+      "tests\\test_sprint1_foundation.py",
+      "tests\\test_sprint3_control_and_contact.py",
+      "tests\\test_sprint4_scoring_and_qc.py",
+      "tests\\test_sprint5_delivery_and_pof.py",
+      "tests\\test_sprint6_telemetry_and_expansion.py",
+      "src\\gieni_os\\services\\authority_service.py",
+      "src\\gieni_os\\services\\client_service.py",
+      "src\\gieni_os\\services\\control_service.py",
+      "src\\gieni_os\\services\\delivery_service.py",
+      "src\\gieni_os\\services\\evidence_service.py",
+      "src\\gieni_os\\services\\opportunity_service.py",
+      "src\\gieni_os\\services\\ownership_service.py",
+      "src\\gieni_os\\services\\property_service.py",
+      "src\\gieni_os\\services\\workflow_service.py",
+      "src\\gieni_os\\workflows\\authority_workflow.py",
+      "src\\gieni_os\\workflows\\base.py",
+      "src\\gieni_os\\workflows\\contact_workflow.py",
+      "src\\gieni_os\\workflows\\control_workflow.py",
+      "src\\gieni_os\\workflows\\delivery_workflow.py",
+      "src\\gieni_os\\workflows\\intake_workflow.py",
+      "src\\gieni_os\\workflows\\ownership_workflow.py",
+      "src\\gieni_os\\workflows\\property_workflow.py",
+      "src\\gieni_os\\workflows\\qc_workflow.py",
+      "src\\gieni_os\\workflows\\scoring_workflow.py",
+      "src\\gieni_os\\workflows\\telemetry_workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\events\\schemas.py",
+    "classes": [
+      "PropertyIdentifiedEvent",
+      "OwnershipUpdatedEvent",
+      "ControlChangedEvent",
+      "AuthorityUpdatedEvent",
+      "OpportunityScoredEvent",
+      "EvidenceIngestedEvent",
+      "OpportunityQCCertifiedEvent",
+      "OpportunityDeliveredEvent",
+      "TelemetryIngestedEvent",
+      "PipelineExceptionRoutedEvent"
+    ],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "scripts\\run_production_simulation.py",
+      "tests\\test_event_bus.py",
+      "tests\\test_recovery_and_learning.py",
+      "src\\gieni_os\\engines\\telemetry_engine.py",
+      "src\\gieni_os\\learning\\reinforcement.py",
+      "src\\gieni_os\\recovery\\runbooks.py",
+      "src\\gieni_os\\services\\authority_service.py",
+      "src\\gieni_os\\services\\control_service.py",
+      "src\\gieni_os\\services\\delivery_service.py",
+      "src\\gieni_os\\services\\evidence_service.py",
+      "src\\gieni_os\\services\\opportunity_service.py",
+      "src\\gieni_os\\services\\ownership_service.py",
+      "src\\gieni_os\\services\\property_service.py",
+      "src\\gieni_os\\workflows\\delivery_workflow.py",
+      "src\\gieni_os\\workflows\\qc_workflow.py",
+      "src\\gieni_os\\workflows\\scoring_workflow.py",
+      "src\\gieni_os\\workflows\\telemetry_workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\graph\\topology.py",
+    "classes": [
+      "NodeType",
+      "EdgeType",
+      "GraphNode",
+      "GraphEdge",
+      "KnowledgeGraph"
+    ],
+    "functions": [
+      "__init__",
+      "add_node",
+      "add_edge",
+      "find_controller",
+      "find_authority",
+      "find_attorney",
+      "export_cypher"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "scripts\\run_production_simulation.py",
+      "tests\\test_intelligence_engines.py",
+      "src\\gieni_os\\engines\\control_engine.py",
+      "src\\gieni_os\\services\\authority_service.py",
+      "src\\gieni_os\\services\\control_service.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\ingestion\\models.py",
+    "classes": [
+      "HarvesterUnavailableError",
+      "FilingChannel",
+      "ScrapedDocket",
+      "HarvestRequest",
+      "BulkImportRequest",
+      "IngestionSummary"
+    ],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "run_sprint1_demo.py",
+      "run_sprint2_pipeline_demo.py",
+      "run_sprint3_demo.py",
+      "run_sprint4_demo.py",
+      "run_sprint5_demo.py",
+      "run_sprint6_demo.py",
+      "tests\\test_app_endpoints.py",
+      "tests\\test_authenticity_remediation.py",
+      "tests\\test_clerk_tenancy_and_apps.py",
+      "tests\\test_client_portal_suite.py",
+      "tests\\test_ingestion_hub.py",
+      "tests\\test_intelligence_context.py",
+      "tests\\test_intelligence_pipeline.py",
+      "tests\\test_llm_gateway.py",
+      "tests\\test_phase7_market_validation.py",
+      "tests\\test_research_hub.py",
+      "tests\\test_sprint1_foundation.py",
+      "tests\\test_sprint3_control_and_contact.py",
+      "tests\\test_sprint4_scoring_and_qc.py",
+      "tests\\test_sprint5_delivery_and_pof.py",
+      "tests\\test_sprint6_telemetry_and_expansion.py",
+      "tests\\test_wiring_e2e.py",
+      "src\\gieni_os\\agents\\registry.py",
+      "src\\gieni_os\\database\\connection.py",
+      "src\\gieni_os\\database\\__init__.py",
+      "src\\gieni_os\\ingestion\\pipeline.py",
+      "src\\gieni_os\\intelligence\\context.py",
+      "src\\gieni_os\\intelligence\\__init__.py",
+      "src\\gieni_os\\llm\\gateway.py",
+      "src\\gieni_os\\llm\\__init__.py",
+      "src\\gieni_os\\research\\service.py",
+      "src\\gieni_os\\services\\pof_resolver.py",
+      "src\\gieni_os\\validation\\conversation_tracker.py",
+      "src\\gieni_os\\validation\\county_validator.py",
+      "src\\gieni_os\\validation\\decision_maker_verifier.py",
+      "src\\gieni_os\\validation\\weekly_operating_rhythm.py",
+      "src\\gieni_os\\validation\\__init__.py",
+      "src\\gieni_os\\workflow\\engine.py",
+      "src\\gieni_os\\workflows\\authority_workflow.py",
+      "src\\gieni_os\\workflows\\base.py",
+      "src\\gieni_os\\workflows\\intake_workflow.py",
+      "src\\gieni_os\\workflows\\qc_workflow.py",
+      "src\\gieni_os\\api\\routes\\ai_investigator.py",
+      "src\\gieni_os\\api\\routes\\cases.py",
+      "src\\gieni_os\\api\\routes\\clients.py",
+      "src\\gieni_os\\api\\routes\\client_portal.py",
+      "src\\gieni_os\\api\\routes\\counties.py",
+      "src\\gieni_os\\api\\routes\\dashboard.py",
+      "src\\gieni_os\\api\\routes\\exceptions.py",
+      "src\\gieni_os\\api\\routes\\ingestion.py",
+      "src\\gieni_os\\api\\routes\\intelligence.py",
+      "src\\gieni_os\\api\\routes\\llm.py",
+      "src\\gieni_os\\api\\routes\\opportunities.py",
+      "src\\gieni_os\\api\\routes\\research.py",
+      "src\\gieni_os\\api\\routes\\workflow.py",
+      "src\\gieni_os\\ingestion\\harvesters\\auditor_harvester.py",
+      "src\\gieni_os\\ingestion\\harvesters\\legal_notices_harvester.py",
+      "src\\gieni_os\\ingestion\\harvesters\\linx_harvester.py",
+      "src\\gieni_os\\intelligence\\embeddings\\vector_service.py",
+      "src\\gieni_os\\intelligence\\knowledge\\service.py",
+      "src\\gieni_os\\intelligence\\learning\\service.py",
+      "src\\gieni_os\\intelligence\\memory\\service.py",
+      "src\\gieni_os\\intelligence\\reasoning\\service.py",
+      "src\\gieni_os\\intelligence\\recommendations\\service.py",
+      "src\\gieni_os\\intelligence\\retrieval\\service.py",
+      "src\\gieni_os\\llm\\clients\\azure_client.py",
+      "src\\gieni_os\\llm\\clients\\base.py",
+      "src\\gieni_os\\llm\\clients\\deterministic_client.py",
+      "src\\gieni_os\\llm\\clients\\ollama_client.py",
+      "src\\gieni_os\\research\\providers\\authority_provider.py",
+      "src\\gieni_os\\research\\providers\\base.py",
+      "src\\gieni_os\\research\\providers\\contacts_provider.py",
+      "src\\gieni_os\\research\\providers\\title_provider.py",
+      "src\\gieni_os\\research\\providers\\valuation_provider.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\ingestion\\pipeline.py",
+    "classes": [
+      "IngestionPipeline"
+    ],
+    "functions": [
+      "process_dockets"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "tests\\test_ingestion_hub.py",
+      "src\\gieni_os\\api\\routes\\ingestion.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\integrations\\notion_publisher.py",
+    "classes": [
+      "NotionPublishError",
+      "NotionPublisher"
+    ],
+    "functions": [
+      "__init__",
+      "publish_opportunity"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "requests"
+    ],
+    "callers": [
+      "scripts\\test_pof_deliverable.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 60,
+      "authenticity": 100,
+      "overall": 90
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\intelligence\\context.py",
+    "classes": [
+      "IntelligenceContext"
+    ],
+    "functions": [
+      "__init__",
+      "evaluate_opportunity",
+      "get_status",
+      "get_intelligence_context"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "tests\\test_intelligence_context.py",
+      "src\\gieni_os\\contexts\\__init__.py",
+      "src\\gieni_os\\intelligence\\__init__.py",
+      "src\\gieni_os\\api\\routes\\ai_investigator.py",
+      "src\\gieni_os\\api\\routes\\intelligence.py",
+      "src\\gieni_os\\research\\providers\\title_provider.py",
+      "src\\gieni_os\\research\\providers\\valuation_provider.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\intelligence\\models.py",
+    "classes": [
+      "MemoryScope",
+      "ObservationSource",
+      "MemoryObservationDTO",
+      "MemoryEntryDTO",
+      "KnowledgeArticleDTO",
+      "LearningOutcomeType",
+      "LearningEventDTO",
+      "StakeholderRole",
+      "RecommendationActionDTO",
+      "ReasoningRequestDTO",
+      "ReasoningResponseDTO"
+    ],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "run_sprint1_demo.py",
+      "run_sprint2_pipeline_demo.py",
+      "run_sprint3_demo.py",
+      "run_sprint4_demo.py",
+      "run_sprint5_demo.py",
+      "run_sprint6_demo.py",
+      "tests\\test_app_endpoints.py",
+      "tests\\test_authenticity_remediation.py",
+      "tests\\test_clerk_tenancy_and_apps.py",
+      "tests\\test_client_portal_suite.py",
+      "tests\\test_ingestion_hub.py",
+      "tests\\test_intelligence_context.py",
+      "tests\\test_intelligence_pipeline.py",
+      "tests\\test_llm_gateway.py",
+      "tests\\test_phase7_market_validation.py",
+      "tests\\test_research_hub.py",
+      "tests\\test_sprint1_foundation.py",
+      "tests\\test_sprint3_control_and_contact.py",
+      "tests\\test_sprint4_scoring_and_qc.py",
+      "tests\\test_sprint5_delivery_and_pof.py",
+      "tests\\test_sprint6_telemetry_and_expansion.py",
+      "tests\\test_wiring_e2e.py",
+      "src\\gieni_os\\agents\\registry.py",
+      "src\\gieni_os\\database\\connection.py",
+      "src\\gieni_os\\database\\__init__.py",
+      "src\\gieni_os\\ingestion\\pipeline.py",
+      "src\\gieni_os\\intelligence\\context.py",
+      "src\\gieni_os\\intelligence\\__init__.py",
+      "src\\gieni_os\\llm\\gateway.py",
+      "src\\gieni_os\\llm\\__init__.py",
+      "src\\gieni_os\\research\\service.py",
+      "src\\gieni_os\\services\\pof_resolver.py",
+      "src\\gieni_os\\validation\\conversation_tracker.py",
+      "src\\gieni_os\\validation\\county_validator.py",
+      "src\\gieni_os\\validation\\decision_maker_verifier.py",
+      "src\\gieni_os\\validation\\weekly_operating_rhythm.py",
+      "src\\gieni_os\\validation\\__init__.py",
+      "src\\gieni_os\\workflow\\engine.py",
+      "src\\gieni_os\\workflows\\authority_workflow.py",
+      "src\\gieni_os\\workflows\\base.py",
+      "src\\gieni_os\\workflows\\intake_workflow.py",
+      "src\\gieni_os\\workflows\\qc_workflow.py",
+      "src\\gieni_os\\api\\routes\\ai_investigator.py",
+      "src\\gieni_os\\api\\routes\\cases.py",
+      "src\\gieni_os\\api\\routes\\clients.py",
+      "src\\gieni_os\\api\\routes\\client_portal.py",
+      "src\\gieni_os\\api\\routes\\counties.py",
+      "src\\gieni_os\\api\\routes\\dashboard.py",
+      "src\\gieni_os\\api\\routes\\exceptions.py",
+      "src\\gieni_os\\api\\routes\\ingestion.py",
+      "src\\gieni_os\\api\\routes\\intelligence.py",
+      "src\\gieni_os\\api\\routes\\llm.py",
+      "src\\gieni_os\\api\\routes\\opportunities.py",
+      "src\\gieni_os\\api\\routes\\research.py",
+      "src\\gieni_os\\api\\routes\\workflow.py",
+      "src\\gieni_os\\ingestion\\harvesters\\auditor_harvester.py",
+      "src\\gieni_os\\ingestion\\harvesters\\legal_notices_harvester.py",
+      "src\\gieni_os\\ingestion\\harvesters\\linx_harvester.py",
+      "src\\gieni_os\\intelligence\\embeddings\\vector_service.py",
+      "src\\gieni_os\\intelligence\\knowledge\\service.py",
+      "src\\gieni_os\\intelligence\\learning\\service.py",
+      "src\\gieni_os\\intelligence\\memory\\service.py",
+      "src\\gieni_os\\intelligence\\reasoning\\service.py",
+      "src\\gieni_os\\intelligence\\recommendations\\service.py",
+      "src\\gieni_os\\intelligence\\retrieval\\service.py",
+      "src\\gieni_os\\llm\\clients\\azure_client.py",
+      "src\\gieni_os\\llm\\clients\\base.py",
+      "src\\gieni_os\\llm\\clients\\deterministic_client.py",
+      "src\\gieni_os\\llm\\clients\\ollama_client.py",
+      "src\\gieni_os\\research\\providers\\authority_provider.py",
+      "src\\gieni_os\\research\\providers\\base.py",
+      "src\\gieni_os\\research\\providers\\contacts_provider.py",
+      "src\\gieni_os\\research\\providers\\title_provider.py",
+      "src\\gieni_os\\research\\providers\\valuation_provider.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\intelligence\\__init__.py",
+    "classes": [],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 30,
+      "authenticity": 100,
+      "overall": 82
+    },
+    "verdict": "DEPRECATE_AND_PURGE",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\learning\\reinforcement.py",
+    "classes": [
+      "ReinforcementLearningEngine"
+    ],
+    "functions": [
+      "__init__",
+      "ingest_telemetry_event",
+      "recalibrate"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "scripts\\run_production_simulation.py",
+      "tests\\test_recovery_and_learning.py",
+      "src\\gieni_os\\engines\\telemetry_engine.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\lifecycle\\state_machine.py",
+    "classes": [
+      "OpportunityStage",
+      "OpportunityStateMachine"
+    ],
+    "functions": [
+      "__init__",
+      "transition_to"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "scripts\\run_production_simulation.py",
+      "tests\\test_state_machine.py",
+      "src\\gieni_os\\services\\workflow_service.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\llm\\gateway.py",
+    "classes": [
+      "LLMGateway",
+      "_LazyGatewayProxy"
+    ],
+    "functions": [
+      "__init__",
+      "get_provider_clients",
+      "get_status",
+      "resolve_active_client",
+      "investigate",
+      "test_prompt",
+      "get_default_llm_gateway",
+      "__getattr__"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_llm_gateway.py",
+      "src\\gieni_os\\llm\\__init__.py",
+      "src\\gieni_os\\api\\routes\\ai_investigator.py",
+      "src\\gieni_os\\api\\routes\\llm.py",
+      "src\\gieni_os\\intelligence\\reasoning\\service.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\llm\\models.py",
+    "classes": [
+      "LLMProviderType",
+      "LLMCitation",
+      "LLMRequest",
+      "LLMResponse",
+      "LLMProviderInfo",
+      "LLMStatusResponse"
+    ],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "run_sprint1_demo.py",
+      "run_sprint2_pipeline_demo.py",
+      "run_sprint3_demo.py",
+      "run_sprint4_demo.py",
+      "run_sprint5_demo.py",
+      "run_sprint6_demo.py",
+      "tests\\test_app_endpoints.py",
+      "tests\\test_authenticity_remediation.py",
+      "tests\\test_clerk_tenancy_and_apps.py",
+      "tests\\test_client_portal_suite.py",
+      "tests\\test_ingestion_hub.py",
+      "tests\\test_intelligence_context.py",
+      "tests\\test_intelligence_pipeline.py",
+      "tests\\test_llm_gateway.py",
+      "tests\\test_phase7_market_validation.py",
+      "tests\\test_research_hub.py",
+      "tests\\test_sprint1_foundation.py",
+      "tests\\test_sprint3_control_and_contact.py",
+      "tests\\test_sprint4_scoring_and_qc.py",
+      "tests\\test_sprint5_delivery_and_pof.py",
+      "tests\\test_sprint6_telemetry_and_expansion.py",
+      "tests\\test_wiring_e2e.py",
+      "src\\gieni_os\\agents\\registry.py",
+      "src\\gieni_os\\database\\connection.py",
+      "src\\gieni_os\\database\\__init__.py",
+      "src\\gieni_os\\ingestion\\pipeline.py",
+      "src\\gieni_os\\intelligence\\context.py",
+      "src\\gieni_os\\intelligence\\__init__.py",
+      "src\\gieni_os\\llm\\gateway.py",
+      "src\\gieni_os\\llm\\__init__.py",
+      "src\\gieni_os\\research\\service.py",
+      "src\\gieni_os\\services\\pof_resolver.py",
+      "src\\gieni_os\\validation\\conversation_tracker.py",
+      "src\\gieni_os\\validation\\county_validator.py",
+      "src\\gieni_os\\validation\\decision_maker_verifier.py",
+      "src\\gieni_os\\validation\\weekly_operating_rhythm.py",
+      "src\\gieni_os\\validation\\__init__.py",
+      "src\\gieni_os\\workflow\\engine.py",
+      "src\\gieni_os\\workflows\\authority_workflow.py",
+      "src\\gieni_os\\workflows\\base.py",
+      "src\\gieni_os\\workflows\\intake_workflow.py",
+      "src\\gieni_os\\workflows\\qc_workflow.py",
+      "src\\gieni_os\\api\\routes\\ai_investigator.py",
+      "src\\gieni_os\\api\\routes\\cases.py",
+      "src\\gieni_os\\api\\routes\\clients.py",
+      "src\\gieni_os\\api\\routes\\client_portal.py",
+      "src\\gieni_os\\api\\routes\\counties.py",
+      "src\\gieni_os\\api\\routes\\dashboard.py",
+      "src\\gieni_os\\api\\routes\\exceptions.py",
+      "src\\gieni_os\\api\\routes\\ingestion.py",
+      "src\\gieni_os\\api\\routes\\intelligence.py",
+      "src\\gieni_os\\api\\routes\\llm.py",
+      "src\\gieni_os\\api\\routes\\opportunities.py",
+      "src\\gieni_os\\api\\routes\\research.py",
+      "src\\gieni_os\\api\\routes\\workflow.py",
+      "src\\gieni_os\\ingestion\\harvesters\\auditor_harvester.py",
+      "src\\gieni_os\\ingestion\\harvesters\\legal_notices_harvester.py",
+      "src\\gieni_os\\ingestion\\harvesters\\linx_harvester.py",
+      "src\\gieni_os\\intelligence\\embeddings\\vector_service.py",
+      "src\\gieni_os\\intelligence\\knowledge\\service.py",
+      "src\\gieni_os\\intelligence\\learning\\service.py",
+      "src\\gieni_os\\intelligence\\memory\\service.py",
+      "src\\gieni_os\\intelligence\\reasoning\\service.py",
+      "src\\gieni_os\\intelligence\\recommendations\\service.py",
+      "src\\gieni_os\\intelligence\\retrieval\\service.py",
+      "src\\gieni_os\\llm\\clients\\azure_client.py",
+      "src\\gieni_os\\llm\\clients\\base.py",
+      "src\\gieni_os\\llm\\clients\\deterministic_client.py",
+      "src\\gieni_os\\llm\\clients\\ollama_client.py",
+      "src\\gieni_os\\research\\providers\\authority_provider.py",
+      "src\\gieni_os\\research\\providers\\base.py",
+      "src\\gieni_os\\research\\providers\\contacts_provider.py",
+      "src\\gieni_os\\research\\providers\\title_provider.py",
+      "src\\gieni_os\\research\\providers\\valuation_provider.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\llm\\__init__.py",
+    "classes": [],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 30,
+      "authenticity": 100,
+      "overall": 82
+    },
+    "verdict": "DEPRECATE_AND_PURGE",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\models\\entities.py",
+    "classes": [
+      "CourtSystemType",
+      "ExclusivityStatus",
+      "PropertyClass",
+      "TitleVestingType",
+      "AuthorityTier",
+      "PriorityTier",
+      "County",
+      "ProbateCase",
+      "Property",
+      "Person",
+      "Stakeholder",
+      "Trust",
+      "Estate",
+      "AuthorityCandidate",
+      "Opportunity",
+      "EvidenceSource",
+      "Client",
+      "Disposition"
+    ],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "run_phase7_validation_demo.py",
+      "run_sprint1_demo.py",
+      "run_sprint2_pipeline_demo.py",
+      "run_sprint3_demo.py",
+      "run_sprint4_demo.py",
+      "run_sprint5_demo.py",
+      "run_sprint6_demo.py",
+      "scripts\\export_notion_to_pdf.py",
+      "scripts\\notion_opportunity_sync.py",
+      "scripts\\populate_pierce_kb.py",
+      "scripts\\populate_wa_counties.py",
+      "scripts\\run_production_simulation.py",
+      "scripts\\simulate_partner_and_audit.py",
+      "scripts\\test_pof_deliverable.py",
+      "tests\\test_app_endpoints.py",
+      "tests\\test_clerk_tenancy_and_apps.py",
+      "tests\\test_client_portal_suite.py",
+      "tests\\test_event_bus.py",
+      "tests\\test_ingestion_hub.py",
+      "tests\\test_intelligence_context.py",
+      "tests\\test_intelligence_engines.py",
+      "tests\\test_intelligence_pipeline.py",
+      "tests\\test_llm_gateway.py",
+      "tests\\test_phase7_market_validation.py",
+      "tests\\test_pof_builder.py",
+      "tests\\test_research_hub.py",
+      "tests\\test_sprint1_foundation.py",
+      "tests\\test_sprint3_control_and_contact.py",
+      "tests\\test_sprint4_scoring_and_qc.py",
+      "tests\\test_sprint5_delivery_and_pof.py",
+      "tests\\test_sprint6_telemetry_and_expansion.py",
+      "tests\\test_state_machine.py",
+      "tests\\test_wiring_e2e.py",
+      "src\\gieni_os\\agents\\expansion_agent.py",
+      "src\\gieni_os\\agents\\property_agent.py",
+      "src\\gieni_os\\agents\\scoring_agent.py",
+      "src\\gieni_os\\agents\\telemetry_agent.py",
+      "src\\gieni_os\\api\\deps.py",
+      "src\\gieni_os\\api\\main.py",
+      "src\\gieni_os\\domain\\authority.py",
+      "src\\gieni_os\\domain\\expansion.py",
+      "src\\gieni_os\\domain\\ownership.py",
+      "src\\gieni_os\\domain\\property.py",
+      "src\\gieni_os\\domain\\scoring.py",
+      "src\\gieni_os\\domain\\__init__.py",
+      "src\\gieni_os\\engines\\authority_engine.py",
+      "src\\gieni_os\\engines\\delivery_engine.py",
+      "src\\gieni_os\\engines\\expansion_engine.py",
+      "src\\gieni_os\\engines\\ownership_engine.py",
+      "src\\gieni_os\\engines\\property_engine.py",
+      "src\\gieni_os\\engines\\qc_engine.py",
+      "src\\gieni_os\\engines\\scoring_engine.py",
+      "src\\gieni_os\\events\\schemas.py",
+      "src\\gieni_os\\graph\\topology.py",
+      "src\\gieni_os\\ingestion\\pipeline.py",
+      "src\\gieni_os\\integrations\\notion_publisher.py",
+      "src\\gieni_os\\intelligence\\context.py",
+      "src\\gieni_os\\learning\\reinforcement.py",
+      "src\\gieni_os\\lifecycle\\state_machine.py",
+      "src\\gieni_os\\pof\\builder.py",
+      "src\\gieni_os\\pof\\exporter.py",
+      "src\\gieni_os\\research\\models.py",
+      "src\\gieni_os\\services\\client_service.py",
+      "src\\gieni_os\\services\\delivery_service.py",
+      "src\\gieni_os\\services\\opportunity_service.py",
+      "src\\gieni_os\\services\\pof_resolver.py",
+      "src\\gieni_os\\services\\property_service.py",
+      "src\\gieni_os\\validation\\conversation_tracker.py",
+      "src\\gieni_os\\validation\\county_validator.py",
+      "src\\gieni_os\\validation\\decision_maker_verifier.py",
+      "src\\gieni_os\\validation\\weekly_operating_rhythm.py",
+      "src\\gieni_os\\validation\\__init__.py",
+      "src\\gieni_os\\workflow\\engine.py",
+      "src\\gieni_os\\workflows\\authority_workflow.py",
+      "src\\gieni_os\\workflows\\contact_workflow.py",
+      "src\\gieni_os\\workflows\\control_workflow.py",
+      "src\\gieni_os\\workflows\\delivery_workflow.py",
+      "src\\gieni_os\\workflows\\intake_workflow.py",
+      "src\\gieni_os\\workflows\\ownership_workflow.py",
+      "src\\gieni_os\\workflows\\property_workflow.py",
+      "src\\gieni_os\\workflows\\qc_workflow.py",
+      "src\\gieni_os\\workflows\\scoring_workflow.py",
+      "src\\gieni_os\\workflows\\telemetry_workflow.py",
+      "src\\gieni_os\\api\\routes\\ai_investigator.py",
+      "src\\gieni_os\\api\\routes\\cases.py",
+      "src\\gieni_os\\api\\routes\\clients.py",
+      "src\\gieni_os\\api\\routes\\client_portal.py",
+      "src\\gieni_os\\api\\routes\\counties.py",
+      "src\\gieni_os\\api\\routes\\dashboard.py",
+      "src\\gieni_os\\api\\routes\\exceptions.py",
+      "src\\gieni_os\\api\\routes\\ingestion.py",
+      "src\\gieni_os\\api\\routes\\intelligence.py",
+      "src\\gieni_os\\api\\routes\\opportunities.py",
+      "src\\gieni_os\\api\\routes\\research.py",
+      "src\\gieni_os\\ingestion\\harvesters\\auditor_harvester.py",
+      "src\\gieni_os\\ingestion\\harvesters\\legal_notices_harvester.py",
+      "src\\gieni_os\\ingestion\\harvesters\\linx_harvester.py",
+      "src\\gieni_os\\intelligence\\knowledge\\service.py",
+      "src\\gieni_os\\intelligence\\learning\\service.py",
+      "src\\gieni_os\\intelligence\\prompts\\registry.py",
+      "src\\gieni_os\\intelligence\\reasoning\\service.py",
+      "src\\gieni_os\\intelligence\\recommendations\\service.py",
+      "src\\gieni_os\\intelligence\\retrieval\\service.py",
+      "src\\gieni_os\\llm\\clients\\azure_client.py",
+      "src\\gieni_os\\llm\\clients\\base.py",
+      "src\\gieni_os\\llm\\clients\\deterministic_client.py",
+      "src\\gieni_os\\llm\\clients\\ollama_client.py",
+      "src\\gieni_os\\research\\providers\\authority_provider.py",
+      "src\\gieni_os\\research\\providers\\contacts_provider.py",
+      "src\\gieni_os\\research\\providers\\title_provider.py",
+      "src\\gieni_os\\research\\providers\\valuation_provider.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\pof\\builder.py",
+    "classes": [
+      "PropertyProfile",
+      "OwnershipProfile",
+      "ControlProfile",
+      "AuthorityProfile",
+      "OpportunityProfile",
+      "RiskProfile",
+      "EvidencePackage",
+      "RecommendedAction",
+      "ProbateOpportunityFile",
+      "ProbateOpportunityFileBuilder"
+    ],
+    "functions": [
+      "build"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "scripts\\test_pof_deliverable.py",
+      "tests\\test_pof_builder.py",
+      "src\\gieni_os\\domain\\control.py",
+      "src\\gieni_os\\domain\\__init__.py",
+      "src\\gieni_os\\engines\\control_engine.py",
+      "src\\gieni_os\\engines\\delivery_engine.py",
+      "src\\gieni_os\\engines\\qc_engine.py",
+      "src\\gieni_os\\pof\\exporter.py",
+      "src\\gieni_os\\services\\pof_resolver.py",
+      "src\\gieni_os\\workflows\\qc_workflow.py",
+      "src\\gieni_os\\api\\routes\\opportunities.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\pof\\exporter.py",
+    "classes": [
+      "POFExporter"
+    ],
+    "functions": [
+      "to_crm_webhook_payload",
+      "to_institutional_html",
+      "to_notion_blocks",
+      "h2",
+      "p",
+      "b_item"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "scripts\\test_pof_deliverable.py",
+      "tests\\test_pof_builder.py",
+      "src\\gieni_os\\engines\\delivery_engine.py",
+      "src\\gieni_os\\integrations\\notion_publisher.py",
+      "src\\gieni_os\\api\\routes\\client_portal.py",
+      "src\\gieni_os\\api\\routes\\opportunities.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\recovery\\runbooks.py",
+    "classes": [
+      "ScraperRecoveryRunbook",
+      "OCRRecoveryRunbook",
+      "TitleConflictRunbook",
+      "AuthorityAmbiguityRunbook",
+      "PartnerWebhookRecoveryRunbook"
+    ],
+    "functions": [
+      "execute_with_recovery",
+      "isolate_corrupted_document",
+      "isolate_title_exception",
+      "isolate_authority_exception",
+      "handle_failed_webhook"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "scripts\\run_production_simulation.py",
+      "tests\\test_recovery_and_learning.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\research\\models.py",
+    "classes": [
+      "ResearchArea",
+      "PhoneContact",
+      "RelativeContact",
+      "ContactResearchData",
+      "DeedRecord",
+      "LienRecord",
+      "TitleResearchData",
+      "AuthorityResearchData",
+      "ValuationResearchData",
+      "ResearchDossier",
+      "ResearchRequest",
+      "ProviderInfo"
+    ],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "run_sprint1_demo.py",
+      "run_sprint2_pipeline_demo.py",
+      "run_sprint3_demo.py",
+      "run_sprint4_demo.py",
+      "run_sprint5_demo.py",
+      "run_sprint6_demo.py",
+      "tests\\test_app_endpoints.py",
+      "tests\\test_authenticity_remediation.py",
+      "tests\\test_clerk_tenancy_and_apps.py",
+      "tests\\test_client_portal_suite.py",
+      "tests\\test_ingestion_hub.py",
+      "tests\\test_intelligence_context.py",
+      "tests\\test_intelligence_pipeline.py",
+      "tests\\test_llm_gateway.py",
+      "tests\\test_phase7_market_validation.py",
+      "tests\\test_research_hub.py",
+      "tests\\test_sprint1_foundation.py",
+      "tests\\test_sprint3_control_and_contact.py",
+      "tests\\test_sprint4_scoring_and_qc.py",
+      "tests\\test_sprint5_delivery_and_pof.py",
+      "tests\\test_sprint6_telemetry_and_expansion.py",
+      "tests\\test_wiring_e2e.py",
+      "src\\gieni_os\\agents\\registry.py",
+      "src\\gieni_os\\database\\connection.py",
+      "src\\gieni_os\\database\\__init__.py",
+      "src\\gieni_os\\ingestion\\pipeline.py",
+      "src\\gieni_os\\intelligence\\context.py",
+      "src\\gieni_os\\intelligence\\__init__.py",
+      "src\\gieni_os\\llm\\gateway.py",
+      "src\\gieni_os\\llm\\__init__.py",
+      "src\\gieni_os\\research\\service.py",
+      "src\\gieni_os\\services\\pof_resolver.py",
+      "src\\gieni_os\\validation\\conversation_tracker.py",
+      "src\\gieni_os\\validation\\county_validator.py",
+      "src\\gieni_os\\validation\\decision_maker_verifier.py",
+      "src\\gieni_os\\validation\\weekly_operating_rhythm.py",
+      "src\\gieni_os\\validation\\__init__.py",
+      "src\\gieni_os\\workflow\\engine.py",
+      "src\\gieni_os\\workflows\\authority_workflow.py",
+      "src\\gieni_os\\workflows\\base.py",
+      "src\\gieni_os\\workflows\\intake_workflow.py",
+      "src\\gieni_os\\workflows\\qc_workflow.py",
+      "src\\gieni_os\\api\\routes\\ai_investigator.py",
+      "src\\gieni_os\\api\\routes\\cases.py",
+      "src\\gieni_os\\api\\routes\\clients.py",
+      "src\\gieni_os\\api\\routes\\client_portal.py",
+      "src\\gieni_os\\api\\routes\\counties.py",
+      "src\\gieni_os\\api\\routes\\dashboard.py",
+      "src\\gieni_os\\api\\routes\\exceptions.py",
+      "src\\gieni_os\\api\\routes\\ingestion.py",
+      "src\\gieni_os\\api\\routes\\intelligence.py",
+      "src\\gieni_os\\api\\routes\\llm.py",
+      "src\\gieni_os\\api\\routes\\opportunities.py",
+      "src\\gieni_os\\api\\routes\\research.py",
+      "src\\gieni_os\\api\\routes\\workflow.py",
+      "src\\gieni_os\\ingestion\\harvesters\\auditor_harvester.py",
+      "src\\gieni_os\\ingestion\\harvesters\\legal_notices_harvester.py",
+      "src\\gieni_os\\ingestion\\harvesters\\linx_harvester.py",
+      "src\\gieni_os\\intelligence\\embeddings\\vector_service.py",
+      "src\\gieni_os\\intelligence\\knowledge\\service.py",
+      "src\\gieni_os\\intelligence\\learning\\service.py",
+      "src\\gieni_os\\intelligence\\memory\\service.py",
+      "src\\gieni_os\\intelligence\\reasoning\\service.py",
+      "src\\gieni_os\\intelligence\\recommendations\\service.py",
+      "src\\gieni_os\\intelligence\\retrieval\\service.py",
+      "src\\gieni_os\\llm\\clients\\azure_client.py",
+      "src\\gieni_os\\llm\\clients\\base.py",
+      "src\\gieni_os\\llm\\clients\\deterministic_client.py",
+      "src\\gieni_os\\llm\\clients\\ollama_client.py",
+      "src\\gieni_os\\research\\providers\\authority_provider.py",
+      "src\\gieni_os\\research\\providers\\base.py",
+      "src\\gieni_os\\research\\providers\\contacts_provider.py",
+      "src\\gieni_os\\research\\providers\\title_provider.py",
+      "src\\gieni_os\\research\\providers\\valuation_provider.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\research\\service.py",
+    "classes": [
+      "ResearchHubService"
+    ],
+    "functions": [
+      "register_provider",
+      "get_provider",
+      "list_providers",
+      "_ensure_default_providers",
+      "execute_research"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "tests\\test_intelligence_context.py",
+      "tests\\test_research_hub.py",
+      "src\\gieni_os\\intelligence\\context.py",
+      "src\\gieni_os\\intelligence\\__init__.py",
+      "src\\gieni_os\\api\\routes\\research.py",
+      "src\\gieni_os\\intelligence\\knowledge\\__init__.py",
+      "src\\gieni_os\\intelligence\\learning\\__init__.py",
+      "src\\gieni_os\\intelligence\\memory\\__init__.py",
+      "src\\gieni_os\\intelligence\\reasoning\\__init__.py",
+      "src\\gieni_os\\intelligence\\recommendations\\__init__.py",
+      "src\\gieni_os\\intelligence\\retrieval\\service.py",
+      "src\\gieni_os\\intelligence\\retrieval\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\security\\governance.py",
+    "classes": [
+      "DataClassification",
+      "UserRole",
+      "SecurityContext",
+      "PermissionDeniedError",
+      "SecurityPolicyEnforcer"
+    ],
+    "functions": [
+      "_get_fernet",
+      "authorize_access",
+      "mask_record_for_user",
+      "encrypt_at_rest",
+      "decrypt_at_rest"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "scripts\\run_production_simulation.py",
+      "tests\\test_security_governance.py",
+      "src\\gieni_os\\api\\deps.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\services\\authority_service.py",
+    "classes": [
+      "AuthorityService"
+    ],
+    "functions": [
+      "__init__",
+      "process_authority"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "scripts\\run_production_simulation.py",
+      "tests\\test_intelligence_engines.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\services\\client_service.py",
+    "classes": [
+      "ClientService"
+    ],
+    "functions": [
+      "__init__",
+      "verify_exclusivity_and_quota",
+      "record_delivery"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "scripts\\run_production_simulation.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 60,
+      "authenticity": 100,
+      "overall": 90
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\services\\control_service.py",
+    "classes": [
+      "ControlService"
+    ],
+    "functions": [
+      "__init__",
+      "process_control"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "scripts\\run_production_simulation.py",
+      "tests\\test_intelligence_engines.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\services\\delivery_service.py",
+    "classes": [
+      "DeliveryService"
+    ],
+    "functions": [
+      "__init__",
+      "dispatch_opportunity"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "httpx"
+    ],
+    "callers": [
+      "scripts\\run_production_simulation.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 60,
+      "authenticity": 100,
+      "overall": 90
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\services\\evidence_service.py",
+    "classes": [
+      "EvidenceService"
+    ],
+    "functions": [
+      "__init__",
+      "commit_evidence_document"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "scripts\\run_production_simulation.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 60,
+      "authenticity": 100,
+      "overall": 90
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\services\\opportunity_service.py",
+    "classes": [
+      "OpportunityService"
+    ],
+    "functions": [
+      "__init__",
+      "score_and_certify"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "scripts\\run_production_simulation.py",
+      "tests\\test_intelligence_engines.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\services\\ownership_service.py",
+    "classes": [
+      "OwnershipService"
+    ],
+    "functions": [
+      "__init__",
+      "process_property"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "scripts\\run_production_simulation.py",
+      "tests\\test_intelligence_engines.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\services\\pof_resolver.py",
+    "classes": [
+      "POFDataResolver"
+    ],
+    "functions": [
+      "lookup_county_assessor",
+      "resolve_opportunity_pof"
+    ],
+    "not_implemented": [
+      49
+    ],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "src\\gieni_os\\research\\service.py",
+      "src\\gieni_os\\api\\routes\\opportunities.py",
+      "src\\gieni_os\\research\\providers\\title_provider.py",
+      "src\\gieni_os\\research\\providers\\valuation_provider.py"
+    ],
+    "scores": {
+      "completeness": 85,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 95
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\services\\property_service.py",
+    "classes": [
+      "PropertyService"
+    ],
+    "functions": [
+      "__init__",
+      "process_case"
+    ],
+    "not_implemented": [
+      30
+    ],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "scripts\\run_production_simulation.py",
+      "tests\\test_intelligence_engines.py"
+    ],
+    "scores": {
+      "completeness": 85,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 95
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\services\\workflow_service.py",
+    "classes": [
+      "WorkflowOrchestrationService"
+    ],
+    "functions": [
+      "__init__",
+      "start_workflow",
+      "advance_stage"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "scripts\\run_production_simulation.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 60,
+      "authenticity": 100,
+      "overall": 90
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\validation\\conversation_tracker.py",
+    "classes": [
+      "ConversationTracker"
+    ],
+    "functions": [
+      "generate_pilot_20_deals",
+      "track_pilot_campaign",
+      "generate_markdown_report"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "run_phase7_validation_demo.py",
+      "tests\\test_phase7_market_validation.py",
+      "src\\gieni_os\\validation\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\validation\\county_validator.py",
+    "classes": [
+      "CountyValidator"
+    ],
+    "functions": [
+      "generate_thurston_100_cases",
+      "run_100_case_challenge",
+      "generate_markdown_report"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "run_phase7_validation_demo.py",
+      "tests\\test_phase7_market_validation.py",
+      "src\\gieni_os\\validation\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\validation\\decision_maker_verifier.py",
+    "classes": [
+      "DecisionMakerVerifier"
+    ],
+    "functions": [
+      "generate_50_ground_truth_cases",
+      "run_decision_maker_challenge",
+      "generate_markdown_report"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "run_phase7_validation_demo.py",
+      "tests\\test_phase7_market_validation.py",
+      "src\\gieni_os\\validation\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\validation\\models.py",
+    "classes": [
+      "FailureCategory",
+      "CountyValidationReport",
+      "DecisionMakerAuditResult",
+      "DecisionMakerChallengeReport",
+      "PilotOpportunityStatus",
+      "PilotConversationTracker",
+      "WeeklyHealthScorecard"
+    ],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "run_sprint1_demo.py",
+      "run_sprint2_pipeline_demo.py",
+      "run_sprint3_demo.py",
+      "run_sprint4_demo.py",
+      "run_sprint5_demo.py",
+      "run_sprint6_demo.py",
+      "tests\\test_app_endpoints.py",
+      "tests\\test_authenticity_remediation.py",
+      "tests\\test_clerk_tenancy_and_apps.py",
+      "tests\\test_client_portal_suite.py",
+      "tests\\test_ingestion_hub.py",
+      "tests\\test_intelligence_context.py",
+      "tests\\test_intelligence_pipeline.py",
+      "tests\\test_llm_gateway.py",
+      "tests\\test_phase7_market_validation.py",
+      "tests\\test_research_hub.py",
+      "tests\\test_sprint1_foundation.py",
+      "tests\\test_sprint3_control_and_contact.py",
+      "tests\\test_sprint4_scoring_and_qc.py",
+      "tests\\test_sprint5_delivery_and_pof.py",
+      "tests\\test_sprint6_telemetry_and_expansion.py",
+      "tests\\test_wiring_e2e.py",
+      "src\\gieni_os\\agents\\registry.py",
+      "src\\gieni_os\\database\\connection.py",
+      "src\\gieni_os\\database\\__init__.py",
+      "src\\gieni_os\\ingestion\\pipeline.py",
+      "src\\gieni_os\\intelligence\\context.py",
+      "src\\gieni_os\\intelligence\\__init__.py",
+      "src\\gieni_os\\llm\\gateway.py",
+      "src\\gieni_os\\llm\\__init__.py",
+      "src\\gieni_os\\research\\service.py",
+      "src\\gieni_os\\services\\pof_resolver.py",
+      "src\\gieni_os\\validation\\conversation_tracker.py",
+      "src\\gieni_os\\validation\\county_validator.py",
+      "src\\gieni_os\\validation\\decision_maker_verifier.py",
+      "src\\gieni_os\\validation\\weekly_operating_rhythm.py",
+      "src\\gieni_os\\validation\\__init__.py",
+      "src\\gieni_os\\workflow\\engine.py",
+      "src\\gieni_os\\workflows\\authority_workflow.py",
+      "src\\gieni_os\\workflows\\base.py",
+      "src\\gieni_os\\workflows\\intake_workflow.py",
+      "src\\gieni_os\\workflows\\qc_workflow.py",
+      "src\\gieni_os\\api\\routes\\ai_investigator.py",
+      "src\\gieni_os\\api\\routes\\cases.py",
+      "src\\gieni_os\\api\\routes\\clients.py",
+      "src\\gieni_os\\api\\routes\\client_portal.py",
+      "src\\gieni_os\\api\\routes\\counties.py",
+      "src\\gieni_os\\api\\routes\\dashboard.py",
+      "src\\gieni_os\\api\\routes\\exceptions.py",
+      "src\\gieni_os\\api\\routes\\ingestion.py",
+      "src\\gieni_os\\api\\routes\\intelligence.py",
+      "src\\gieni_os\\api\\routes\\llm.py",
+      "src\\gieni_os\\api\\routes\\opportunities.py",
+      "src\\gieni_os\\api\\routes\\research.py",
+      "src\\gieni_os\\api\\routes\\workflow.py",
+      "src\\gieni_os\\ingestion\\harvesters\\auditor_harvester.py",
+      "src\\gieni_os\\ingestion\\harvesters\\legal_notices_harvester.py",
+      "src\\gieni_os\\ingestion\\harvesters\\linx_harvester.py",
+      "src\\gieni_os\\intelligence\\embeddings\\vector_service.py",
+      "src\\gieni_os\\intelligence\\knowledge\\service.py",
+      "src\\gieni_os\\intelligence\\learning\\service.py",
+      "src\\gieni_os\\intelligence\\memory\\service.py",
+      "src\\gieni_os\\intelligence\\reasoning\\service.py",
+      "src\\gieni_os\\intelligence\\recommendations\\service.py",
+      "src\\gieni_os\\intelligence\\retrieval\\service.py",
+      "src\\gieni_os\\llm\\clients\\azure_client.py",
+      "src\\gieni_os\\llm\\clients\\base.py",
+      "src\\gieni_os\\llm\\clients\\deterministic_client.py",
+      "src\\gieni_os\\llm\\clients\\ollama_client.py",
+      "src\\gieni_os\\research\\providers\\authority_provider.py",
+      "src\\gieni_os\\research\\providers\\base.py",
+      "src\\gieni_os\\research\\providers\\contacts_provider.py",
+      "src\\gieni_os\\research\\providers\\title_provider.py",
+      "src\\gieni_os\\research\\providers\\valuation_provider.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\validation\\weekly_operating_rhythm.py",
+    "classes": [
+      "WeeklyOperatingRhythm"
+    ],
+    "functions": [
+      "generate_friday_scorecard",
+      "evaluate_scaling_exit_criteria",
+      "generate_markdown_scorecard"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "run_phase7_validation_demo.py",
+      "tests\\test_phase7_market_validation.py",
+      "src\\gieni_os\\validation\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\validation\\__init__.py",
+    "classes": [],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 30,
+      "authenticity": 100,
+      "overall": 82
+    },
+    "verdict": "DEPRECATE_AND_PURGE",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\workflow\\engine.py",
+    "classes": [
+      "WorkflowStage",
+      "InvalidWorkflowTransitionError",
+      "WorkflowEngine"
+    ],
+    "functions": [
+      "__init__",
+      "can_transition",
+      "transition"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "run_sprint1_demo.py",
+      "tests\\test_sprint1_foundation.py",
+      "src\\gieni_os\\database\\__init__.py",
+      "src\\gieni_os\\ingestion\\pipeline.py",
+      "src\\gieni_os\\workflow\\__init__.py",
+      "src\\gieni_os\\workflows\\base.py",
+      "src\\gieni_os\\workflows\\__init__.py",
+      "src\\gieni_os\\api\\routes\\opportunities.py",
+      "src\\gieni_os\\api\\routes\\workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\workflow\\__init__.py",
+    "classes": [],
+    "functions": [
+      "__getattr__"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 30,
+      "authenticity": 100,
+      "overall": 82
+    },
+    "verdict": "DEPRECATE_AND_PURGE",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\workflows\\authority_workflow.py",
+    "classes": [
+      "AuthorityWorkflow"
+    ],
+    "functions": [
+      "__init__",
+      "run"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "run_sprint2_pipeline_demo.py",
+      "run_sprint3_demo.py",
+      "run_sprint4_demo.py",
+      "run_sprint5_demo.py",
+      "run_sprint6_demo.py",
+      "tests\\test_intelligence_pipeline.py",
+      "tests\\test_sprint3_control_and_contact.py",
+      "src\\gieni_os\\workflows\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\workflows\\base.py",
+    "classes": [
+      "BaseWorkflow"
+    ],
+    "functions": [
+      "__init__",
+      "run",
+      "transition_opportunity"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [
+      "run"
+    ],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "tests\\test_llm_gateway.py",
+      "tests\\test_research_hub.py",
+      "tests\\test_sprint1_foundation.py",
+      "src\\gieni_os\\agents\\authority_agent.py",
+      "src\\gieni_os\\agents\\contact_agent.py",
+      "src\\gieni_os\\agents\\control_agent.py",
+      "src\\gieni_os\\agents\\delivery_agent.py",
+      "src\\gieni_os\\agents\\expansion_agent.py",
+      "src\\gieni_os\\agents\\intake_agent.py",
+      "src\\gieni_os\\agents\\ownership_agent.py",
+      "src\\gieni_os\\agents\\property_agent.py",
+      "src\\gieni_os\\agents\\qc_agent.py",
+      "src\\gieni_os\\agents\\scoring_agent.py",
+      "src\\gieni_os\\agents\\telemetry_agent.py",
+      "src\\gieni_os\\agents\\__init__.py",
+      "src\\gieni_os\\api\\main.py",
+      "src\\gieni_os\\llm\\gateway.py",
+      "src\\gieni_os\\research\\service.py",
+      "src\\gieni_os\\workflows\\authority_workflow.py",
+      "src\\gieni_os\\workflows\\contact_workflow.py",
+      "src\\gieni_os\\workflows\\control_workflow.py",
+      "src\\gieni_os\\workflows\\delivery_workflow.py",
+      "src\\gieni_os\\workflows\\intake_workflow.py",
+      "src\\gieni_os\\workflows\\ownership_workflow.py",
+      "src\\gieni_os\\workflows\\property_workflow.py",
+      "src\\gieni_os\\workflows\\qc_workflow.py",
+      "src\\gieni_os\\workflows\\scoring_workflow.py",
+      "src\\gieni_os\\workflows\\telemetry_workflow.py",
+      "src\\gieni_os\\workflows\\__init__.py",
+      "src\\gieni_os\\llm\\clients\\azure_client.py",
+      "src\\gieni_os\\llm\\clients\\deterministic_client.py",
+      "src\\gieni_os\\llm\\clients\\ollama_client.py",
+      "src\\gieni_os\\llm\\clients\\__init__.py",
+      "src\\gieni_os\\research\\providers\\authority_provider.py",
+      "src\\gieni_os\\research\\providers\\contacts_provider.py",
+      "src\\gieni_os\\research\\providers\\title_provider.py",
+      "src\\gieni_os\\research\\providers\\valuation_provider.py"
+    ],
+    "scores": {
+      "completeness": 90,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 96
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\workflows\\contact_workflow.py",
+    "classes": [
+      "ContactWorkflow"
+    ],
+    "functions": [
+      "__init__",
+      "run"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "run_sprint3_demo.py",
+      "run_sprint4_demo.py",
+      "run_sprint5_demo.py",
+      "run_sprint6_demo.py",
+      "tests\\test_sprint3_control_and_contact.py",
+      "src\\gieni_os\\workflows\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\workflows\\control_workflow.py",
+    "classes": [
+      "ControlWorkflow"
+    ],
+    "functions": [
+      "__init__",
+      "run"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "run_sprint3_demo.py",
+      "run_sprint4_demo.py",
+      "run_sprint5_demo.py",
+      "run_sprint6_demo.py",
+      "tests\\test_sprint3_control_and_contact.py",
+      "src\\gieni_os\\workflows\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\workflows\\delivery_workflow.py",
+    "classes": [
+      "DeliveryWorkflow"
+    ],
+    "functions": [
+      "__init__",
+      "run"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "run_sprint5_demo.py",
+      "run_sprint6_demo.py",
+      "tests\\test_sprint5_delivery_and_pof.py",
+      "src\\gieni_os\\workflows\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\workflows\\intake_workflow.py",
+    "classes": [
+      "IntakeWorkflow"
+    ],
+    "functions": [
+      "__init__",
+      "run"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "run_sprint2_pipeline_demo.py",
+      "run_sprint3_demo.py",
+      "run_sprint4_demo.py",
+      "run_sprint5_demo.py",
+      "run_sprint6_demo.py",
+      "tests\\test_intelligence_pipeline.py",
+      "tests\\test_sprint3_control_and_contact.py",
+      "src\\gieni_os\\workflows\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\workflows\\ownership_workflow.py",
+    "classes": [
+      "OwnershipWorkflow"
+    ],
+    "functions": [
+      "__init__",
+      "run"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "run_sprint2_pipeline_demo.py",
+      "run_sprint3_demo.py",
+      "run_sprint4_demo.py",
+      "run_sprint5_demo.py",
+      "run_sprint6_demo.py",
+      "tests\\test_intelligence_pipeline.py",
+      "tests\\test_sprint3_control_and_contact.py",
+      "src\\gieni_os\\workflows\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\workflows\\property_workflow.py",
+    "classes": [
+      "PropertyWorkflow"
+    ],
+    "functions": [
+      "__init__",
+      "run"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "run_sprint2_pipeline_demo.py",
+      "run_sprint3_demo.py",
+      "run_sprint4_demo.py",
+      "run_sprint5_demo.py",
+      "run_sprint6_demo.py",
+      "tests\\test_intelligence_pipeline.py",
+      "tests\\test_sprint3_control_and_contact.py",
+      "src\\gieni_os\\workflows\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\workflows\\qc_workflow.py",
+    "classes": [
+      "QCWorkflow"
+    ],
+    "functions": [
+      "__init__",
+      "_build_records_from_context",
+      "run"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "run_sprint4_demo.py",
+      "run_sprint5_demo.py",
+      "run_sprint6_demo.py",
+      "tests\\test_sprint4_scoring_and_qc.py",
+      "src\\gieni_os\\workflows\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\workflows\\scoring_workflow.py",
+    "classes": [
+      "ScoringWorkflow"
+    ],
+    "functions": [
+      "__init__",
+      "run"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "run_sprint4_demo.py",
+      "run_sprint5_demo.py",
+      "run_sprint6_demo.py",
+      "tests\\test_sprint4_scoring_and_qc.py",
+      "src\\gieni_os\\workflows\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\workflows\\telemetry_workflow.py",
+    "classes": [
+      "TelemetryWorkflow"
+    ],
+    "functions": [
+      "__init__",
+      "run"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "run_sprint6_demo.py",
+      "tests\\test_sprint6_telemetry_and_expansion.py",
+      "src\\gieni_os\\workflows\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\workflows\\__init__.py",
+    "classes": [],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 30,
+      "authenticity": 100,
+      "overall": 82
+    },
+    "verdict": "DEPRECATE_AND_PURGE",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\api\\routes\\ai_investigator.py",
+    "classes": [
+      "InvestigateRequest",
+      "Citation",
+      "InvestigateResponse"
+    ],
+    "functions": [
+      "investigate_opportunity"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "src\\gieni_os\\workflows\\authority_workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\api\\routes\\cases.py",
+    "classes": [
+      "CaseCreate",
+      "CaseResponse"
+    ],
+    "functions": [
+      "list_cases",
+      "create_case"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\api\\routes\\clients.py",
+    "classes": [
+      "ClientCreate",
+      "ClientResponse"
+    ],
+    "functions": [
+      "list_clients",
+      "create_client"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "tests\\test_llm_gateway.py",
+      "src\\gieni_os\\llm\\gateway.py",
+      "src\\gieni_os\\llm\\clients\\azure_client.py",
+      "src\\gieni_os\\llm\\clients\\deterministic_client.py",
+      "src\\gieni_os\\llm\\clients\\ollama_client.py",
+      "src\\gieni_os\\llm\\clients\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\api\\routes\\client_portal.py",
+    "classes": [
+      "FeedbackSubmission",
+      "FeedbackResponse",
+      "CRMExportRequest"
+    ],
+    "functions": [
+      "get_partner_profile",
+      "get_client_dashboard",
+      "get_client_feed",
+      "get_client_opportunity_detail",
+      "export_to_crm",
+      "submit_disposition_feedback",
+      "get_telemetry_stats"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy",
+      "httpx"
+    ],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\api\\routes\\counties.py",
+    "classes": [
+      "CountyCreate",
+      "CountyUpdate",
+      "CountyResponse"
+    ],
+    "functions": [
+      "list_counties",
+      "create_county",
+      "update_county"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\api\\routes\\dashboard.py",
+    "classes": [],
+    "functions": [
+      "get_metrics",
+      "get_queues",
+      "format_opp",
+      "get_county_board"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\api\\routes\\exceptions.py",
+    "classes": [
+      "ExceptionCreate",
+      "ExceptionUpdate",
+      "ExceptionResponse"
+    ],
+    "functions": [
+      "list_exceptions",
+      "create_exception",
+      "update_exception"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\api\\routes\\ingestion.py",
+    "classes": [],
+    "functions": [
+      "run_harvest",
+      "bulk_import_dockets",
+      "get_monitored_channels",
+      "get_ingestion_stats"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "tests\\test_authenticity_remediation.py",
+      "tests\\test_ingestion_hub.py",
+      "src\\gieni_os\\ingestion\\pipeline.py",
+      "src\\gieni_os\\ingestion\\harvesters\\auditor_harvester.py",
+      "src\\gieni_os\\ingestion\\harvesters\\legal_notices_harvester.py",
+      "src\\gieni_os\\ingestion\\harvesters\\linx_harvester.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\api\\routes\\intelligence.py",
+    "classes": [
+      "StoreMemoryRequest",
+      "RecommendationRequest",
+      "LearnOutcomeRequest"
+    ],
+    "functions": [
+      "get_intelligence_status",
+      "execute_reasoning",
+      "get_memory",
+      "store_memory",
+      "list_knowledge",
+      "get_recommendations",
+      "log_learning_outcome"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "tests\\test_intelligence_context.py",
+      "src\\gieni_os\\contexts\\__init__.py",
+      "src\\gieni_os\\intelligence\\context.py",
+      "src\\gieni_os\\intelligence\\__init__.py",
+      "src\\gieni_os\\api\\routes\\ai_investigator.py",
+      "src\\gieni_os\\intelligence\\embeddings\\__init__.py",
+      "src\\gieni_os\\intelligence\\knowledge\\service.py",
+      "src\\gieni_os\\intelligence\\knowledge\\__init__.py",
+      "src\\gieni_os\\intelligence\\learning\\service.py",
+      "src\\gieni_os\\intelligence\\learning\\__init__.py",
+      "src\\gieni_os\\intelligence\\memory\\service.py",
+      "src\\gieni_os\\intelligence\\memory\\__init__.py",
+      "src\\gieni_os\\intelligence\\prompts\\__init__.py",
+      "src\\gieni_os\\intelligence\\reasoning\\service.py",
+      "src\\gieni_os\\intelligence\\reasoning\\__init__.py",
+      "src\\gieni_os\\intelligence\\recommendations\\service.py",
+      "src\\gieni_os\\intelligence\\recommendations\\__init__.py",
+      "src\\gieni_os\\intelligence\\retrieval\\service.py",
+      "src\\gieni_os\\intelligence\\retrieval\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\api\\routes\\llm.py",
+    "classes": [
+      "TestPromptRequest"
+    ],
+    "functions": [
+      "get_llm_status",
+      "execute_test_prompt"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_llm_gateway.py",
+      "src\\gieni_os\\llm\\gateway.py",
+      "src\\gieni_os\\llm\\__init__.py",
+      "src\\gieni_os\\api\\routes\\ai_investigator.py",
+      "src\\gieni_os\\intelligence\\reasoning\\service.py",
+      "src\\gieni_os\\llm\\clients\\azure_client.py",
+      "src\\gieni_os\\llm\\clients\\base.py",
+      "src\\gieni_os\\llm\\clients\\deterministic_client.py",
+      "src\\gieni_os\\llm\\clients\\ollama_client.py",
+      "src\\gieni_os\\llm\\clients\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\api\\routes\\opportunities.py",
+    "classes": [
+      "OpportunityCreate",
+      "OpportunityActionRequest",
+      "OpportunityResponse"
+    ],
+    "functions": [
+      "list_opportunities",
+      "get_opportunity",
+      "create_opportunity",
+      "build_pof_for_opportunity",
+      "get_opportunity_workbench",
+      "generate_pof",
+      "get_pof_html",
+      "get_pof_json",
+      "approve_opportunity",
+      "reject_opportunity",
+      "send_to_qc",
+      "request_research",
+      "deliver_opportunity"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "src\\gieni_os\\api\\main.py",
+      "src\\gieni_os\\api\\routes\\ai_investigator.py",
+      "src\\gieni_os\\api\\routes\\client_portal.py",
+      "src\\gieni_os\\api\\routes\\workflow.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\api\\routes\\research.py",
+    "classes": [],
+    "functions": [
+      "list_providers",
+      "execute_research",
+      "research_contacts",
+      "research_title",
+      "get_opportunity_dossier"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "tests\\test_research_hub.py",
+      "src\\gieni_os\\research\\service.py",
+      "src\\gieni_os\\research\\providers\\authority_provider.py",
+      "src\\gieni_os\\research\\providers\\base.py",
+      "src\\gieni_os\\research\\providers\\contacts_provider.py",
+      "src\\gieni_os\\research\\providers\\title_provider.py",
+      "src\\gieni_os\\research\\providers\\valuation_provider.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\api\\routes\\workflow.py",
+    "classes": [
+      "TransitionRequest",
+      "AuditLogResponse"
+    ],
+    "functions": [
+      "transition_workflow",
+      "get_allowed_transitions",
+      "get_audit_logs"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "run_sprint1_demo.py",
+      "tests\\test_sprint1_foundation.py",
+      "src\\gieni_os\\ingestion\\pipeline.py",
+      "src\\gieni_os\\workflow\\__init__.py",
+      "src\\gieni_os\\workflows\\base.py",
+      "src\\gieni_os\\workflows\\qc_workflow.py",
+      "src\\gieni_os\\workflows\\__init__.py",
+      "src\\gieni_os\\api\\routes\\opportunities.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\ingestion\\harvesters\\auditor_harvester.py",
+    "classes": [
+      "AuditorHarvester"
+    ],
+    "functions": [
+      "harvest",
+      "_harvest_live_feed"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "httpx"
+    ],
+    "callers": [
+      "tests\\test_authenticity_remediation.py",
+      "tests\\test_ingestion_hub.py",
+      "src\\gieni_os\\api\\routes\\ingestion.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\ingestion\\harvesters\\legal_notices_harvester.py",
+    "classes": [
+      "LegalNoticesHarvester"
+    ],
+    "functions": [
+      "harvest",
+      "_harvest_live_feed"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "httpx"
+    ],
+    "callers": [
+      "tests\\test_authenticity_remediation.py",
+      "tests\\test_ingestion_hub.py",
+      "src\\gieni_os\\api\\routes\\ingestion.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\ingestion\\harvesters\\linx_harvester.py",
+    "classes": [
+      "LinxHarvester"
+    ],
+    "functions": [
+      "harvest"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_authenticity_remediation.py",
+      "tests\\test_ingestion_hub.py",
+      "src\\gieni_os\\api\\routes\\ingestion.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\intelligence\\embeddings\\vector_service.py",
+    "classes": [
+      "VectorService"
+    ],
+    "functions": [
+      "__init__",
+      "generate_embedding",
+      "store",
+      "cosine_similarity",
+      "similar",
+      "search"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "tests\\test_intelligence_context.py",
+      "src\\gieni_os\\intelligence\\context.py",
+      "src\\gieni_os\\intelligence\\__init__.py",
+      "src\\gieni_os\\intelligence\\embeddings\\__init__.py",
+      "src\\gieni_os\\intelligence\\retrieval\\service.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\intelligence\\embeddings\\__init__.py",
+    "classes": [],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 30,
+      "authenticity": 100,
+      "overall": 82
+    },
+    "verdict": "DEPRECATE_AND_PURGE",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\intelligence\\knowledge\\service.py",
+    "classes": [
+      "KnowledgeService"
+    ],
+    "functions": [
+      "__init__",
+      "add_article",
+      "get_county_rules",
+      "get_statutory_sop",
+      "list_articles",
+      "_to_dto",
+      "_ensure_seed_knowledge"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "tests\\test_intelligence_context.py",
+      "tests\\test_research_hub.py",
+      "src\\gieni_os\\intelligence\\context.py",
+      "src\\gieni_os\\intelligence\\__init__.py",
+      "src\\gieni_os\\api\\routes\\ai_investigator.py",
+      "src\\gieni_os\\api\\routes\\research.py",
+      "src\\gieni_os\\intelligence\\knowledge\\__init__.py",
+      "src\\gieni_os\\intelligence\\learning\\__init__.py",
+      "src\\gieni_os\\intelligence\\memory\\__init__.py",
+      "src\\gieni_os\\intelligence\\reasoning\\__init__.py",
+      "src\\gieni_os\\intelligence\\recommendations\\__init__.py",
+      "src\\gieni_os\\intelligence\\retrieval\\service.py",
+      "src\\gieni_os\\intelligence\\retrieval\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\intelligence\\knowledge\\__init__.py",
+    "classes": [],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 30,
+      "authenticity": 100,
+      "overall": 82
+    },
+    "verdict": "DEPRECATE_AND_PURGE",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\intelligence\\learning\\service.py",
+    "classes": [
+      "LearningService"
+    ],
+    "functions": [
+      "__init__",
+      "record_outcome",
+      "get_county_friction",
+      "recalibrate_county",
+      "get_learning_history",
+      "_adjust_county_friction",
+      "_to_dto",
+      "_ensure_seed_calibrations"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "tests\\test_intelligence_context.py",
+      "tests\\test_research_hub.py",
+      "src\\gieni_os\\intelligence\\context.py",
+      "src\\gieni_os\\intelligence\\__init__.py",
+      "src\\gieni_os\\api\\routes\\research.py",
+      "src\\gieni_os\\intelligence\\knowledge\\__init__.py",
+      "src\\gieni_os\\intelligence\\learning\\__init__.py",
+      "src\\gieni_os\\intelligence\\memory\\__init__.py",
+      "src\\gieni_os\\intelligence\\reasoning\\__init__.py",
+      "src\\gieni_os\\intelligence\\recommendations\\__init__.py",
+      "src\\gieni_os\\intelligence\\retrieval\\service.py",
+      "src\\gieni_os\\intelligence\\retrieval\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\intelligence\\learning\\__init__.py",
+    "classes": [],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 30,
+      "authenticity": 100,
+      "overall": 82
+    },
+    "verdict": "DEPRECATE_AND_PURGE",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\intelligence\\memory\\service.py",
+    "classes": [
+      "MemoryService"
+    ],
+    "functions": [
+      "__init__",
+      "store",
+      "retrieve",
+      "search",
+      "merge",
+      "_to_dto"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "tests\\test_intelligence_context.py",
+      "tests\\test_research_hub.py",
+      "src\\gieni_os\\intelligence\\context.py",
+      "src\\gieni_os\\intelligence\\__init__.py",
+      "src\\gieni_os\\api\\routes\\ai_investigator.py",
+      "src\\gieni_os\\api\\routes\\research.py",
+      "src\\gieni_os\\intelligence\\knowledge\\__init__.py",
+      "src\\gieni_os\\intelligence\\learning\\__init__.py",
+      "src\\gieni_os\\intelligence\\memory\\__init__.py",
+      "src\\gieni_os\\intelligence\\reasoning\\__init__.py",
+      "src\\gieni_os\\intelligence\\recommendations\\__init__.py",
+      "src\\gieni_os\\intelligence\\retrieval\\service.py",
+      "src\\gieni_os\\intelligence\\retrieval\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\intelligence\\memory\\__init__.py",
+    "classes": [],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 30,
+      "authenticity": 100,
+      "overall": 82
+    },
+    "verdict": "DEPRECATE_AND_PURGE",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\intelligence\\prompts\\registry.py",
+    "classes": [
+      "PromptTemplate",
+      "PromptRegistry"
+    ],
+    "functions": [
+      "__init__",
+      "format",
+      "__init__",
+      "register",
+      "get",
+      "render",
+      "_register_default_templates"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "run_sprint1_demo.py",
+      "tests\\test_intelligence_context.py",
+      "tests\\test_sprint1_foundation.py",
+      "src\\gieni_os\\agents\\__init__.py",
+      "src\\gieni_os\\intelligence\\context.py",
+      "src\\gieni_os\\intelligence\\__init__.py",
+      "src\\gieni_os\\intelligence\\prompts\\__init__.py",
+      "src\\gieni_os\\intelligence\\reasoning\\service.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\intelligence\\prompts\\__init__.py",
+    "classes": [],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 30,
+      "authenticity": 100,
+      "overall": 82
+    },
+    "verdict": "DEPRECATE_AND_PURGE",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\intelligence\\reasoning\\service.py",
+    "classes": [
+      "ReasoningService"
+    ],
+    "functions": [
+      "__init__",
+      "reason",
+      "explain",
+      "classify",
+      "compare"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_intelligence_context.py",
+      "tests\\test_research_hub.py",
+      "src\\gieni_os\\intelligence\\context.py",
+      "src\\gieni_os\\intelligence\\__init__.py",
+      "src\\gieni_os\\api\\routes\\ai_investigator.py",
+      "src\\gieni_os\\api\\routes\\research.py",
+      "src\\gieni_os\\intelligence\\knowledge\\__init__.py",
+      "src\\gieni_os\\intelligence\\learning\\__init__.py",
+      "src\\gieni_os\\intelligence\\memory\\__init__.py",
+      "src\\gieni_os\\intelligence\\reasoning\\__init__.py",
+      "src\\gieni_os\\intelligence\\recommendations\\__init__.py",
+      "src\\gieni_os\\intelligence\\retrieval\\service.py",
+      "src\\gieni_os\\intelligence\\retrieval\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\intelligence\\reasoning\\__init__.py",
+    "classes": [],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 30,
+      "authenticity": 100,
+      "overall": 82
+    },
+    "verdict": "DEPRECATE_AND_PURGE",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\intelligence\\recommendations\\service.py",
+    "classes": [
+      "RecommendationService"
+    ],
+    "functions": [
+      "next_action"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_intelligence_context.py",
+      "tests\\test_research_hub.py",
+      "src\\gieni_os\\intelligence\\context.py",
+      "src\\gieni_os\\intelligence\\__init__.py",
+      "src\\gieni_os\\api\\routes\\research.py",
+      "src\\gieni_os\\intelligence\\knowledge\\__init__.py",
+      "src\\gieni_os\\intelligence\\learning\\__init__.py",
+      "src\\gieni_os\\intelligence\\memory\\__init__.py",
+      "src\\gieni_os\\intelligence\\reasoning\\__init__.py",
+      "src\\gieni_os\\intelligence\\recommendations\\__init__.py",
+      "src\\gieni_os\\intelligence\\retrieval\\service.py",
+      "src\\gieni_os\\intelligence\\retrieval\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\intelligence\\recommendations\\__init__.py",
+    "classes": [],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 30,
+      "authenticity": 100,
+      "overall": 82
+    },
+    "verdict": "DEPRECATE_AND_PURGE",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\intelligence\\retrieval\\service.py",
+    "classes": [
+      "RetrievalService"
+    ],
+    "functions": [
+      "__init__",
+      "retrieve",
+      "dump",
+      "retrieve_related_cases",
+      "retrieve_county_patterns",
+      "dump",
+      "retrieve_similar_opportunities"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "sqlalchemy"
+    ],
+    "callers": [
+      "tests\\test_intelligence_context.py",
+      "tests\\test_research_hub.py",
+      "src\\gieni_os\\intelligence\\context.py",
+      "src\\gieni_os\\intelligence\\__init__.py",
+      "src\\gieni_os\\api\\routes\\research.py",
+      "src\\gieni_os\\intelligence\\knowledge\\__init__.py",
+      "src\\gieni_os\\intelligence\\learning\\__init__.py",
+      "src\\gieni_os\\intelligence\\memory\\__init__.py",
+      "src\\gieni_os\\intelligence\\reasoning\\__init__.py",
+      "src\\gieni_os\\intelligence\\recommendations\\__init__.py",
+      "src\\gieni_os\\intelligence\\retrieval\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\intelligence\\retrieval\\__init__.py",
+    "classes": [],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 30,
+      "authenticity": 100,
+      "overall": 82
+    },
+    "verdict": "DEPRECATE_AND_PURGE",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\llm\\clients\\azure_client.py",
+    "classes": [
+      "AzureOpenAIClient"
+    ],
+    "functions": [
+      "__init__",
+      "check_availability",
+      "generate"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_llm_gateway.py",
+      "src\\gieni_os\\llm\\gateway.py",
+      "src\\gieni_os\\llm\\clients\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\llm\\clients\\base.py",
+    "classes": [
+      "BaseLLMClient"
+    ],
+    "functions": [
+      "__init__",
+      "check_availability",
+      "generate",
+      "build_system_prompt"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [
+      "check_availability",
+      "generate"
+    ],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_llm_gateway.py",
+      "tests\\test_research_hub.py",
+      "tests\\test_sprint1_foundation.py",
+      "src\\gieni_os\\agents\\authority_agent.py",
+      "src\\gieni_os\\agents\\contact_agent.py",
+      "src\\gieni_os\\agents\\control_agent.py",
+      "src\\gieni_os\\agents\\delivery_agent.py",
+      "src\\gieni_os\\agents\\expansion_agent.py",
+      "src\\gieni_os\\agents\\intake_agent.py",
+      "src\\gieni_os\\agents\\ownership_agent.py",
+      "src\\gieni_os\\agents\\property_agent.py",
+      "src\\gieni_os\\agents\\qc_agent.py",
+      "src\\gieni_os\\agents\\scoring_agent.py",
+      "src\\gieni_os\\agents\\telemetry_agent.py",
+      "src\\gieni_os\\agents\\__init__.py",
+      "src\\gieni_os\\api\\main.py",
+      "src\\gieni_os\\llm\\gateway.py",
+      "src\\gieni_os\\research\\service.py",
+      "src\\gieni_os\\workflows\\authority_workflow.py",
+      "src\\gieni_os\\workflows\\contact_workflow.py",
+      "src\\gieni_os\\workflows\\control_workflow.py",
+      "src\\gieni_os\\workflows\\delivery_workflow.py",
+      "src\\gieni_os\\workflows\\intake_workflow.py",
+      "src\\gieni_os\\workflows\\ownership_workflow.py",
+      "src\\gieni_os\\workflows\\property_workflow.py",
+      "src\\gieni_os\\workflows\\qc_workflow.py",
+      "src\\gieni_os\\workflows\\scoring_workflow.py",
+      "src\\gieni_os\\workflows\\telemetry_workflow.py",
+      "src\\gieni_os\\workflows\\__init__.py",
+      "src\\gieni_os\\llm\\clients\\azure_client.py",
+      "src\\gieni_os\\llm\\clients\\deterministic_client.py",
+      "src\\gieni_os\\llm\\clients\\ollama_client.py",
+      "src\\gieni_os\\llm\\clients\\__init__.py",
+      "src\\gieni_os\\research\\providers\\authority_provider.py",
+      "src\\gieni_os\\research\\providers\\contacts_provider.py",
+      "src\\gieni_os\\research\\providers\\title_provider.py",
+      "src\\gieni_os\\research\\providers\\valuation_provider.py"
+    ],
+    "scores": {
+      "completeness": 80,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 93
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\llm\\clients\\deterministic_client.py",
+    "classes": [
+      "DeterministicStatutoryClient"
+    ],
+    "functions": [
+      "__init__",
+      "check_availability",
+      "generate"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_llm_gateway.py",
+      "src\\gieni_os\\llm\\gateway.py",
+      "src\\gieni_os\\llm\\clients\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\llm\\clients\\ollama_client.py",
+    "classes": [
+      "OllamaClient"
+    ],
+    "functions": [
+      "__init__",
+      "check_availability",
+      "generate"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [
+      "httpx"
+    ],
+    "callers": [
+      "tests\\test_llm_gateway.py",
+      "src\\gieni_os\\llm\\gateway.py",
+      "src\\gieni_os\\llm\\clients\\__init__.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\llm\\clients\\__init__.py",
+    "classes": [],
+    "functions": [],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 30,
+      "authenticity": 100,
+      "overall": 82
+    },
+    "verdict": "DEPRECATE_AND_PURGE",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\research\\providers\\authority_provider.py",
+    "classes": [
+      "AuthorityResearchProvider"
+    ],
+    "functions": [
+      "provider_id",
+      "name",
+      "version",
+      "supported_areas",
+      "description",
+      "execute"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_research_hub.py",
+      "src\\gieni_os\\research\\service.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\research\\providers\\base.py",
+    "classes": [
+      "BaseResearchProvider"
+    ],
+    "functions": [
+      "provider_id",
+      "name",
+      "version",
+      "supported_areas",
+      "description",
+      "get_info",
+      "execute"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [
+      "provider_id",
+      "name",
+      "version",
+      "supported_areas",
+      "description",
+      "execute"
+    ],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_llm_gateway.py",
+      "tests\\test_research_hub.py",
+      "tests\\test_sprint1_foundation.py",
+      "src\\gieni_os\\agents\\authority_agent.py",
+      "src\\gieni_os\\agents\\contact_agent.py",
+      "src\\gieni_os\\agents\\control_agent.py",
+      "src\\gieni_os\\agents\\delivery_agent.py",
+      "src\\gieni_os\\agents\\expansion_agent.py",
+      "src\\gieni_os\\agents\\intake_agent.py",
+      "src\\gieni_os\\agents\\ownership_agent.py",
+      "src\\gieni_os\\agents\\property_agent.py",
+      "src\\gieni_os\\agents\\qc_agent.py",
+      "src\\gieni_os\\agents\\scoring_agent.py",
+      "src\\gieni_os\\agents\\telemetry_agent.py",
+      "src\\gieni_os\\agents\\__init__.py",
+      "src\\gieni_os\\api\\main.py",
+      "src\\gieni_os\\llm\\gateway.py",
+      "src\\gieni_os\\research\\service.py",
+      "src\\gieni_os\\workflows\\authority_workflow.py",
+      "src\\gieni_os\\workflows\\contact_workflow.py",
+      "src\\gieni_os\\workflows\\control_workflow.py",
+      "src\\gieni_os\\workflows\\delivery_workflow.py",
+      "src\\gieni_os\\workflows\\intake_workflow.py",
+      "src\\gieni_os\\workflows\\ownership_workflow.py",
+      "src\\gieni_os\\workflows\\property_workflow.py",
+      "src\\gieni_os\\workflows\\qc_workflow.py",
+      "src\\gieni_os\\workflows\\scoring_workflow.py",
+      "src\\gieni_os\\workflows\\telemetry_workflow.py",
+      "src\\gieni_os\\workflows\\__init__.py",
+      "src\\gieni_os\\llm\\clients\\azure_client.py",
+      "src\\gieni_os\\llm\\clients\\deterministic_client.py",
+      "src\\gieni_os\\llm\\clients\\ollama_client.py",
+      "src\\gieni_os\\llm\\clients\\__init__.py",
+      "src\\gieni_os\\research\\providers\\authority_provider.py",
+      "src\\gieni_os\\research\\providers\\contacts_provider.py",
+      "src\\gieni_os\\research\\providers\\title_provider.py",
+      "src\\gieni_os\\research\\providers\\valuation_provider.py"
+    ],
+    "scores": {
+      "completeness": 40,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 79
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\research\\providers\\contacts_provider.py",
+    "classes": [
+      "ContactResearchProvider"
+    ],
+    "functions": [
+      "provider_id",
+      "name",
+      "version",
+      "supported_areas",
+      "description",
+      "execute"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_research_hub.py",
+      "src\\gieni_os\\research\\service.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\research\\providers\\title_provider.py",
+    "classes": [
+      "TitleResearchProvider"
+    ],
+    "functions": [
+      "provider_id",
+      "name",
+      "version",
+      "supported_areas",
+      "description",
+      "execute"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_research_hub.py",
+      "src\\gieni_os\\research\\service.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  },
+  {
+    "file": "src\\gieni_os\\research\\providers\\valuation_provider.py",
+    "classes": [
+      "ValuationResearchProvider"
+    ],
+    "functions": [
+      "provider_id",
+      "name",
+      "version",
+      "supported_areas",
+      "description",
+      "execute"
+    ],
+    "not_implemented": [],
+    "pass_only_functions": [],
+    "bare_excepts": [],
+    "swallowed_exceptions": [],
+    "synthetic_violations": [],
+    "io_drivers": [],
+    "callers": [
+      "tests\\test_research_hub.py",
+      "src\\gieni_os\\research\\service.py"
+    ],
+    "scores": {
+      "completeness": 100,
+      "usefulness": 100,
+      "authenticity": 100,
+      "overall": 100
+    },
+    "verdict": "KEEP_AND_HARDEN",
+    "parse_error": null
+  }
+]

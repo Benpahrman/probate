@@ -1,0 +1,92 @@
+-- Gieni OS Core Relational Schema
+-- Sprint 1 Foundation
+
+CREATE TABLE IF NOT EXISTS counties (
+    id VARCHAR(64) PRIMARY KEY,
+    name VARCHAR(128) NOT NULL,
+    state VARCHAR(32) NOT NULL DEFAULT 'WA',
+    status VARCHAR(32) NOT NULL DEFAULT 'ACTIVE',
+    tier VARCHAR(32) NOT NULL DEFAULT 'TIER_1',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS clients (
+    id VARCHAR(64) PRIMARY KEY,
+    name VARCHAR(128) NOT NULL,
+    renewal_date DATE NOT NULL,
+    status VARCHAR(32) NOT NULL DEFAULT 'ACTIVE',
+    county_id VARCHAR(64) REFERENCES counties(id) ON DELETE SET NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS probate_cases (
+    id VARCHAR(64) PRIMARY KEY,
+    case_number VARCHAR(64) UNIQUE NOT NULL,
+    county_id VARCHAR(64) REFERENCES counties(id) ON DELETE CASCADE,
+    decedent VARCHAR(256) NOT NULL,
+    filing_date DATE NOT NULL,
+    status VARCHAR(32) NOT NULL DEFAULT 'OPEN',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS opportunities (
+    id VARCHAR(64) PRIMARY KEY,
+    case_id VARCHAR(64) REFERENCES probate_cases(id) ON DELETE CASCADE,
+    county_id VARCHAR(64) REFERENCES counties(id) ON DELETE CASCADE,
+    workflow_stage VARCHAR(64) NOT NULL DEFAULT 'NEW',
+    priority VARCHAR(32) NOT NULL DEFAULT 'MEDIUM',
+    authority_status VARCHAR(64) NOT NULL DEFAULT 'UNRESOLVED',
+    score INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS exceptions (
+    id VARCHAR(64) PRIMARY KEY,
+    opportunity_id VARCHAR(64) REFERENCES opportunities(id) ON DELETE CASCADE,
+    type VARCHAR(64) NOT NULL,
+    severity VARCHAR(32) NOT NULL DEFAULT 'MEDIUM', -- 'LOW', 'MEDIUM', 'HIGH', 'CRITICAL'
+    status VARCHAR(32) NOT NULL DEFAULT 'OPEN', -- 'OPEN', 'IN_REVIEW', 'RESOLVED', 'DISMISSED'
+    assignee VARCHAR(128),
+    notes TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS knowledge_base (
+    id VARCHAR(64) PRIMARY KEY,
+    title VARCHAR(256) NOT NULL,
+    category VARCHAR(64) NOT NULL,
+    content TEXT NOT NULL,
+    review_date DATE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS workflow_audit_logs (
+    id VARCHAR(64) PRIMARY KEY,
+    opportunity_id VARCHAR(64) REFERENCES opportunities(id) ON DELETE CASCADE,
+    from_stage VARCHAR(64) NOT NULL,
+    to_stage VARCHAR(64) NOT NULL,
+    transitioned_by VARCHAR(128) NOT NULL DEFAULT 'System',
+    timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    notes TEXT
+);
+
+CREATE TABLE IF NOT EXISTS agents (
+    id VARCHAR(64) PRIMARY KEY,
+    agent_name VARCHAR(128) NOT NULL,
+    status VARCHAR(32) NOT NULL DEFAULT 'OFFLINE', -- 'ONLINE', 'BUSY', 'OFFLINE', 'ERROR'
+    version VARCHAR(32) NOT NULL DEFAULT '1.0.0',
+    capabilities TEXT,
+    last_heartbeat TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Indices for performance
+CREATE INDEX IF NOT EXISTS idx_opportunities_workflow_stage ON opportunities(workflow_stage);
+CREATE INDEX IF NOT EXISTS idx_opportunities_county_id ON opportunities(county_id);
+CREATE INDEX IF NOT EXISTS idx_exceptions_status ON exceptions(status);
+CREATE INDEX IF NOT EXISTS idx_workflow_audit_opp_id ON workflow_audit_logs(opportunity_id);

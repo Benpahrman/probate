@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gieni OS | Enterprise Applications Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body style="background: #0B0E14; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between;">
+  <header style="border-bottom: 1px solid var(--border-color); padding: 18px 32px; display: flex; justify-content: space-between; align-items: center; background: rgba(15, 20, 30, 0.8); backdrop-filter: blur(10px);">
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <div class="brand-badge" style="width: 36px; height: 36px; font-size: 18px;">G</div>
+      <div>
+        <div style="font-size: 16px; font-weight: 800; color: #FFFFFF; letter-spacing: 0.05em;">GIENI OS</div>
+        <div style="font-size: 11px; color: var(--text-cyan); font-family: monospace;">CLERK IDENTITY & ENTERPRISE SUITE</div>
+      </div>
+    </div>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <span class="badge badge-success"><span class="pulse-dot"></span> 5 Applications Active</span>
+      <span class="badge badge-cyan mono">RCW Title 11 Engine Ready</span>
+    </div>
+  </header>
+
+  <main style="max-width: 1200px; margin: 40px auto; padding: 0 24px; flex-grow: 1;">
+    <div style="text-align: center; margin-bottom: 48px;">
+      <div class="badge badge-accent" style="margin-bottom: 16px; padding: 6px 14px; font-size: 12px;">Modular Architecture v2.0</div>
+      <h1 style="font-size: 40px; font-weight: 800; color: #FFFFFF; letter-spacing: -0.02em; margin-bottom: 14px;">
+        Probate Intelligence Operating System
+      </h1>
+      <p style="font-size: 16px; color: var(--text-secondary); max-width: 720px; margin: 0 auto; line-height: 1.6;">
+        Powered by Clerk identity with strict organization-to-county multi-tenancy. Zero custom authentication overhead — focused entirely on ownership intelligence, statutory authority, and wholesale deal flow.
+      </p>
+    </div>
+
+    <!-- Application Portfolio Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px; margin-bottom: 48px;">
+      <!-- App 1: Ops Center -->
+      <a href="/ops" style="text-decoration: none; color: inherit; display: block;">
+        <div class="data-card" style="height: 100%; transition: transform 0.2s, border-color 0.2s; cursor: pointer; border-color: rgba(99, 102, 241, 0.4);" onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='var(--accent)';" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(99, 102, 241, 0.4)';">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px;">
+            <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(99, 102, 241, 0.15); display: flex; align-items: center; justify-content: center; color: var(--accent);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            </div>
+            <span class="badge badge-accent">App 1 • Internal</span>
+          </div>
+          <h2 style="font-size: 18px; font-weight: 700; color: #FFFFFF; margin-bottom: 8px;">Operations Center</h2>
+          <div style="font-size: 11px; color: var(--text-cyan); font-family: monospace; margin-bottom: 10px;">/ops • Domain: Internal Operations</div>
+          <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px;">
+            Run the company. Real-time intake queues, statutory authority bottlenecks, 6-gate QC review, exception triage, and platform KPIs.
+          </p>
+          <div style="border-top: 1px solid var(--border-color); padding-top: 12px; display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted);">
+            <span>Roles: Platform Admin, Research Lead</span>
+            <span style="color: var(--accent); font-weight: 600;">Launch &rarr;</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- App 2: Opportunity Workbench -->
+      <a href="/workbench" style="text-decoration: none; color: inherit; display: block;">
+        <div class="data-card" style="height: 100%; transition: transform 0.2s, border-color 0.2s; cursor: pointer; border-color: rgba(16, 185, 129, 0.4);" onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='var(--text-emerald)';" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(16, 185, 129, 0.4)';">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px;">
+            <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(16, 185, 129, 0.15); display: flex; align-items: center; justify-content: center; color: var(--text-emerald);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+            </div>
+            <span class="badge badge-success">App 2 • Research</span>
+          </div>
+          <h2 style="font-size: 18px; font-weight: 700; color: #FFFFFF; margin-bottom: 8px;">Opportunity Workbench</h2>
+          <div style="font-size: 11px; color: var(--text-emerald); font-family: monospace; margin-bottom: 10px;">/workbench • Domain: Case Intelligence</div>
+          <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px;">
+            Where researchers live. 6-profile institutional review, equity waterfall, Nonintervention certification, operator approve/reject, and live POF generator.
+          </p>
+          <div style="border-top: 1px solid var(--border-color); padding-top: 12px; display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted);">
+            <span>Roles: Senior Research Analyst, QC</span>
+            <span style="color: var(--text-emerald); font-weight: 600;">Launch &rarr;</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- App 3: AI Investigator -->
+      <a href="/investigator" style="text-decoration: none; color: inherit; display: block;">
+        <div class="data-card" style="height: 100%; transition: transform 0.2s, border-color 0.2s; cursor: pointer; border-color: rgba(245, 158, 11, 0.4);" onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='var(--warning)';" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(245, 158, 11, 0.4)';">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px;">
+            <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(245, 158, 11, 0.15); display: flex; align-items: center; justify-content: center; color: var(--warning);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </div>
+            <span class="badge badge-warning">App 3 • Reasoning</span>
+          </div>
+          <h2 style="font-size: 18px; font-weight: 700; color: #FFFFFF; margin-bottom: 8px;">AI Investigator</h2>
+          <div style="font-size: 11px; color: var(--warning); font-family: monospace; margin-bottom: 10px;">/investigator • Domain: Multi-Agent Reasoning</div>
+          <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px;">
+            Question the system. Connected to Ownership Agent, Authority Agent, Control Agent, and QC. Answers why authority is unresolved and cites legal statutes.
+          </p>
+          <div style="border-top: 1px solid var(--border-color); padding-top: 12px; display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted);">
+            <span>Connected: 5 Autonomous Agents</span>
+            <span style="color: var(--warning); font-weight: 600;">Launch &rarr;</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- App 4: Client Portal -->
+      <a href="/portal" style="text-decoration: none; color: inherit; display: block;">
+        <div class="data-card" style="height: 100%; transition: transform 0.2s, border-color 0.2s; cursor: pointer; border-color: rgba(6, 182, 212, 0.4);" onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='var(--text-cyan)';" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(6, 182, 212, 0.4)';">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px;">
+            <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(6, 182, 212, 0.15); display: flex; align-items: center; justify-content: center; color: var(--text-cyan);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </div>
+            <span class="badge badge-cyan">App 4 • Customer</span>
+          </div>
+          <h2 style="font-size: 18px; font-weight: 700; color: #FFFFFF; margin-bottom: 8px;">Client Portal</h2>
+          <div style="font-size: 11px; color: var(--text-cyan); font-family: monospace; margin-bottom: 10px;">/portal • Domain: Customer Revenue</div>
+          <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px;">
+            Wholesaler Deal Room. Strict Clerk Organization county contract isolation, quota tracking, live POF dossiers, CRM webhook dispatch, and disposition telemetry.
+          </p>
+          <div style="border-top: 1px solid var(--border-color); padding-top: 12px; display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted);">
+            <span>Tenancy: 1 Clerk Org = 1 Wholesaler</span>
+            <span style="color: var(--text-cyan); font-weight: 600;">Launch &rarr;</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- App 5: County Intelligence -->
+      <a href="/counties" style="text-decoration: none; color: inherit; display: block;">
+        <div class="data-card" style="height: 100%; transition: transform 0.2s, border-color 0.2s; cursor: pointer; border-color: rgba(168, 85, 247, 0.4);" onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='var(--text-purple)';" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(168, 85, 247, 0.4)';">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px;">
+            <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(168, 85, 247, 0.15); display: flex; align-items: center; justify-content: center; color: var(--text-purple);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+            </div>
+            <span class="badge badge-purple">App 5 • Expansion</span>
+          </div>
+          <h2 style="font-size: 18px; font-weight: 700; color: #FFFFFF; margin-bottom: 8px;">County Intelligence</h2>
+          <div style="font-size: 11px; color: var(--text-purple); font-family: monospace; margin-bottom: 10px;">/counties • Domain: Expansion Radar</div>
+          <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px;">
+            Scale counties. Track jurisdictional readiness scores, court docket scraping integrations (LINX / Odyssey), filing volumes, and new county provisioning.
+          </p>
+          <div style="border-top: 1px solid var(--border-color); padding-top: 12px; display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted);">
+            <span>Coverage: Tier 1 WA Jurisdictions</span>
+            <span style="color: var(--text-purple); font-weight: 600;">Launch &rarr;</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </main>
+
+  <footer style="border-top: 1px solid var(--border-color); padding: 20px 32px; text-align: center; font-size: 12px; color: var(--text-muted); background: rgba(15, 20, 30, 0.8);">
+    Gieni OS &bull; Institutional Probate Intelligence Operating System &bull; Clerk Multi-Tenancy Architecture
+  </footer>
+</body>
+</html>
