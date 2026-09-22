@@ -1,3 +1,0 @@
-"""
-Gieni Root Package
-"""

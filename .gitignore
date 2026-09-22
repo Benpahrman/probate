@@ -9,16 +9,29 @@ __pycache__/
 *$py.class
 .pytest_cache/
 .coverage
+coverage.xml
 htmlcov/
 dist/
 build/
 *.egg-info/
 
+# Codecov binary & signatures
+codecov.exe
+codecov.asc
+codecov.exe.SHA256SUM*
+
+# Binary documents & compiled assets
+*.pdf
+
 # Databases & local exports
+*.db
+*.sqlite
+*.sqlite3
 database/*.db
 database/*.sqlite
 exports/*.pdf
 exports/*.json
+backend/database/
 
 # Node & package managers
 node_modules/
@@ -43,3 +56,4 @@ ENV/
 .tox/
 .mypy_cache/
 .ruff_cache/
+.scripts/*
