@@ -66,14 +66,15 @@ test = [
 ]
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["backend"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = [".", "backend"]
 markers = [
     "integration: marks tests that require a live database (deselect with '-m not integration')",
 ]
 
 [tool.coverage.run]
-source = ["src/gieni_os"]
+source = ["backend/app"]
 omit = ["tests/*", "scripts/*"]

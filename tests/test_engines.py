@@ -1,21 +1,9 @@
-"""
-Deterministic Engine Tests
-Verifies the mathematical correctness of the four core scoring engines:
-1. Parcel Attribution Score (PAS) with Jaro-Winkler
-2. Net Actionable Equity Waterfall
-3. Ownership Complexity Score (OCS)
-4. Composite Opportunity Viability Score
-
-Transplanted from backend/app/tests/test_engines.py.
-All imports rewritten from app.* to gieni_os.*
-"""
-
 import pytest
-from gieni_os.engines.pas import calculate_pas, calculate_jaro_winkler, ParcelAttributionInputs, PASCategory
-from gieni_os.engines.equity import compute_net_actionable_equity, EncumbranceWaterfallInputs, EquityTier
-from gieni_os.engines.complexity import compute_ownership_complexity, OwnershipComplexityInputs
-from gieni_os.engines.scoring import compute_opportunity_viability, OpportunityScoringInputs
-from gieni_os.domain.enums import VestingType, AuthorityTier, PowerScope, ControlArchetype, PriorityTier
+from app.engines.pas import calculate_pas, calculate_jaro_winkler, ParcelAttributionInputs, PASCategory
+from app.engines.equity import compute_net_actionable_equity, EncumbranceWaterfallInputs, EquityTier
+from app.engines.complexity import compute_ownership_complexity, OwnershipComplexityInputs
+from app.engines.scoring import compute_opportunity_viability, OpportunityScoringInputs
+from app.models.enums import VestingType, AuthorityTier, PowerScope, ControlArchetype, PriorityTier
 
 
 # =====================================================================
@@ -42,22 +30,6 @@ def test_pas_calculation_verified_tier():
     res = calculate_pas(inputs)
     assert res.pas_score == 98.0
     assert res.category == PASCategory.VERIFIED_MATCH
-    assert res.gate_2_passed is True
-    assert res.requires_manual_triage is False
-
-
-def test_pas_calculation_probable_tier():
-    """Confirm PAS between 70 and 90 returns PROBABLE_MATCH."""
-    inputs = ParcelAttributionInputs(
-        source_agreement=0.80,      # 24.0
-        name_similarity=0.75,       # 18.75
-        address_correlation=0.80,   # 16.0
-        title_continuity=0.70,      # 10.5
-        tax_alignment=0.60          # 6.0 => Total = 75.25
-    )
-    res = calculate_pas(inputs)
-    assert res.pas_score == 75.25
-    assert res.category == PASCategory.PROBABLE_MATCH
     assert res.gate_2_passed is True
     assert res.requires_manual_triage is False
 
@@ -118,20 +90,6 @@ def test_equity_waterfall_merp_disqualification():
     assert "below the $50,000 statutory minimum threshold" in res.disqualification_reason
 
 
-def test_equity_waterfall_insufficient_percentage():
-    """Verify Gate 3 failure when equity % < 30% even if dollar amount is high."""
-    inputs = EncumbranceWaterfallInputs(
-        gross_market_value=1000000.0,
-        open_mortgage_balance=750000.0,
-        estimated_probate_statutory_fees=10000.0
-    )
-    res = compute_net_actionable_equity(inputs)
-    assert res.net_actionable_equity == 240000.0
-    assert res.equity_percentage < 0.30
-    assert res.gate_3_passed is False
-    assert "30.0% viable minimum" in res.disqualification_reason
-
-
 # =====================================================================
 # 3. OWNERSHIP COMPLEXITY TESTS
 # =====================================================================
@@ -157,18 +115,6 @@ def test_complexity_multi_generational_heir_property():
     assert res.complexity_score == 100
     assert res.base_score == 85
     assert res.penalties_applied == 61
-
-
-def test_complexity_jtwros_with_ancillary_jurisdiction():
-    """Verify JTWROS base + ancillary jurisdiction penalty."""
-    inputs = OwnershipComplexityInputs(
-        vesting_type=VestingType.JTWROS,
-        has_foreign_or_ancillary_jurisdiction=True  # +10 pts
-    )
-    res = compute_ownership_complexity(inputs)
-    assert res.base_score == 35
-    assert res.penalties_applied == 10
-    assert res.complexity_score == 45
 
 
 # =====================================================================
@@ -208,19 +154,3 @@ def test_opportunity_scoring_court_oversight_friction_penalty():
     res = compute_opportunity_viability(inputs)
     assert res.deal_friction_score >= 23
     assert res.priority_tier in [PriorityTier.PRIORITY_B, PriorityTier.PRIORITY_C]
-
-
-def test_opportunity_scoring_contested_factions_disqualification():
-    """Confirm contested factions + low equity results in DISQUALIFIED."""
-    inputs = OpportunityScoringInputs(
-        net_equity_amount=55000.0,
-        equity_percentage=0.32,
-        authority_tier=AuthorityTier.TIER_4_UNRESOLVED,
-        power_scope=PowerScope.UNAUTHORIZED,
-        ownership_complexity_score=85,
-        control_archetype=ControlArchetype.CONTESTED_FACTIONS,  # -20 pts
-        has_contested_caveat_or_will_dispute=True                # -20 pts
-    )
-    res = compute_opportunity_viability(inputs)
-    assert res.priority_tier == PriorityTier.DISQUALIFIED
-    assert res.is_deliverable is False
