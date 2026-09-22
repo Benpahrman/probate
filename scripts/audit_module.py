@@ -66,10 +66,16 @@ class ModuleVisitor(ast.NodeVisitor):
             self.pass_only_functions.append(node.name)
         self.generic_visit(node)
 
+    @staticmethod
+    def _is_not_implemented(node: ast.Raise) -> bool:
+        if not node.exc:
+            return False
+        if isinstance(node.exc, ast.Call):
+            return getattr(node.exc.func, "id", None) == "NotImplementedError"
+        return getattr(node.exc, "id", None) == "NotImplementedError"
+
     def visit_Raise(self, node: ast.Raise) -> None:
-        if node.exc and isinstance(node.exc, ast.Call) and getattr(node.exc.func, "id", None) == "NotImplementedError":
-            self.not_implemented_nodes.append(node.lineno)
-        elif node.exc and getattr(node.exc, "id", None) == "NotImplementedError":
+        if self._is_not_implemented(node):
             self.not_implemented_nodes.append(node.lineno)
         self.generic_visit(node)
 
@@ -93,11 +99,26 @@ class ModuleVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
 
+IGNORED_PARTS = {".venv", "site-packages", ".git"}
+
+
+def _is_searchable_file(py_file: Path, module_path: Path) -> bool:
+    if py_file.resolve() == module_path.resolve():
+        return False
+    return not any(part in IGNORED_PARTS for part in py_file.parts)
+
+
+def _file_matches_patterns(py_file: Path, patterns: List[re.Pattern]) -> bool:
+    try:
+        content = py_file.read_text(encoding="utf-8", errors="ignore")
+        return any(p.search(content) for p in patterns)
+    except Exception:
+        return False
+
+
 def find_inbound_references(root_dir: Path, module_path: Path, visitor: ModuleVisitor) -> List[str]:
     """Find all files that import the target module or its exported symbols."""
     rel_stem = module_path.stem
-    callers = []
-    
     patterns = [
         re.compile(rf"\bfrom\s+[\.\w]*\b{re.escape(rel_stem)}\b"),
         re.compile(rf"\bimport\s+[\.\w]*\b{re.escape(rel_stem)}\b"),
@@ -105,36 +126,15 @@ def find_inbound_references(root_dir: Path, module_path: Path, visitor: ModuleVi
     if visitor.classes:
         class_group = "|".join(re.escape(c) for c in visitor.classes)
         patterns.append(re.compile(rf"\b({class_group})\b"))
-    
+
+    callers = []
     for py_file in root_dir.rglob("*.py"):
-        if py_file.resolve() == module_path.resolve():
-            continue
-        if ".venv" in py_file.parts or "site-packages" in py_file.parts or ".git" in py_file.parts:
-            continue
-        try:
-            content = py_file.read_text(encoding="utf-8", errors="ignore")
-            if any(p.search(content) for p in patterns):
-                callers.append(str(py_file.relative_to(root_dir)))
-        except Exception:
-            continue
+        if _is_searchable_file(py_file, module_path) and _file_matches_patterns(py_file, patterns):
+            callers.append(str(py_file.relative_to(root_dir)))
     return callers
 
 
-def audit_single_file(file_path: Path, root_dir: Path) -> Dict[str, Any]:
-    rel_path = file_path.relative_to(root_dir) if file_path.is_relative_to(root_dir) else file_path
-    content = file_path.read_text(encoding="utf-8", errors="ignore")
-    lines = content.splitlines()
-
-    # 1. AST Parsing
-    visitor = ModuleVisitor()
-    parse_error = None
-    try:
-        tree = ast.parse(content, filename=str(file_path))
-        visitor.visit(tree)
-    except SyntaxError as e:
-        parse_error = str(e)
-
-    # 2. Synthetic Pattern Scan
+def _scan_synthetic_patterns(lines: List[str]) -> List[Dict[str, Any]]:
     synthetic_matches = []
     for lineno, line in enumerate(lines, 1):
         for pattern, label in SYNTHETIC_PATTERNS:
@@ -144,15 +144,10 @@ def audit_single_file(file_path: Path, root_dir: Path) -> Dict[str, Any]:
                     "text": line.strip(),
                     "issue": label
                 })
+    return synthetic_matches
 
-    # 3. I/O Analysis
-    io_drivers = visitor.imports.intersection(AUTHENTIC_IO_MODULES)
 
-    # 4. Inbound Import References
-    callers = find_inbound_references(root_dir, file_path, visitor)
-
-    # 5. Scoring Calculation
-    # Completeness
+def _calculate_completeness_score(visitor: ModuleVisitor, parse_error: Optional[str]) -> int:
     completeness_deductions = (
         len(visitor.not_implemented_nodes) * 15 +
         len(visitor.pass_only_functions) * 10 +
@@ -160,26 +155,48 @@ def audit_single_file(file_path: Path, root_dir: Path) -> Dict[str, Any]:
         len(visitor.swallowed_exceptions) * 5 +
         (50 if parse_error else 0)
     )
-    completeness_score = max(0, 100 - completeness_deductions)
+    return max(0, 100 - completeness_deductions)
 
-    # Usefulness / Wiring
-    usefulness_score = 100 if len(callers) >= 2 else (60 if len(callers) == 1 else 30)
+
+def _calculate_usefulness_score(file_path: Path, callers: List[str]) -> int:
     if "api" in str(file_path) or "main" in str(file_path):
-        usefulness_score = 100  # Entrypoints have no incoming internal imports
+        return 100  # Entrypoints have no incoming internal imports
+    if len(callers) >= 2:
+        return 100
+    if len(callers) == 1:
+        return 60
+    return 30
 
-    # Authenticity
-    authenticity_deductions = len(synthetic_matches) * 25
-    authenticity_score = max(0, 100 - authenticity_deductions)
 
-    # Verdict
+def _calculate_verdict(authenticity_score: int, usefulness_score: int, completeness_score: int) -> str:
     if authenticity_score < 70:
-        verdict = "MAKE_REAL"
-    elif usefulness_score < 40:
-        verdict = "DEPRECATE_AND_PURGE"
-    elif completeness_score < 75:
-        verdict = "KEEP_AND_HARDEN"
-    else:
-        verdict = "KEEP_AND_HARDEN"
+        return "MAKE_REAL"
+    if usefulness_score < 40:
+        return "DEPRECATE_AND_PURGE"
+    return "KEEP_AND_HARDEN"
+
+
+def audit_single_file(file_path: Path, root_dir: Path) -> Dict[str, Any]:
+    rel_path = file_path.relative_to(root_dir) if file_path.is_relative_to(root_dir) else file_path
+    content = file_path.read_text(encoding="utf-8", errors="ignore")
+    lines = content.splitlines()
+
+    visitor = ModuleVisitor()
+    parse_error = None
+    try:
+        tree = ast.parse(content, filename=str(file_path))
+        visitor.visit(tree)
+    except SyntaxError as e:
+        parse_error = str(e)
+
+    synthetic_matches = _scan_synthetic_patterns(lines)
+    io_drivers = visitor.imports.intersection(AUTHENTIC_IO_MODULES)
+    callers = find_inbound_references(root_dir, file_path, visitor)
+
+    completeness_score = _calculate_completeness_score(visitor, parse_error)
+    usefulness_score = _calculate_usefulness_score(file_path, callers)
+    authenticity_score = max(0, 100 - len(synthetic_matches) * 25)
+    verdict = _calculate_verdict(authenticity_score, usefulness_score, completeness_score)
 
     return {
         "file": str(rel_path),
@@ -203,6 +220,41 @@ def audit_single_file(file_path: Path, root_dir: Path) -> Dict[str, Any]:
     }
 
 
+def _print_callers(callers: List[str]) -> None:
+    print(f"* Active Inbound Callers ({len(callers)}):")
+    if not callers:
+        print("    [!] WARNING: No inbound callers found (potential orphaned/dead module)")
+        return
+    for caller in callers[:5]:
+        print(f"    - {caller}")
+    if len(callers) > 5:
+        print(f"    ... and {len(callers) - 5} more")
+
+
+def _print_synthetic_violations(violations: List[Dict[str, Any]]) -> None:
+    if not violations:
+        print("\n[OK] Authenticity Check: Zero synthetic entities / mock patterns detected.")
+        return
+    print(f"\n[!] SYNTHETIC / MOCK VIOLATIONS DETECTED ({len(violations)}):")
+    for v in violations:
+        print(f"    Line {v['line']}: {v['issue']}")
+        print(f"      Code: {v['text']}")
+
+
+def _print_completeness_issues(res: Dict[str, Any]) -> None:
+    has_issues = bool(res["not_implemented"] or res["pass_only_functions"] or res["bare_excepts"])
+    if not has_issues:
+        print("[OK] Completeness Check: No stubs, NotImplementedErrors, or bare except clauses.")
+        return
+    print("\n[!] COMPLETENESS & EDGE CASE ISSUES:")
+    for line in res["not_implemented"]:
+        print(f"    Line {line}: raise NotImplementedError")
+    for fn in res["pass_only_functions"]:
+        print(f"    Function '{fn}': Stub body (pass only)")
+    for line in res["bare_excepts"]:
+        print(f"    Line {line}: Bare except: clause (swallows all exceptions)")
+
+
 def print_report(res: Dict[str, Any]) -> None:
     print("\n" + "=" * 78)
     print(f"MODULE FORENSIC AUDIT: {res['file']}")
@@ -212,37 +264,23 @@ def print_report(res: Dict[str, Any]) -> None:
     print(f"OVERALL GRADE: {scores['overall']}% | Completeness: {scores['completeness']}% | Usefulness: {scores['usefulness']}% | Authenticity: {scores['authenticity']}%")
     print("-" * 78)
 
-    print(f"* Active Inbound Callers ({len(res['callers'])}):")
-    if res["callers"]:
-        for caller in res["callers"][:5]:
-            print(f"    - {caller}")
-        if len(res["callers"]) > 5:
-            print(f"    ... and {len(res['callers']) - 5} more")
-    else:
-        print("    [!] WARNING: No inbound callers found (potential orphaned/dead module)")
-
-    print(f"* Authentic I/O Drivers Detected: {', '.join(res['io_drivers']) if res['io_drivers'] else 'None (In-Memory / Pure Logic)'}")
-
-    if res["synthetic_violations"]:
-        print(f"\n[!] SYNTHETIC / MOCK VIOLATIONS DETECTED ({len(res['synthetic_violations'])}):")
-        for v in res["synthetic_violations"]:
-            print(f"    Line {v['line']}: {v['issue']}")
-            print(f"      Code: {v['text']}")
-    else:
-        print("\n[OK] Authenticity Check: Zero synthetic entities / mock patterns detected.")
-
-    if res["not_implemented"] or res["pass_only_functions"] or res["bare_excepts"]:
-        print("\n[!] COMPLETENESS & EDGE CASE ISSUES:")
-        for line in res["not_implemented"]:
-            print(f"    Line {line}: raise NotImplementedError")
-        for fn in res["pass_only_functions"]:
-            print(f"    Function '{fn}': Stub body (pass only)")
-        for line in res["bare_excepts"]:
-            print(f"    Line {line}: Bare except: clause (swallows all exceptions)")
-    else:
-        print("[OK] Completeness Check: No stubs, NotImplementedErrors, or bare except clauses.")
-
+    _print_callers(res["callers"])
+    io_text = ', '.join(res['io_drivers']) if res['io_drivers'] else 'None (In-Memory / Pure Logic)'
+    print(f"* Authentic I/O Drivers Detected: {io_text}")
+    _print_synthetic_violations(res["synthetic_violations"])
+    _print_completeness_issues(res)
     print("=" * 78 + "\n")
+
+
+def _resolve_audit_targets(target_path: Path) -> List[Path]:
+    if target_path.is_file() and target_path.suffix == ".py":
+        return [target_path]
+    if target_path.is_dir():
+        return [
+            p for p in target_path.rglob("*.py")
+            if "__pycache__" not in str(p) and "tests" not in str(p)
+        ]
+    return []
 
 
 def main() -> None:
@@ -259,12 +297,7 @@ def main() -> None:
         print(f"Error: Target path '{target_path}' does not exist.", file=sys.stderr)
         sys.exit(1)
 
-    files_to_audit: List[Path] = []
-    if target_path.is_file() and target_path.suffix == ".py":
-        files_to_audit.append(target_path)
-    elif target_path.is_dir():
-        files_to_audit.extend([p for p in target_path.rglob("*.py") if "__pycache__" not in str(p) and "tests" not in str(p)])
-
+    files_to_audit = _resolve_audit_targets(target_path)
     results = []
     for file_path in files_to_audit:
         res = audit_single_file(file_path, root_dir)

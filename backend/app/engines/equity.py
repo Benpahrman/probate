@@ -34,12 +34,8 @@ class EquityWaterfallResult(BaseModel):
     disqualification_reason: str | None = None
 
 
-def compute_net_actionable_equity(inputs: EncumbranceWaterfallInputs) -> EquityWaterfallResult:
-    """Audits the legal and debt encumbrance waterfall to isolate actionable net equity.
-    
-    Gate 3 Standard: Net Actionable Equity must be >= $50,000 AND Equity Percentage >= 30.0%.
-    """
-    total_encumbrances = round(
+def _sum_encumbrances(inputs: EncumbranceWaterfallInputs) -> float:
+    return round(
         inputs.open_mortgage_balance +
         inputs.junior_mortgages_and_helocs +
         inputs.delinquent_real_property_taxes +
@@ -51,33 +47,35 @@ def compute_net_actionable_equity(inputs: EncumbranceWaterfallInputs) -> EquityW
         2
     )
 
-    net_equity = round(inputs.gross_market_value - total_encumbrances, 2)
-    
-    if inputs.gross_market_value > 0.0:
-        equity_pct = round(net_equity / inputs.gross_market_value, 4)
-    else:
-        equity_pct = 0.0
 
-    # Classify Equity Tier
+def _classify_equity_tier(equity_pct: float) -> EquityTier:
     if equity_pct >= 0.70:
-        tier = EquityTier.EXCEPTIONAL
-    elif equity_pct >= 0.50:
-        tier = EquityTier.HIGH
-    elif equity_pct >= 0.30:
-        tier = EquityTier.MODERATE
-    else:
-        tier = EquityTier.LOW_OR_UNDERWATER
+        return EquityTier.EXCEPTIONAL
+    if equity_pct >= 0.50:
+        return EquityTier.HIGH
+    if equity_pct >= 0.30:
+        return EquityTier.MODERATE
+    return EquityTier.LOW_OR_UNDERWATER
 
-    # Validate Gate 3 Economic Viability
-    gate_3_passed = True
-    disqualification_reason = None
 
+def _validate_gate_3(net_equity: float, equity_pct: float) -> tuple[bool, str | None]:
     if net_equity < 50000.0:
-        gate_3_passed = False
-        disqualification_reason = f"Net equity ${net_equity:,.2f} is below the $50,000 statutory minimum threshold."
-    elif equity_pct < 0.30:
-        gate_3_passed = False
-        disqualification_reason = f"Equity percentage {equity_pct * 100:.2f}% is below the 30.0% viable minimum threshold."
+        return False, f"Net equity ${net_equity:,.2f} is below the $50,000 statutory minimum threshold."
+    if equity_pct < 0.30:
+        return False, f"Equity percentage {equity_pct * 100:.2f}% is below the 30.0% viable minimum threshold."
+    return True, None
+
+
+def compute_net_actionable_equity(inputs: EncumbranceWaterfallInputs) -> EquityWaterfallResult:
+    """Audits the legal and debt encumbrance waterfall to isolate actionable net equity.
+    
+    Gate 3 Standard: Net Actionable Equity must be >= $50,000 AND Equity Percentage >= 30.0%.
+    """
+    total_encumbrances = _sum_encumbrances(inputs)
+    net_equity = round(inputs.gross_market_value - total_encumbrances, 2)
+    equity_pct = round(net_equity / inputs.gross_market_value, 4) if inputs.gross_market_value > 0.0 else 0.0
+    tier = _classify_equity_tier(equity_pct)
+    gate_3_passed, disqualification_reason = _validate_gate_3(net_equity, equity_pct)
 
     return EquityWaterfallResult(
         gross_market_value=inputs.gross_market_value,

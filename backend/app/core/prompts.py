@@ -3,27 +3,19 @@ Prompt Registry & Jurisprudence Templates for Gieni OS
 Provides versioned, strictly typed, parameter-validated templates for AI reasoning.
 """
 
-from typing import Dict, Any, List, Optional
+from dataclasses import dataclass
+from typing import Dict, List, Optional
 
 
+@dataclass
 class PromptTemplate:
     """Represents a versioned system prompt template."""
-
-    def __init__(
-        self,
-        key: str,
-        version: str,
-        category: str,
-        template_text: str,
-        required_variables: List[str],
-        description: str = "",
-    ):
-        self.key = key
-        self.version = version
-        self.category = category
-        self.template_text = template_text
-        self.required_variables = required_variables
-        self.description = description
+    key: str
+    version: str
+    category: str
+    template_text: str
+    required_variables: List[str]
+    description: str = ""
 
     def format(self, **kwargs) -> str:
         """Render the prompt template ensuring all required variables are supplied."""
@@ -56,7 +48,10 @@ class PromptRegistry:
         return tmpl.format(**kwargs)
 
     def _register_default_templates(self):
-        # 1. Ownership Analysis
+        self._register_estate_templates()
+        self._register_governance_templates()
+
+    def _register_estate_templates(self):
         self.register(
             PromptTemplate(
                 key="ownership-analysis",
@@ -74,8 +69,6 @@ class PromptRegistry:
                 description="Analyzes equity waterfall, encumbrances, and deed vesting.",
             )
         )
-
-        # 2. Authority Reasoning
         self.register(
             PromptTemplate(
                 key="authority-reasoning",
@@ -93,8 +86,6 @@ class PromptRegistry:
                 description="Evaluates RCW Title 11 nonintervention powers and fiduciary authority.",
             )
         )
-
-        # 3. Control Classification
         self.register(
             PromptTemplate(
                 key="control-classification",
@@ -112,7 +103,7 @@ class PromptRegistry:
             )
         )
 
-        # 4. QC Validation
+    def _register_governance_templates(self):
         self.register(
             PromptTemplate(
                 key="qc-validation",
@@ -129,8 +120,6 @@ class PromptRegistry:
                 description="Validates 6-gate statutory integrity prior to dispatch.",
             )
         )
-
-        # 5. Delivery Pitch
         self.register(
             PromptTemplate(
                 key="delivery-pitch",

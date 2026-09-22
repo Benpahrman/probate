@@ -1,10 +1,28 @@
 import re
+from dataclasses import dataclass
 from typing import List, Optional
 from pydantic import BaseModel, Field
 from app.engines.pas import ParcelAttributionResult
 from app.engines.equity import EquityWaterfallResult
 from app.engines.scoring import OpportunityScoringResult
 from app.models.enums import AuthorityTier, PriorityTier
+
+
+@dataclass
+class GatekeeperEvaluationContext:
+    case_number: str
+    filing_date_valid: bool
+    petition_pdf_sha256: Optional[str]
+    pas_result: ParcelAttributionResult
+    equity_result: EquityWaterfallResult
+    authority_tier: AuthorityTier
+    has_contested_caveats: bool
+    primary_phone_active: bool
+    dnc_filtered: bool
+    is_attorney_quarantined: bool
+    scoring_result: OpportunityScoringResult
+    evidence_records_count: int
+    is_in_partner_buybox: bool = True
 
 
 class GateCheckResult(BaseModel):
@@ -233,25 +251,15 @@ class QualityControlGatekeeper:
     @classmethod
     def evaluate_all_gates(
         cls,
-        case_number: str,
-        filing_date_valid: bool,
-        petition_pdf_sha256: Optional[str],
-        pas_result: ParcelAttributionResult,
-        equity_result: EquityWaterfallResult,
-        authority_tier: AuthorityTier,
-        has_contested_caveats: bool,
-        primary_phone_active: bool,
-        dnc_filtered: bool,
-        is_attorney_quarantined: bool,
-        scoring_result: OpportunityScoringResult,
-        evidence_records_count: int,
-        is_in_partner_buybox: bool = True
+        context: Optional[GatekeeperEvaluationContext] = None,
+        **kwargs
     ) -> QualityControlAuditSummary:
         """Executes the full 6-gate sequential audit and produces certification status."""
+        ctx = context if context is not None else GatekeeperEvaluationContext(**kwargs)
         results: List[GateCheckResult] = []
 
         # Gate 1
-        g1 = cls.verify_gate_1_docket_integrity(case_number, filing_date_valid, petition_pdf_sha256)
+        g1 = cls.verify_gate_1_docket_integrity(ctx.case_number, ctx.filing_date_valid, ctx.petition_pdf_sha256)
         results.append(g1)
         if not g1.passed:
             return QualityControlAuditSummary(
@@ -259,7 +267,7 @@ class QualityControlGatekeeper:
             )
 
         # Gate 2
-        g2 = cls.verify_gate_2_parcel_attribution(pas_result)
+        g2 = cls.verify_gate_2_parcel_attribution(ctx.pas_result)
         results.append(g2)
         if not g2.passed:
             return QualityControlAuditSummary(
@@ -267,7 +275,7 @@ class QualityControlGatekeeper:
             )
 
         # Gate 3
-        g3 = cls.verify_gate_3_encumbrance_equity(equity_result)
+        g3 = cls.verify_gate_3_encumbrance_equity(ctx.equity_result)
         results.append(g3)
         if not g3.passed:
             return QualityControlAuditSummary(
@@ -275,7 +283,7 @@ class QualityControlGatekeeper:
             )
 
         # Gate 4
-        g4 = cls.verify_gate_4_fiduciary_authority(authority_tier, has_contested_caveats)
+        g4 = cls.verify_gate_4_fiduciary_authority(ctx.authority_tier, ctx.has_contested_caveats)
         results.append(g4)
         if not g4.passed:
             return QualityControlAuditSummary(
@@ -283,7 +291,7 @@ class QualityControlGatekeeper:
             )
 
         # Gate 5
-        g5 = cls.verify_gate_5_contact_scrubbing(primary_phone_active, dnc_filtered, is_attorney_quarantined)
+        g5 = cls.verify_gate_5_contact_scrubbing(ctx.primary_phone_active, ctx.dnc_filtered, ctx.is_attorney_quarantined)
         results.append(g5)
         if not g5.passed:
             return QualityControlAuditSummary(
@@ -291,7 +299,7 @@ class QualityControlGatekeeper:
             )
 
         # Gate 6
-        g6 = cls.verify_gate_6_predelivery_certification(scoring_result, evidence_records_count, is_in_partner_buybox)
+        g6 = cls.verify_gate_6_predelivery_certification(ctx.scoring_result, ctx.evidence_records_count, ctx.is_in_partner_buybox)
         results.append(g6)
         if not g6.passed:
             return QualityControlAuditSummary(

@@ -76,19 +76,20 @@ def get_county_board(db: Session = Depends(get_db)) -> List[Dict[str, Any]]:
             {"name": "Snohomish", "fips": "53061", "score": 88, "price": 725000, "portal": "Odyssey Washington Courts Portal"},
         ]
         for c in default_counties:
+            c_name = str(c["name"])
             board.append({
-                "county_id": f"cty_{c['name'].lower()}",
-                "name": c["name"],
+                "county_id": f"cty_{c_name.lower()}",
+                "name": c_name,
                 "state": "WA",
                 "status": "ACTIVE",
                 "tier": 1,
                 "cases_count": 0,
                 "opportunities_count": 0,
                 "clients_count": 0,
-                "expansion_score": c["score"],
-                "median_home_price": c["price"],
+                "expansion_score": int(c["score"]),
+                "median_home_price": float(c["price"]),
                 "conversion_rate": None,
-                "court_portal": c["portal"],
+                "court_portal": str(c["portal"]),
                 "recommendation": "High Priority Expansion Target",
                 "estimated_annual_gmv": None
             })

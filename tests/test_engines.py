@@ -87,6 +87,7 @@ def test_equity_waterfall_merp_disqualification():
     assert res.tier == EquityTier.LOW_OR_UNDERWATER
     assert res.gate_3_passed is False
     assert res.is_disqualified is True
+    assert res.disqualification_reason is not None
     assert "below the $50,000 statutory minimum threshold" in res.disqualification_reason
 
 

@@ -1,3 +1,4 @@
+from typing import Any, cast
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from honeybadger import honeybadger, contrib
@@ -20,7 +21,7 @@ app = FastAPI(
 
 if settings.HONEYBADGER_API_KEY:
     app.add_middleware(
-        contrib.ASGIHoneybadger,
+        cast(Any, contrib.ASGIHoneybadger),
         params_filters=["password", "secret", "token", "sensitive_data", "api_key", "authorization"]
     )
 

@@ -6,7 +6,7 @@ param(
 if (-not $Token -and (Test-Path .env)) {
     Get-Content .env | ForEach-Object {
         if ($_ -match '^\s*CODECOV_TOKEN\s*=\s*(.+)$') {
-            $Token = $matches[1].Trim('"', "'", ' ')
+            $script:Token = $matches[1].Trim('"', "'", ' ')
         }
     }
 }

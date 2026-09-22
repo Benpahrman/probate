@@ -5,6 +5,41 @@ interface ScraperTriggerProps {
   onTrigger: (fips: string, lookback: number) => Promise<any>;
 }
 
+const getLogTextColor = (log: string): string => {
+  if (log.includes('[SUCCESS]')) return 'text-emerald-400';
+  if (log.includes('[ERROR]')) return 'text-rose-400';
+  if (log.includes('[DISPATCH]')) return 'text-cyan-400';
+  return 'text-slate-400';
+};
+
+const ScraperConsole: React.FC<{
+  logs: string[];
+  events: any[];
+  onClear: () => void;
+}> = ({ logs, events, onClear }) => (
+  <div className="space-y-1.5">
+    <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
+      <span>Worker Execution Stream (Playwright Live Telemetry)</span>
+      <button onClick={onClear} className="hover:text-slate-200">
+        Clear Console
+      </button>
+    </div>
+    <div className="h-44 bg-slate-950 border border-slate-800 rounded-lg p-3 overflow-y-auto font-mono text-xs space-y-1 text-slate-300">
+      {logs.map((log, i) => (
+        <div key={i} className={`leading-relaxed ${getLogTextColor(log)}`}>
+          {log}
+        </div>
+      ))}
+      {events.map((ev, i) => (
+        <div key={`ws-${i}`} className="text-indigo-300">
+          [{new Date(ev.timestamp * 1000).toLocaleTimeString()}] [WS_EVENT] {ev.type}:{' '}
+          {ev.message || JSON.stringify(ev.data || {})}
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
 export const ScraperTrigger: React.FC<ScraperTriggerProps> = ({ onTrigger }) => {
   const [fips, setFips] = useState<string>('53053');
   const [lookback, setLookback] = useState<number>(7);
@@ -62,7 +97,9 @@ export const ScraperTrigger: React.FC<ScraperTriggerProps> = ({ onTrigger }) => 
 
       <form onSubmit={handleLaunch} className="grid grid-cols-3 gap-4">
         <div>
-          <label htmlFor="scraper-county-select" className="block text-xs font-mono text-slate-400 mb-1">Target County FIPS</label>
+          <label htmlFor="scraper-county-select" className="block text-xs font-mono text-slate-400 mb-1">
+            Target County FIPS
+          </label>
           <select
             id="scraper-county-select"
             value={fips}
@@ -77,7 +114,9 @@ export const ScraperTrigger: React.FC<ScraperTriggerProps> = ({ onTrigger }) => 
         </div>
 
         <div>
-          <label htmlFor="scraper-lookback-input" className="block text-xs font-mono text-slate-400 mb-1">Lookback Window (Days)</label>
+          <label htmlFor="scraper-lookback-input" className="block text-xs font-mono text-slate-400 mb-1">
+            Lookback Window (Days)
+          </label>
           <input
             id="scraper-lookback-input"
             type="number"
@@ -114,41 +153,7 @@ export const ScraperTrigger: React.FC<ScraperTriggerProps> = ({ onTrigger }) => 
         </div>
       </form>
 
-      {/* Terminal Output Log Container */}
-      <div className="space-y-1.5">
-        <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
-          <span>Worker Execution Stream (Playwright Live Telemetry)</span>
-          <button
-            onClick={() => setLocalLogs(['[CONSOLE CLEARED]'])}
-            className="hover:text-slate-200"
-          >
-            Clear Console
-          </button>
-        </div>
-        <div className="h-44 bg-slate-950 border border-slate-800 rounded-lg p-3 overflow-y-auto font-mono text-xs space-y-1 text-slate-300">
-          {localLogs.map((log, i) => (
-            <div
-              key={i}
-              className={`leading-relaxed ${
-                log.includes('[SUCCESS]')
-                  ? 'text-emerald-400'
-                  : log.includes('[ERROR]')
-                  ? 'text-rose-400'
-                  : log.includes('[DISPATCH]')
-                  ? 'text-cyan-400'
-                  : 'text-slate-400'
-              }`}
-            >
-              {log}
-            </div>
-          ))}
-          {events.map((ev, i) => (
-            <div key={`ws-${i}`} className="text-indigo-300">
-              [{new Date(ev.timestamp * 1000).toLocaleTimeString()}] [WS_EVENT] {ev.type}: {ev.message || JSON.stringify(ev.data || {})}
-            </div>
-          ))}
-        </div>
-      </div>
+      <ScraperConsole logs={localLogs} events={events} onClear={() => setLocalLogs(['[CONSOLE CLEARED]'])} />
     </div>
   );
 };

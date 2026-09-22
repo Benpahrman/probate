@@ -42,6 +42,47 @@ class LegalNoticesHarvester:
     }
 
     @classmethod
+    def _get_county_prefix(cls, county_id: str) -> str:
+        if county_id == "cty_king":
+            return "26-4-0"
+        if county_id == "cty_thurston":
+            return "26-4-00"
+        return "26-4"
+
+    @classmethod
+    def _generate_fixtures(cls, county_id: str, days_back: int) -> List[ScrapedDocket]:
+        candidates = cls.NOTICE_FIXTURES.get(county_id, cls.NOTICE_FIXTURES["cty_thurston"])
+        dockets: List[ScrapedDocket] = []
+        today = date.today()
+        source_name = cls.SOURCES.get(county_id, "Washington Legal Record")
+        c_prefix = cls._get_county_prefix(county_id)
+
+        for idx, (dec, pr, rel, atty, addr) in enumerate(candidates):
+            d_offset = min(idx * 2, days_back)
+            f_date = today - timedelta(days=d_offset)
+            case_seq = 1001 + idx
+            case_no = f"{c_prefix}{case_seq:04d}-34"
+
+            dockets.append(ScrapedDocket(
+                case_number=case_no,
+                decedent=dec,
+                county_id=county_id,
+                channel=FilingChannel.NOTICE_TO_CREDITORS,
+                filing_date=f_date,
+                petitioner_name=pr,
+                petitioner_relationship=rel,
+                attorney_name=atty,
+                property_hint=addr,
+                raw_snippet=(
+                    f"{source_name} | NOTICE TO CREDITORS (RCW 11.40.030). "
+                    f"IN THE SUPERIOR COURT OF WASHINGTON. Estate of {dec}, Deceased. "
+                    f"Case No. {case_no}. The Personal Representative named below, {pr}, has been appointed. "
+                    f"Attorney: {atty}. Real property notice: {addr}."
+                )
+            ))
+        return dockets
+
+    @classmethod
     def harvest(cls, county_id: str, days_back: int = 7) -> List[ScrapedDocket]:
         """
         Parses published Notice to Creditors for the specified Washington county.
@@ -67,43 +108,7 @@ class LegalNoticesHarvester:
             )
 
         # 3. Deterministic Ground Truth Fixtures (Zero Random)
-        candidates = cls.NOTICE_FIXTURES.get(county_id, cls.NOTICE_FIXTURES["cty_thurston"])
-        dockets: List[ScrapedDocket] = []
-        today = date.today()
-        source_name = cls.SOURCES.get(county_id, "Washington Legal Record")
-
-        for idx, (dec, pr, rel, atty, addr) in enumerate(candidates):
-            d_offset = min(idx * 2, days_back)
-            f_date = today - timedelta(days=d_offset)
-            
-            c_prefix = "26-4"
-            if county_id == "cty_king":
-                c_prefix = "26-4-0"
-            elif county_id == "cty_thurston":
-                c_prefix = "26-4-00"
-
-            case_seq = 1001 + idx
-            case_no = f"{c_prefix}{case_seq:04d}-34"
-
-            dockets.append(ScrapedDocket(
-                case_number=case_no,
-                decedent=dec,
-                county_id=county_id,
-                channel=FilingChannel.NOTICE_TO_CREDITORS,
-                filing_date=f_date,
-                petitioner_name=pr,
-                petitioner_relationship=rel,
-                attorney_name=atty,
-                property_hint=addr,
-                raw_snippet=(
-                    f"{source_name} | NOTICE TO CREDITORS (RCW 11.40.030). "
-                    f"IN THE SUPERIOR COURT OF WASHINGTON. Estate of {dec}, Deceased. "
-                    f"Case No. {case_no}. The Personal Representative named below, {pr}, has been appointed. "
-                    f"Attorney: {atty}. Real property notice: {addr}."
-                )
-            ))
-
-        return dockets
+        return cls._generate_fixtures(county_id, days_back)
 
     @classmethod
     def _harvest_live_feed(cls, endpoint: str, county_id: str, days_back: int) -> List[ScrapedDocket]:

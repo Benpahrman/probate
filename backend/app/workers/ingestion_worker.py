@@ -94,6 +94,124 @@ class MunicipalIngestionWorker:
 
         return extracted_dockets
 
+    def _get_or_create_county(self, db: Session) -> County:
+        county = db.query(County).filter(County.county_fips == self.county_fips).first()
+        if not county:
+            county = County(
+                county_fips=self.county_fips,
+                name="Thurston",
+                state="WA",
+                court_software_vendor="Tyler Odyssey",
+                is_independent_admin_state=True,
+                monthly_filing_volume=85,
+                median_home_value=485000.00,
+                friction_coefficient=1.000
+            )
+            db.add(county)
+            db.commit()
+            db.refresh(county)
+        return county
+
+    def _ingest_parties(self, db: Session, record: Dict[str, Any]) -> tuple[Person, Optional[uuid.UUID]]:
+        name_parts = record["decedent_name"].split()
+        first_name = name_parts[0] if name_parts else "UNKNOWN"
+        last_name = name_parts[-1] if len(name_parts) > 1 else "ESTATE"
+        middle_name = " ".join(name_parts[1:-1]) if len(name_parts) > 2 else None
+
+        decedent = Person(
+            first_name=first_name,
+            middle_name=middle_name,
+            last_name=last_name,
+            is_deceased=True,
+            date_of_death=record["filing_date"]
+        )
+        db.add(decedent)
+        db.flush()
+
+        petitioner_id = None
+        if record.get("petitioner_name"):
+            p_parts = record["petitioner_name"].split()
+            petitioner = Person(
+                first_name=p_parts[0],
+                last_name=p_parts[-1] if len(p_parts) > 1 else "PETITIONER",
+                is_deceased=False
+            )
+            db.add(petitioner)
+            db.flush()
+            petitioner_id = petitioner.person_id
+
+        return decedent, petitioner_id
+
+    def _save_evidence_artifact(self, db: Session, case_id: uuid.UUID, record: Dict[str, Any]) -> None:
+        pdf_bytes = record.get("pdf_content", b"")
+        pdf_sha256 = hashlib.sha256(pdf_bytes).hexdigest()
+        file_path = os.path.join(self.storage_dir, f"{pdf_sha256}.pdf")
+        with open(file_path, "wb") as f:
+            f.write(pdf_bytes)
+
+        evidence = EvidenceRecord(
+            case_id=case_id,
+            document_type="Court Petition",
+            storage_uri=f"file://{file_path}",
+            sha256_hash=pdf_sha256
+        )
+        db.add(evidence)
+
+    def _process_record(self, db: Session, county: County, record: Dict[str, Any]) -> Optional[uuid.UUID]:
+        inv_hash = self.generate_invariant_hash(
+            self.county_fips, record["case_number"], record["filing_date"]
+        )
+
+        existing_case = db.query(ProbateCase).filter(ProbateCase.invariant_hash == inv_hash).first()
+        if existing_case:
+            return None
+
+        decedent, petitioner_id = self._ingest_parties(db, record)
+
+        probate_case = ProbateCase(
+            county_id=county.county_id,
+            case_number=record["case_number"],
+            filing_date=record["filing_date"],
+            decedent_id=decedent.person_id,
+            petitioner_id=petitioner_id,
+            attorney_name=record.get("attorney_name"),
+            attorney_quarantined=True,
+            raw_docket_url=record.get("docket_url"),
+            invariant_hash=inv_hash
+        )
+        db.add(probate_case)
+        db.flush()
+
+        self._save_evidence_artifact(db, probate_case.case_id, record)
+
+        candidate_property = Property(
+            case_id=probate_case.case_id,
+            county_id=county.county_id,
+            apn=record.get("apn", f"UNASSIGNED-{record['case_number']}"),
+            street="Pending Title Reconciliation",
+            city="Olympia",
+            state=county.state,
+            zip_code="98501",
+            property_class=PropertyClass.SINGLE_FAMILY,
+            pas_score=0.0
+        )
+        db.add(candidate_property)
+        db.flush()
+
+        opportunity = Opportunity(
+            case_id=probate_case.case_id,
+            property_id=candidate_property.property_id,
+            lifecycle_stage=LifecycleStage.DISCOVERED,
+            composite_viability_score=0,
+            deal_friction_score=0,
+            priority_tier=PriorityTier.DISQUALIFIED,
+            is_qc_certified=False
+        )
+        db.add(opportunity)
+        db.commit()
+
+        return probate_case.case_id
+
     def process_and_commit(self, raw_records: list[Dict[str, Any]]) -> list[uuid.UUID]:
         """Validates filings, computes SHA-256 hashes, saves evidence artifacts,
         and initializes Opportunity records at stage DISCOVERED.
@@ -102,119 +220,11 @@ class MunicipalIngestionWorker:
         db: Session = SessionLocal()
 
         try:
-            county = db.query(County).filter(County.county_fips == self.county_fips).first()
-            if not county:
-                county = County(
-                    county_fips=self.county_fips,
-                    name="Thurston",
-                    state="WA",
-                    court_software_vendor="Tyler Odyssey",
-                    is_independent_admin_state=True,
-                    monthly_filing_volume=85,
-                    median_home_value=485000.00,
-                    friction_coefficient=1.000
-                )
-                db.add(county)
-                db.commit()
-                db.refresh(county)
-
+            county = self._get_or_create_county(db)
             for record in raw_records:
-                inv_hash = self.generate_invariant_hash(
-                    self.county_fips, record["case_number"], record["filing_date"]
-                )
-
-                # Deduplication check: do not re-ingest duplicate hashes
-                existing_case = db.query(ProbateCase).filter(ProbateCase.invariant_hash == inv_hash).first()
-                if existing_case:
-                    continue
-
-                # Parse decedent name
-                name_parts = record["decedent_name"].split()
-                first_name = name_parts[0] if name_parts else "UNKNOWN"
-                last_name = name_parts[-1] if len(name_parts) > 1 else "ESTATE"
-                middle_name = " ".join(name_parts[1:-1]) if len(name_parts) > 2 else None
-
-                decedent = Person(
-                    first_name=first_name,
-                    middle_name=middle_name,
-                    last_name=last_name,
-                    is_deceased=True,
-                    date_of_death=record["filing_date"]
-                )
-                db.add(decedent)
-                db.flush()
-
-                petitioner_id = None
-                if record.get("petitioner_name"):
-                    p_parts = record["petitioner_name"].split()
-                    petitioner = Person(
-                        first_name=p_parts[0],
-                        last_name=p_parts[-1] if len(p_parts) > 1 else "PETITIONER",
-                        is_deceased=False
-                    )
-                    db.add(petitioner)
-                    db.flush()
-                    petitioner_id = petitioner.person_id
-
-                # Save raw evidence PDF artifact
-                pdf_bytes = record.get("pdf_content", b"")
-                pdf_sha256 = hashlib.sha256(pdf_bytes).hexdigest()
-                file_path = os.path.join(self.storage_dir, f"{pdf_sha256}.pdf")
-                with open(file_path, "wb") as f:
-                    f.write(pdf_bytes)
-
-                probate_case = ProbateCase(
-                    county_id=county.county_id,
-                    case_number=record["case_number"],
-                    filing_date=record["filing_date"],
-                    decedent_id=decedent.person_id,
-                    petitioner_id=petitioner_id,
-                    attorney_name=record.get("attorney_name"),
-                    attorney_quarantined=True,
-                    raw_docket_url=record.get("docket_url"),
-                    invariant_hash=inv_hash
-                )
-                db.add(probate_case)
-                db.flush()
-
-                # Commit Evidence Record
-                evidence = EvidenceRecord(
-                    case_id=probate_case.case_id,
-                    document_type="Court Petition",
-                    storage_uri=f"file://{file_path}",
-                    sha256_hash=pdf_sha256
-                )
-                db.add(evidence)
-
-                # Initialize Candidate Property Scaffold
-                candidate_property = Property(
-                    case_id=probate_case.case_id,
-                    county_id=county.county_id,
-                    apn=record.get("apn", f"UNASSIGNED-{record['case_number']}"),
-                    street="Pending Title Reconciliation",
-                    city="Olympia",
-                    state=county.state,
-                    zip_code="98501",
-                    property_class=PropertyClass.SINGLE_FAMILY,
-                    pas_score=0.0
-                )
-                db.add(candidate_property)
-                db.flush()
-
-                # Stage 1: DISCOVERED Entry in OLE State Machine
-                opportunity = Opportunity(
-                    case_id=probate_case.case_id,
-                    property_id=candidate_property.property_id,
-                    lifecycle_stage=LifecycleStage.DISCOVERED,
-                    composite_viability_score=0,
-                    deal_friction_score=0,
-                    priority_tier=PriorityTier.DISQUALIFIED,
-                    is_qc_certified=False
-                )
-                db.add(opportunity)
-                db.commit()
-
-                committed_case_ids.append(probate_case.case_id)
+                case_id = self._process_record(db, county, record)
+                if case_id:
+                    committed_case_ids.append(case_id)
         except Exception:
             db.rollback()
             raise

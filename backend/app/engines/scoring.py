@@ -40,54 +40,111 @@ class OpportunityScoringResult(BaseModel):
     summary: str
 
 
+def _calculate_equity_pillar(equity_percentage: float, net_equity_amount: float) -> float:
+    pct_score = min(50.0, (equity_percentage / 0.70) * 50.0)
+    dollar_score = min(50.0, (net_equity_amount / 200000.0) * 50.0)
+    return pct_score + dollar_score
+
+
+AUTHORITY_PILLAR_SCORES: dict[AuthorityTier, float] = {
+    AuthorityTier.TIER_1_CONFIRMED: 100.0,
+    AuthorityTier.TIER_2_LIKELY: 75.0,
+    AuthorityTier.TIER_3_STAKEHOLDER_CONSENSUS: 45.0,
+    AuthorityTier.TIER_4_UNRESOLVED: 15.0,
+}
+
+
+def _calculate_distress_pillar(inputs: OpportunityScoringInputs) -> float:
+    points = 0.0
+    if inputs.is_vacant:
+        points += 35.0
+    if inputs.has_notice_of_default_or_lis_pendens:
+        points += 30.0
+    if inputs.has_tax_delinquency:
+        points += 20.0
+    if inputs.has_code_violations:
+        points += 15.0
+    return min(100.0, points)
+
+
+CONTROL_FRICTION_PENALTIES: dict[ControlArchetype, int] = {
+    ControlArchetype.CONTESTED_FACTIONS: 20,
+    ControlArchetype.PROXY_CONTROLLER: 8,
+    ControlArchetype.INFORMAL_FAMILY_LEADER: 5,
+}
+
+
+def _calculate_deal_friction(inputs: OpportunityScoringInputs) -> int:
+    friction = 0
+    if inputs.power_scope == PowerScope.DEPENDENT_COURT_SUPERVISED:
+        friction += 15
+    friction += CONTROL_FRICTION_PENALTIES.get(inputs.control_archetype, 0)
+    if inputs.has_contested_caveat_or_will_dispute:
+        friction += 20
+    if inputs.has_unprobated_title_gap:
+        friction += 15
+    if inputs.ownership_complexity_score > 50:
+        friction += int((inputs.ownership_complexity_score - 50) * 0.25)
+    return min(35, max(0, friction))
+
+
+def _is_priority_a(composite_score: int, net_equity: float, authority_tier: AuthorityTier) -> bool:
+    if composite_score < 80:
+        return False
+    if net_equity < 150000.0:
+        return False
+    return authority_tier in (
+        AuthorityTier.TIER_1_CONFIRMED,
+        AuthorityTier.TIER_2_LIKELY
+    )
+
+
+def _classify_priority(
+    composite_score: int,
+    net_equity: float,
+    authority_tier: AuthorityTier
+) -> tuple[PriorityTier, str, bool, str]:
+    if _is_priority_a(composite_score, net_equity, authority_tier):
+        return (
+            PriorityTier.PRIORITY_A,
+            "FLASH_ALERT_4_HOUR",
+            True,
+            "Exceptional equity and confirmed authority. Priority A instant dispatch SLA."
+        )
+    if composite_score >= 60:
+        return (
+            PriorityTier.PRIORITY_B,
+            "STANDARD_BATCH_MONDAY_8AM",
+            True,
+            "Core production queue. Deliverable in standard weekly partner batch."
+        )
+    if composite_score >= 40:
+        return (
+            PriorityTier.PRIORITY_C,
+            "MILESTONE_WATCH",
+            False,
+            "High friction file. Quarantined on docket milestone watch until Letters issue."
+        )
+    return (
+        PriorityTier.DISQUALIFIED,
+        "SUPPRESSED",
+        False,
+        "Disqualified. Inadequate equity spread or fatal legal dispute."
+    )
+
+
 def compute_opportunity_viability(inputs: OpportunityScoringInputs) -> OpportunityScoringResult:
     """Computes the 0-100 Composite Viability Score balancing Gross Upside against DFS:
 
     Gross Upside = (P1_Equity * 0.35) + (P2_Authority * 0.30) + (P3_Distress * 0.20) + (P4_Liquidity * 0.15)
     Composite Score = max(0, min(100, round(Gross Upside - Deal Friction Score)))
     """
-    # -------------------------------------------------------------
-    # 1. PILLAR 1: Equity Score (0 to 100)
-    # -------------------------------------------------------------
-    pct_score = min(50.0, (inputs.equity_percentage / 0.70) * 50.0)
-    dollar_score = min(50.0, (inputs.net_equity_amount / 200000.0) * 50.0)
-    p1_equity = pct_score + dollar_score
-
-    # -------------------------------------------------------------
-    # 2. PILLAR 2: Authority Score (0 to 100)
-    # -------------------------------------------------------------
-    if inputs.authority_tier == AuthorityTier.TIER_1_CONFIRMED:
-        p2_authority = 100.0
-    elif inputs.authority_tier == AuthorityTier.TIER_2_LIKELY:
-        p2_authority = 75.0
-    elif inputs.authority_tier == AuthorityTier.TIER_3_STAKEHOLDER_CONSENSUS:
-        p2_authority = 45.0
-    else:  # TIER_4_UNRESOLVED
-        p2_authority = 15.0
-
-    # -------------------------------------------------------------
-    # 3. PILLAR 3: Distress Score (0 to 100)
-    # -------------------------------------------------------------
-    distress_points = 0.0
-    if inputs.is_vacant:
-        distress_points += 35.0
-    if inputs.has_notice_of_default_or_lis_pendens:
-        distress_points += 30.0
-    if inputs.has_tax_delinquency:
-        distress_points += 20.0
-    if inputs.has_code_violations:
-        distress_points += 15.0
-    p3_distress = min(100.0, distress_points)
-
-    # -------------------------------------------------------------
-    # 4. PILLAR 4: Liquidity Score (0 to 100)
-    # -------------------------------------------------------------
+    p1_equity = _calculate_equity_pillar(inputs.equity_percentage, inputs.net_equity_amount)
+    p2_authority = AUTHORITY_PILLAR_SCORES.get(inputs.authority_tier, 15.0)
+    p3_distress = _calculate_distress_pillar(inputs)
     base_liquidity = 85.0 if inputs.is_single_family_residence else 60.0
     p4_liquidity = min(100.0, base_liquidity * inputs.county_liquidity_multiplier)
 
-    # -------------------------------------------------------------
-    # GROSS UPSIDE CALCULATION
-    # -------------------------------------------------------------
     gross_upside = (
         (p1_equity * 0.35) +
         (p2_authority * 0.30) +
@@ -95,63 +152,13 @@ def compute_opportunity_viability(inputs: OpportunityScoringInputs) -> Opportuni
         (p4_liquidity * 0.15)
     )
 
-    # -------------------------------------------------------------
-    # DEAL FRICTION SCORE (DFS) DEDUCTION (0 to 35 points)
-    # -------------------------------------------------------------
-    friction = 0
-
-    # A. Court Oversight Penalty
-    if inputs.power_scope == PowerScope.DEPENDENT_COURT_SUPERVISED:
-        friction += 15  # Mandatory Court Confirmation Penalty
-
-    # B. Control Dynamics Penalty
-    if inputs.control_archetype == ControlArchetype.CONTESTED_FACTIONS:
-        friction += 20
-    elif inputs.control_archetype == ControlArchetype.PROXY_CONTROLLER:
-        friction += 8
-    elif inputs.control_archetype == ControlArchetype.INFORMAL_FAMILY_LEADER:
-        friction += 5
-
-    # C. Title & Dispute Cloud Penalties
-    if inputs.has_contested_caveat_or_will_dispute:
-        friction += 20
-    if inputs.has_unprobated_title_gap:
-        friction += 15
-
-    # D. Ownership Complexity Scaling (OCS > 50 yields deduction)
-    if inputs.ownership_complexity_score > 50:
-        friction += int((inputs.ownership_complexity_score - 50) * 0.25)
-
-    # Cap DFS at 35 points max deduction
-    dfs = min(35, max(0, friction))
-
-    # -------------------------------------------------------------
-    # COMPOSITE SCORE & PRIORITY TIER CLASSIFICATION
-    # -------------------------------------------------------------
-    composite_score = int(round(max(0.0, min(100.0, gross_upside - float(dfs)))))
-
-    if composite_score >= 80 and inputs.net_equity_amount >= 150000.0 and inputs.authority_tier in [
-        AuthorityTier.TIER_1_CONFIRMED, AuthorityTier.TIER_2_LIKELY
-    ]:
-        tier = PriorityTier.PRIORITY_A
-        sla = "FLASH_ALERT_4_HOUR"
-        is_deliverable = True
-        summary = "Exceptional equity and confirmed authority. Priority A instant dispatch SLA."
-    elif composite_score >= 60:
-        tier = PriorityTier.PRIORITY_B
-        sla = "STANDARD_BATCH_MONDAY_8AM"
-        is_deliverable = True
-        summary = "Core production queue. Deliverable in standard weekly partner batch."
-    elif composite_score >= 40:
-        tier = PriorityTier.PRIORITY_C
-        sla = "MILESTONE_WATCH"
-        is_deliverable = False
-        summary = "High friction file. Quarantined on docket milestone watch until Letters issue."
-    else:
-        tier = PriorityTier.DISQUALIFIED
-        sla = "SUPPRESSED"
-        is_deliverable = False
-        summary = "Disqualified. Inadequate equity spread or fatal legal dispute."
+    dfs = _calculate_deal_friction(inputs)
+    composite_score = round(max(0.0, min(100.0, gross_upside - float(dfs))))
+    tier, sla, is_deliverable, summary = _classify_priority(
+        composite_score,
+        inputs.net_equity_amount,
+        inputs.authority_tier
+    )
 
     return OpportunityScoringResult(
         composite_viability_score=composite_score,

@@ -83,25 +83,12 @@ class OpportunityLifecycleFSM:
         LifecycleStage.ARCHIVED: set()  # Terminal state
     }
 
+    @staticmethod
+    def _normalize_stage(stage: Union[LifecycleStage, str]) -> LifecycleStage:
+        return LifecycleStage(stage) if isinstance(stage, str) else stage
+
     @classmethod
-    def validate_transition(
-        cls,
-        current_stage: Union[LifecycleStage, str],
-        target_stage: Union[LifecycleStage, str],
-        is_qc_certified: bool = False
-    ) -> None:
-        """Validates whether a transition between two lifecycle stages is structurally legal."""
-        # Normalize to enum
-        curr_enum = LifecycleStage(current_stage) if isinstance(current_stage, str) else current_stage
-        target_enum = LifecycleStage(target_stage) if isinstance(target_stage, str) else target_stage
-
-        if curr_enum == target_enum:
-            return
-
-        # Full 6-gate Quality Control certification enables transition to QC_CERTIFIED
-        if target_enum == LifecycleStage.QC_CERTIFIED and is_qc_certified:
-            return
-
+    def _check_structural_transition(cls, curr_enum: LifecycleStage, target_enum: LifecycleStage) -> None:
         permitted_targets = cls.VALID_TRANSITIONS.get(curr_enum, set())
         if target_enum not in permitted_targets:
             raise InvalidStateTransitionError(
@@ -110,15 +97,35 @@ class OpportunityLifecycleFSM:
                 reason=f"Stage {curr_enum.value} can only transition to: {[s.value for s in permitted_targets]}."
             )
 
-        # Gate Certification Requirement: Cannot reach DELIVERED without passing QC Certification
+    @staticmethod
+    def _check_qc_requirement(target_enum: LifecycleStage, is_qc_certified: bool) -> None:
         if target_enum == LifecycleStage.DELIVERED and not is_qc_certified:
             raise InvalidStateTransitionError(
-                current_stage=curr_enum,
+                current_stage=target_enum,
                 target_stage=target_enum,
                 reason="Cannot transition to DELIVERED without passing Quality Control Gate certification."
             )
 
     @classmethod
+    def validate_transition(
+        cls,
+        current_stage: Union[LifecycleStage, str],
+        target_stage: Union[LifecycleStage, str],
+        is_qc_certified: bool = False
+    ) -> None:
+        """Validates whether a transition between two lifecycle stages is structurally legal."""
+        curr_enum = cls._normalize_stage(current_stage)
+        target_enum = cls._normalize_stage(target_stage)
+
+        if curr_enum == target_enum:
+            return
+
+        if target_enum == LifecycleStage.QC_CERTIFIED and is_qc_certified:
+            return
+
+        cls._check_structural_transition(curr_enum, target_enum)
+        cls._check_qc_requirement(target_enum, is_qc_certified)
+
+    @classmethod
     def is_terminal(cls, stage: Union[LifecycleStage, str]) -> bool:
-        stage_enum = LifecycleStage(stage) if isinstance(stage, str) else stage
-        return stage_enum == LifecycleStage.ARCHIVED
+        return cls._normalize_stage(stage) == LifecycleStage.ARCHIVED

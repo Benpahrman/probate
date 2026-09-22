@@ -32,26 +32,30 @@ class OpportunityResponse(BaseModel):
     is_qc_certified: bool
 
 
+class OpportunityQueryParams(BaseModel):
+    stage: Optional[LifecycleStage] = None
+    priority: Optional[PriorityTier] = None
+    skip: int = 0
+    limit: int = 100
+
+
 class TransitionRequest(BaseModel):
     target_stage: LifecycleStage
 
 
 @router.get("", response_model=List[OpportunityResponse])
 def list_opportunities(
-    stage: Optional[LifecycleStage] = None,
-    priority: Optional[PriorityTier] = None,
-    skip: int = 0,
-    limit: int = 100,
+    params: OpportunityQueryParams = Depends(),
     db: Session = Depends(get_db)
 ):
     """Returns the pipeline workbench opportunities organized by lifecycle stage."""
     query = db.query(Opportunity)
-    if stage:
-        query = query.filter(Opportunity.lifecycle_stage == stage)
-    if priority:
-        query = query.filter(Opportunity.priority_tier == priority)
+    if params.stage:
+        query = query.filter(Opportunity.lifecycle_stage == params.stage)
+    if params.priority:
+        query = query.filter(Opportunity.priority_tier == params.priority)
 
-    opps = query.order_by(Opportunity.composite_viability_score.desc()).offset(skip).limit(limit).all()
+    opps = query.order_by(Opportunity.composite_viability_score.desc()).offset(params.skip).limit(params.limit).all()
     return [
         OpportunityResponse(
             opportunity_id=o.opportunity_id,

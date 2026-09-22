@@ -27,60 +27,65 @@ class GieniOpportunityEngine:
             'Content-Type': 'application/json'
         }
 
+    @staticmethod
+    def _score_authority(case_data: dict) -> int:
+        if case_data.get('has_nonintervention_powers'):
+            return 35
+        if case_data.get('petition_filed_no_dispute'):
+            return 20
+        return 5
+
+    @staticmethod
+    def _score_equity(case_data: dict) -> int:
+        ltv = case_data.get('estimated_ltv', 0.0)
+        if ltv == 0.0:
+            return 25
+        if ltv < 0.40:
+            return 20
+        if ltv < 0.70:
+            return 10
+        return 0
+
+    @staticmethod
+    def _score_control(case_data: dict) -> int:
+        num_heirs = case_data.get('heir_count', 1)
+        if num_heirs == 1:
+            return 25
+        if num_heirs <= 3 and case_data.get('heirs_cooperative', True):
+            return 18
+        return 5
+
+    @staticmethod
+    def _score_occupancy(case_data: dict) -> int:
+        occupancy = case_data.get('occupancy', 'vacant').lower()
+        if occupancy == 'vacant':
+            return 15
+        if occupancy == 'tenant':
+            return 8
+        return 5
+
+    @staticmethod
+    def _determine_priority(score: int) -> str:
+        if score >= 85:
+            return "Priority A"
+        if score >= 65:
+            return "Priority B"
+        if score >= 45:
+            return "Priority C"
+        return "Disqualified"
+
     def calculate_score(self, case_data):
         """
         Calculates the Gieni Opportunity Score (0 - 100)
         based on Authority, Equity, Control, and Condition.
         """
-        score = 0
-
-        # Authority Factor (Max 35 pts)
-        if case_data.get('has_nonintervention_powers'):
-            score += 35
-        elif case_data.get('petition_filed_no_dispute'):
-            score += 20
-        else:
-            score += 5
-
-        # Equity / Debt Factor (Max 25 pts)
-        ltv = case_data.get('estimated_ltv', 0.0) # 0.0 = free and clear
-        if ltv == 0.0:
-            score += 25
-        elif ltv < 0.40:
-            score += 20
-        elif ltv < 0.70:
-            score += 10
-        else:
-            score += 0 # Underwater / high debt
-
-        # Control & Family Dynamic (Max 25 pts)
-        num_heirs = case_data.get('heir_count', 1)
-        if num_heirs == 1:
-            score += 25
-        elif num_heirs <= 3 and case_data.get('heirs_cooperative', True):
-            score += 18
-        else:
-            score += 5
-
-        # Occupancy & Condition (Max 15 pts)
-        occupancy = case_data.get('occupancy', 'vacant').lower()
-        if occupancy == 'vacant':
-            score += 15
-        elif occupancy == 'tenant':
-            score += 8
-        else:
-            score += 5
-
-        # Determine Priority Tier
-        if score >= 85:
-            priority = "Priority A"
-        elif score >= 65:
-            priority = "Priority B"
-        elif score >= 45:
-            priority = "Priority C"
-        else:
-            priority = "Disqualified"
-
+        score = (
+            self._score_authority(case_data)
+            + self._score_equity(case_data)
+            + self._score_control(case_data)
+            + self._score_occupancy(case_data)
+        )
+        priority = self._determine_priority(score)
         return score, priority
 
     def create_opportunity(self, data, county_id=None, client_id=None):

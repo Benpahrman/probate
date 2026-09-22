@@ -80,3 +80,9 @@ exclude_lines = [
     "if TYPE_CHECKING:",
 ]
 show_missing = true
+
+[tool.pyright]
+include = ["backend", "tests", "scripts"]
+extraPaths = ["backend"]
+venvPath = "."
+venv = ".venv"

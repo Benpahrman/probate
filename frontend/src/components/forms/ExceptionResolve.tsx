@@ -8,19 +8,58 @@ interface ExceptionResolveProps {
   onReAudit?: (opportunityId: string) => void;
 }
 
+const getInitialCorrectionType = (type: string) => {
+  if (type.includes('GATE_2')) return 'APN_OVERRIDE';
+  if (type.includes('GATE_4')) return 'LETTERS_CLASSIFICATION';
+  return 'CONTACT_REPLACEMENT';
+};
+
+const buildAuditDetails = (
+  correctionType: string,
+  apnOverride: string,
+  lettersStatus: string,
+  contactLine: string,
+  notes: string
+): string => {
+  const prefix = `[Corrective Action: ${correctionType}] `;
+  const detailMap: Record<string, string> = {
+    APN_OVERRIDE: `APN Override committed: ${apnOverride}. `,
+    LETTERS_CLASSIFICATION: `Letters classified as: ${lettersStatus}. `,
+    CONTACT_REPLACEMENT: `Direct fiduciary line updated: ${contactLine}. `,
+  };
+  const body = detailMap[correctionType] || '';
+  const noteSuffix = notes ? `Operator Notes: ${notes}` : 'Audited and verified against primary court filings.';
+  return `${prefix}${body}${noteSuffix}`;
+};
+
+const ExceptionDetailsSummary: React.FC<{ exception: ExceptionItem }> = ({ exception }) => (
+  <div className="p-4 bg-slate-950/80 rounded-lg border border-slate-800 space-y-2 text-xs font-mono">
+    <div className="flex justify-between">
+      <span className="text-slate-400">Exception ID:</span>
+      <span className="text-slate-200">{exception.id}</span>
+    </div>
+    <div className="flex justify-between">
+      <span className="text-slate-400">Target Opportunity:</span>
+      <span className="text-indigo-400 font-bold">{exception.opportunity_id}</span>
+    </div>
+    <div className="flex justify-between">
+      <span className="text-slate-400">Gate Failure Classification:</span>
+      <span className="text-amber-400 font-bold">{exception.type}</span>
+    </div>
+    <div className="flex justify-between">
+      <span className="text-slate-400">Current Notes:</span>
+      <span className="text-slate-300">{exception.notes || 'Awaiting operator audit triage'}</span>
+    </div>
+  </div>
+);
+
 export const ExceptionResolve: React.FC<ExceptionResolveProps> = ({
   exception,
   onCommit,
   onCancel,
   onReAudit,
 }) => {
-  const [correctionType, setCorrectionType] = useState<string>(
-    exception.type.includes('GATE_2')
-      ? 'APN_OVERRIDE'
-      : exception.type.includes('GATE_4')
-      ? 'LETTERS_CLASSIFICATION'
-      : 'CONTACT_REPLACEMENT'
-  );
+  const [correctionType, setCorrectionType] = useState<string>(() => getInitialCorrectionType(exception.type));
   const [apnOverride, setApnOverride] = useState<string>('');
   const [lettersStatus, setLettersStatus] = useState<string>('CONFIRMED_NONINTERVENTION');
   const [contactLine, setContactLine] = useState<string>('');
@@ -31,16 +70,7 @@ export const ExceptionResolve: React.FC<ExceptionResolveProps> = ({
     e.preventDefault();
     setSubmitting(true);
 
-    let auditDetails = `[Corrective Action: ${correctionType}] `;
-    if (correctionType === 'APN_OVERRIDE') {
-      auditDetails += `APN Override committed: ${apnOverride}. `;
-    } else if (correctionType === 'LETTERS_CLASSIFICATION') {
-      auditDetails += `Letters classified as: ${lettersStatus}. `;
-    } else if (correctionType === 'CONTACT_REPLACEMENT') {
-      auditDetails += `Direct fiduciary line updated: ${contactLine}. `;
-    }
-    auditDetails += notes ? `Operator Notes: ${notes}` : 'Audited and verified against primary court filings.';
-
+    const auditDetails = buildAuditDetails(correctionType, apnOverride, lettersStatus, contactLine, notes);
     const ok = await onCommit(exception.id, auditDetails);
     setSubmitting(false);
 
@@ -51,28 +81,13 @@ export const ExceptionResolve: React.FC<ExceptionResolveProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="p-4 bg-slate-950/80 rounded-lg border border-slate-800 space-y-2 text-xs font-mono">
-        <div className="flex justify-between">
-          <span className="text-slate-400">Exception ID:</span>
-          <span className="text-slate-200">{exception.id}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-slate-400">Target Opportunity:</span>
-          <span className="text-indigo-400 font-bold">{exception.opportunity_id}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-slate-400">Gate Failure Classification:</span>
-          <span className="text-amber-400 font-bold">{exception.type}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-slate-400">Current Notes:</span>
-          <span className="text-slate-300">{exception.notes || 'Awaiting operator audit triage'}</span>
-        </div>
-      </div>
+      <ExceptionDetailsSummary exception={exception} />
 
       <div className="space-y-3">
         <div>
-          <label htmlFor="correction-protocol-select" className="block text-xs font-mono text-slate-300 mb-1">Correction Protocol</label>
+          <label htmlFor="correction-protocol-select" className="block text-xs font-mono text-slate-300 mb-1">
+            Correction Protocol
+          </label>
           <select
             id="correction-protocol-select"
             value={correctionType}
@@ -88,7 +103,9 @@ export const ExceptionResolve: React.FC<ExceptionResolveProps> = ({
 
         {correctionType === 'APN_OVERRIDE' && (
           <div>
-            <label htmlFor="apn-override-input" className="block text-xs font-mono text-slate-300 mb-1">Corrected Assessor Parcel Number (APN)</label>
+            <label htmlFor="apn-override-input" className="block text-xs font-mono text-slate-300 mb-1">
+              Corrected Assessor Parcel Number (APN)
+            </label>
             <input
               id="apn-override-input"
               type="text"
@@ -103,7 +120,9 @@ export const ExceptionResolve: React.FC<ExceptionResolveProps> = ({
 
         {correctionType === 'LETTERS_CLASSIFICATION' && (
           <div>
-            <label htmlFor="letters-classification-select" className="block text-xs font-mono text-slate-300 mb-1">Letters Authority Classification</label>
+            <label htmlFor="letters-classification-select" className="block text-xs font-mono text-slate-300 mb-1">
+              Letters Authority Classification
+            </label>
             <select
               id="letters-classification-select"
               value={lettersStatus}
@@ -119,7 +138,9 @@ export const ExceptionResolve: React.FC<ExceptionResolveProps> = ({
 
         {correctionType === 'CONTACT_REPLACEMENT' && (
           <div>
-            <label htmlFor="contact-line-input" className="block text-xs font-mono text-slate-300 mb-1">Verified Fiduciary Direct Line</label>
+            <label htmlFor="contact-line-input" className="block text-xs font-mono text-slate-300 mb-1">
+              Verified Fiduciary Direct Line
+            </label>
             <input
               id="contact-line-input"
               type="text"
@@ -133,7 +154,9 @@ export const ExceptionResolve: React.FC<ExceptionResolveProps> = ({
         )}
 
         <div>
-          <label htmlFor="audit-notes-textarea" className="block text-xs font-mono text-slate-300 mb-1">Audit Trail Notes (Required)</label>
+          <label htmlFor="audit-notes-textarea" className="block text-xs font-mono text-slate-300 mb-1">
+            Audit Trail Notes (Required)
+          </label>
           <textarea
             id="audit-notes-textarea"
             rows={3}

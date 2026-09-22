@@ -92,6 +92,7 @@ def test_gate_1_docket_integrity_invalid_sha():
         petition_pdf_sha256="corrupt_hash"
     )
     assert res.passed is False
+    assert res.failure_reason is not None
     assert "Missing or corrupt court petition PDF" in res.failure_reason
 
 
@@ -103,6 +104,7 @@ def test_gate_1_docket_integrity_invalid_case_and_date():
         petition_pdf_sha256="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     )
     assert res_bad_case.passed is False
+    assert res_bad_case.failure_reason is not None
     assert "violates county docket regex formatting" in res_bad_case.failure_reason
 
     res_bad_date = QualityControlGatekeeper.verify_gate_1_docket_integrity(
@@ -111,6 +113,7 @@ def test_gate_1_docket_integrity_invalid_case_and_date():
         petition_pdf_sha256="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     )
     assert res_bad_date.passed is False
+    assert res_bad_date.failure_reason is not None
     assert "Filing date falls outside the valid municipal intake lookback window" in res_bad_date.failure_reason
 
 
@@ -161,6 +164,7 @@ def test_gate_4_authority_caveat_quarantine():
     )
     assert res_clean.passed is True
     assert res_contested.passed is False
+    assert res_contested.failure_reason is not None
     assert "active caveats" in res_contested.failure_reason
 
 
@@ -174,6 +178,7 @@ def test_gate_5_attorney_quarantine():
     )
     assert res_quarantined.passed is True
     assert res_unquarantined.passed is False
+    assert res_unquarantined.failure_reason is not None
     assert "attorney gatekeeper has not been quarantined" in res_unquarantined.failure_reason
 
 
@@ -183,12 +188,14 @@ def test_gate_5_phone_and_dnc_checks():
         primary_phone_active=False, dnc_filtered=True, is_attorney_quarantined=True
     )
     assert res_bad_phone.passed is False
+    assert res_bad_phone.failure_reason is not None
     assert "disconnected or failed carrier HLR dip" in res_bad_phone.failure_reason
 
     res_bad_dnc = QualityControlGatekeeper.verify_gate_5_contact_scrubbing(
         primary_phone_active=True, dnc_filtered=False, is_attorney_quarantined=True
     )
     assert res_bad_dnc.passed is False
+    assert res_bad_dnc.failure_reason is not None
     assert "National Do-Not-Call (DNC)" in res_bad_dnc.failure_reason
 
 
@@ -224,6 +231,7 @@ def test_gate_6_predelivery_certification():
         scoring_result=scoring_high, evidence_records_count=2, is_in_partner_buybox=False
     )
     assert res_buybox_fail.passed is False
+    assert res_buybox_fail.failure_reason is not None
     assert "partner buy-box" in res_buybox_fail.failure_reason
 
     # Low score
@@ -231,6 +239,7 @@ def test_gate_6_predelivery_certification():
         scoring_result=scoring_low, evidence_records_count=2, is_in_partner_buybox=True
     )
     assert res_score_fail.passed is False
+    assert res_score_fail.failure_reason is not None
     assert "below standard delivery threshold" in res_score_fail.failure_reason
 
     # Insufficient evidence records
@@ -238,6 +247,7 @@ def test_gate_6_predelivery_certification():
         scoring_result=scoring_high, evidence_records_count=1, is_in_partner_buybox=True
     )
     assert res_evidence_fail.passed is False
+    assert res_evidence_fail.failure_reason is not None
     assert "Insufficient cryptographic evidence records" in res_evidence_fail.failure_reason
 
 
@@ -336,6 +346,7 @@ def test_create_quarantine_ticket():
     )
     assert ticket.case_id == case_id
     assert ticket.priority == ExceptionPriority.CRITICAL
+    assert ticket.resolution_notes is not None
     assert "SLA Target: 4 Hours" in ticket.resolution_notes
     assert db_mock.add.called
     assert db_mock.commit.called
@@ -365,6 +376,49 @@ def test_lifecycle_coordinator_transition_stage():
     assert db_mock.refresh.called
 
 
+def _build_test_qc_dataset():
+    equity = EquityWaterfallResult(
+        gross_market_value=350000.0,
+        total_encumbrances=70000.0,
+        net_actionable_equity=280000.0,
+        equity_percentage=0.80,
+        tier=EquityTier.EXCEPTIONAL,
+        gate_3_passed=True,
+        is_disqualified=False
+    )
+    scoring = OpportunityScoringResult(
+        composite_viability_score=85,
+        gross_upside_score=90.0,
+        deal_friction_score=5,
+        priority_tier=PriorityTier.PRIORITY_A,
+        dispatch_sla="FLASH_ALERT_4_HOUR",
+        is_deliverable=True,
+        summary="Viable"
+    )
+    return equity, scoring
+
+
+def _run_test_qc_audit(db_mock: MagicMock, opp: Opportunity, pas_result: ParcelAttributionResult):
+    equity, scoring = _build_test_qc_dataset()
+    return LifecycleCoordinatorService.execute_qc_audit_and_transition(
+        db=db_mock,
+        opportunity=opp,
+        case_number="2026-PR-009182",
+        filing_date_valid=True,
+        petition_pdf_sha256="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        pas_result=pas_result,
+        equity_result=equity,
+        authority_tier=AuthorityTier.TIER_1_CONFIRMED,
+        has_contested_caveats=False,
+        primary_phone_active=True,
+        dnc_filtered=True,
+        is_attorney_quarantined=True,
+        scoring_result=scoring,
+        evidence_records_count=2,
+        is_in_partner_buybox=True
+    )
+
+
 def test_lifecycle_coordinator_qc_audit_success():
     """Verify QC audit passing advances opportunity to QC_CERTIFIED."""
     db_mock = MagicMock()
@@ -377,42 +431,7 @@ def test_lifecycle_coordinator_qc_audit_success():
     valid_pas = ParcelAttributionResult(
         pas_score=85.0, category=PASCategory.PROBABLE_MATCH, gate_2_passed=True, requires_manual_triage=False
     )
-    valid_equity = EquityWaterfallResult(
-        gross_market_value=350000.0,
-        total_encumbrances=70000.0,
-        net_actionable_equity=280000.0,
-        equity_percentage=0.80,
-        tier=EquityTier.EXCEPTIONAL,
-        gate_3_passed=True,
-        is_disqualified=False
-    )
-    valid_scoring = OpportunityScoringResult(
-        composite_viability_score=85,
-        gross_upside_score=90.0,
-        deal_friction_score=5,
-        priority_tier=PriorityTier.PRIORITY_A,
-        dispatch_sla="FLASH_ALERT_4_HOUR",
-        is_deliverable=True,
-        summary="Viable"
-    )
-
-    summary = LifecycleCoordinatorService.execute_qc_audit_and_transition(
-        db=db_mock,
-        opportunity=opp,
-        case_number="2026-PR-009182",
-        filing_date_valid=True,
-        petition_pdf_sha256="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        pas_result=valid_pas,
-        equity_result=valid_equity,
-        authority_tier=AuthorityTier.TIER_1_CONFIRMED,
-        has_contested_caveats=False,
-        primary_phone_active=True,
-        dnc_filtered=True,
-        is_attorney_quarantined=True,
-        scoring_result=valid_scoring,
-        evidence_records_count=2,
-        is_in_partner_buybox=True
-    )
+    summary = _run_test_qc_audit(db_mock, opp, valid_pas)
     assert summary.is_fully_certified is True
     assert opp.is_qc_certified is True
     assert opp.lifecycle_stage == LifecycleStage.QC_CERTIFIED
@@ -433,42 +452,7 @@ def test_lifecycle_coordinator_qc_audit_failure_quarantine():
     fail_pas = ParcelAttributionResult(
         pas_score=50.0, category=PASCategory.MANUAL_REVIEW, gate_2_passed=False, requires_manual_triage=True
     )
-    valid_equity = EquityWaterfallResult(
-        gross_market_value=350000.0,
-        total_encumbrances=70000.0,
-        net_actionable_equity=280000.0,
-        equity_percentage=0.80,
-        tier=EquityTier.EXCEPTIONAL,
-        gate_3_passed=True,
-        is_disqualified=False
-    )
-    valid_scoring = OpportunityScoringResult(
-        composite_viability_score=85,
-        gross_upside_score=90.0,
-        deal_friction_score=5,
-        priority_tier=PriorityTier.PRIORITY_A,
-        dispatch_sla="FLASH_ALERT_4_HOUR",
-        is_deliverable=True,
-        summary="Viable"
-    )
-
-    summary = LifecycleCoordinatorService.execute_qc_audit_and_transition(
-        db=db_mock,
-        opportunity=opp,
-        case_number="2026-PR-009182",
-        filing_date_valid=True,
-        petition_pdf_sha256="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        pas_result=fail_pas,
-        equity_result=valid_equity,
-        authority_tier=AuthorityTier.TIER_1_CONFIRMED,
-        has_contested_caveats=False,
-        primary_phone_active=True,
-        dnc_filtered=True,
-        is_attorney_quarantined=True,
-        scoring_result=valid_scoring,
-        evidence_records_count=2,
-        is_in_partner_buybox=True
-    )
+    summary = _run_test_qc_audit(db_mock, opp, fail_pas)
     assert summary.is_fully_certified is False
     assert summary.failed_gate == 2
     assert opp.is_qc_certified is False

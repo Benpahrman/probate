@@ -41,6 +41,40 @@ class AuditorHarvester:
     }
 
     @classmethod
+    def _generate_fixtures(cls, county_id: str, days_back: int) -> List[ScrapedDocket]:
+        records = cls.NON_PROBATE_FIXTURES.get(county_id, cls.NON_PROBATE_FIXTURES["cty_thurston"])
+        dockets: List[ScrapedDocket] = []
+        today = date.today()
+        auditor_name = cls.RECORDING_OFFICES.get(county_id, "County Auditor Recording Department")
+
+        for idx, (dec, claim, rel, inst_type, addr, apn) in enumerate(records):
+            d_offset = min(idx * 2, days_back)
+            f_date = today - timedelta(days=d_offset)
+            inst_num = f"AUD-2026{f_date.month:02d}{f_date.day:02d}{1001 + idx:04d}"
+            case_no = f"NP-{inst_type[:4]}-{inst_num[-6:]}"
+
+            dockets.append(ScrapedDocket(
+                case_number=case_no,
+                decedent=dec,
+                county_id=county_id,
+                channel=FilingChannel.AUDITOR_NON_PROBATE,
+                filing_date=f_date,
+                petitioner_name=claim,
+                petitioner_relationship=rel,
+                attorney_name="Title Attorney Affidavit",
+                instrument_number=inst_num,
+                property_hint=f"{addr} (APN: {apn})",
+                raw_snippet=(
+                    f"{auditor_name} | Instrument #{inst_num}. Recorded: {f_date}. "
+                    f"Type: {inst_type}. Deceased Titleholder: {dec}. "
+                    f"Affiant/Claimant: {claim} ({rel}). Property: {addr}, APN: {apn}. "
+                    f"Statutory Basis: RCW 82.45.197 (Excise Tax Exemption on Non-Probate Transfer)."
+                )
+            ))
+
+        return dockets
+
+    @classmethod
     def harvest(cls, county_id: str, days_back: int = 14) -> List[ScrapedDocket]:
         """
         Extracts non-probate real estate transfers from County Auditor recordings.
@@ -66,38 +100,7 @@ class AuditorHarvester:
             )
 
         # 3. Deterministic Ground Truth Fixtures (Zero Synthetic Math / Zero Random)
-        records = cls.NON_PROBATE_FIXTURES.get(county_id, cls.NON_PROBATE_FIXTURES["cty_thurston"])
-        dockets: List[ScrapedDocket] = []
-        today = date.today()
-        auditor_name = cls.RECORDING_OFFICES.get(county_id, "County Auditor Recording Department")
-
-        for idx, (dec, claim, rel, inst_type, addr, apn) in enumerate(records):
-            d_offset = min(idx * 2, days_back)
-            f_date = today - timedelta(days=d_offset)
-            
-            inst_num = f"AUD-2026{f_date.month:02d}{f_date.day:02d}{1001 + idx:04d}"
-            case_no = f"NP-{inst_type[:4]}-{inst_num[-6:]}"
-
-            dockets.append(ScrapedDocket(
-                case_number=case_no,
-                decedent=dec,
-                county_id=county_id,
-                channel=FilingChannel.AUDITOR_NON_PROBATE,
-                filing_date=f_date,
-                petitioner_name=claim,
-                petitioner_relationship=rel,
-                attorney_name="Title Attorney Affidavit",
-                instrument_number=inst_num,
-                property_hint=f"{addr} (APN: {apn})",
-                raw_snippet=(
-                    f"{auditor_name} | Instrument #{inst_num}. Recorded: {f_date}. "
-                    f"Type: {inst_type}. Deceased Titleholder: {dec}. "
-                    f"Affiant/Claimant: {claim} ({rel}). Property: {addr}, APN: {apn}. "
-                    f"Statutory Basis: RCW 82.45.197 (Excise Tax Exemption on Non-Probate Transfer)."
-                )
-            ))
-
-        return dockets
+        return cls._generate_fixtures(county_id, days_back)
 
     @classmethod
     def _harvest_live_feed(cls, endpoint: str, county_id: str, days_back: int) -> List[ScrapedDocket]:

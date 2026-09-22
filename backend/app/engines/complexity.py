@@ -20,54 +20,56 @@ class OwnershipComplexityResult(BaseModel):
     title_clearance_strategy: str
 
 
-def compute_ownership_complexity(inputs: OwnershipComplexityInputs) -> OwnershipComplexityResult:
-    """Computes the Ownership Complexity Score (OCS, 10-100) based on title structure:
-    
-    Base Archetypes:
-    - Sole Fee Simple: 10 pts
-    - Joint Tenancy (JTWROS / TBE): 35 pts
-    - Revocable Living Trust: 45 pts
-    - Tenancy in Common / Multi-Heir: 65 pts
-    - Ancestral Heir Property: 85 pts
-    - Entity Ownership Stack: 100 pts
-    """
-    if inputs.vesting_type == VestingType.SOLE_FEE_SIMPLE:
-        base_score = 10
-        strategy = "Direct testamentary probate transfer or independent administrator deed."
-    elif inputs.vesting_type == VestingType.JTWROS:
-        base_score = 35
-        strategy = "Non-probate operation of law; record certified death certificate and affidavit of survivorship."
-    elif inputs.vesting_type == VestingType.REVOCABLE_LIVING_TRUST:
-        base_score = 45
-        strategy = "Private non-court disposition; obtain Certificate of Trust and verify Successor Trustee powers."
-    elif inputs.vesting_type == VestingType.TENANCY_IN_COMMON:
-        base_score = 65
-        strategy = "Multi-heir intestate consensus; require partition mediation or joinder of all fractional co-tenants."
-    elif inputs.vesting_type == VestingType.HEIR_PROPERTY:
-        base_score = 85
-        strategy = "Ancestral quiet title action or serial probate administration across multiple estates."
-    else:  # ENTITY_OWNERSHIP
-        base_score = 100
-        strategy = "Corporate entity resolution; inspect operating agreement for deceased managing member transfer powers."
+VESTING_ARCHETYPES: dict[VestingType, tuple[int, str]] = {
+    VestingType.SOLE_FEE_SIMPLE: (
+        10,
+        "Direct testamentary probate transfer or independent administrator deed."
+    ),
+    VestingType.JTWROS: (
+        35,
+        "Non-probate operation of law; record certified death certificate and affidavit of survivorship."
+    ),
+    VestingType.REVOCABLE_LIVING_TRUST: (
+        45,
+        "Private non-court disposition; obtain Certificate of Trust and verify Successor Trustee powers."
+    ),
+    VestingType.TENANCY_IN_COMMON: (
+        65,
+        "Multi-heir intestate consensus; require partition mediation or joinder of all fractional co-tenants."
+    ),
+    VestingType.HEIR_PROPERTY: (
+        85,
+        "Ancestral quiet title action or serial probate administration across multiple estates."
+    ),
+    VestingType.ENTITY_OWNERSHIP: (
+        100,
+        "Corporate entity resolution; inspect operating agreement for deceased managing member transfer powers."
+    ),
+}
 
+
+def _calculate_penalties(inputs: OwnershipComplexityInputs) -> int:
     penalties = 0
-
-    # Additional Heir Fragmentation Penalties
     if inputs.heir_count > 4:
         penalties += min(20, (inputs.heir_count - 4) * 4)
-
-    # Unresolved Ancestor Probates (+15 per generation)
     if inputs.ancestor_probates_unresolved > 0:
         penalties += inputs.ancestor_probates_unresolved * 15
-
-    # Clouded Title Flags
     if inputs.has_unrecorded_trust_reference:
         penalties += 10
     if inputs.has_title_cloud_or_wild_deed:
         penalties += 15
     if inputs.has_foreign_or_ancillary_jurisdiction:
         penalties += 10
+    return penalties
 
+
+def compute_ownership_complexity(inputs: OwnershipComplexityInputs) -> OwnershipComplexityResult:
+    """Computes the Ownership Complexity Score (OCS, 10-100) based on title structure."""
+    base_score, strategy = VESTING_ARCHETYPES.get(
+        inputs.vesting_type,
+        VESTING_ARCHETYPES[VestingType.ENTITY_OWNERSHIP]
+    )
+    penalties = _calculate_penalties(inputs)
     total_score = min(100, max(10, base_score + penalties))
 
     return OwnershipComplexityResult(

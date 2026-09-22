@@ -19,6 +19,17 @@ const DEFAULT_HEADERS: Record<string, string> = {
   'x-clerk-role': 'Platform Admin',
 };
 
+export interface OpportunityFilterParams {
+  stage?: string;
+  county_id?: string;
+  authority_status?: string;
+}
+
+export interface CrmExportParams {
+  webhookUrl?: string;
+  platform?: string;
+}
+
 async function handleResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {
     let errorDetail = `HTTP ${res.status} ${res.statusText}`;
@@ -35,13 +46,42 @@ async function handleResponse<T>(res: Response): Promise<T> {
   return res.json();
 }
 
+const mapPriorityTier = (priority?: string): any => {
+  if (priority === 'HIGH') return 'PRIORITY_A';
+  if (priority === 'LOW') return 'PRIORITY_C';
+  return priority || 'PRIORITY_B';
+};
+
+const mapOpportunityItem = (item: any): OpportunitySummary => {
+  const isQc =
+    item.is_qc_certified !== undefined
+      ? item.is_qc_certified
+      : item.workflow_stage === 'READY' || item.workflow_stage === 'DELIVERED';
+
+  return {
+    id: item.id,
+    opportunity_id: item.id,
+    case_id: item.case_id,
+    case_number: item.case_number || 'N/A',
+    decedent: item.decedent || 'Unknown Estate',
+    decedent_name: item.decedent || 'Unknown Estate',
+    estate_name: item.estate_name || `Estate of ${item.decedent || item.id.substring(0, 8)}`,
+    county_id: item.county_id,
+    county_name: item.county_name || item.county_id,
+    workflow_stage: item.workflow_stage,
+    lifecycle_stage: item.lifecycle_stage,
+    score: item.score || 0,
+    composite_viability_score: item.score || 0,
+    priority: item.priority || 'PRIORITY_B',
+    priority_tier: mapPriorityTier(item.priority),
+    authority_status: item.authority_status || 'TIER_4_UNRESOLVED',
+    is_qc_certified: isQc,
+  };
+};
+
 export const ApiService = {
   // Opportunities
-  async getOpportunities(params?: {
-    stage?: string;
-    county_id?: string;
-    authority_status?: string;
-  }): Promise<OpportunitySummary[]> {
+  async getOpportunities(params?: OpportunityFilterParams): Promise<OpportunitySummary[]> {
     const query = new URLSearchParams();
     if (params?.stage) query.append('workflow_stage', params.stage);
     if (params?.county_id) query.append('county_id', params.county_id);
@@ -50,27 +90,7 @@ export const ApiService = {
     const url = `${API_BASE}/opportunities${query.toString() ? `?${query.toString()}` : ''}`;
     const res = await fetch(url, { headers: DEFAULT_HEADERS });
     const data = await handleResponse<any[]>(res);
-    
-    // Map to OpportunitySummary
-    return data.map((item) => ({
-      id: item.id,
-      opportunity_id: item.id,
-      case_id: item.case_id,
-      case_number: item.case_number || 'N/A',
-      decedent: item.decedent || 'Unknown Estate',
-      decedent_name: item.decedent || 'Unknown Estate',
-      estate_name: item.estate_name || `Estate of ${item.decedent || item.id.substring(0, 8)}`,
-      county_id: item.county_id,
-      county_name: item.county_name || item.county_id,
-      workflow_stage: item.workflow_stage,
-      lifecycle_stage: item.lifecycle_stage,
-      score: item.score || 0,
-      composite_viability_score: item.score || 0,
-      priority: item.priority || 'PRIORITY_B',
-      priority_tier: item.priority === 'HIGH' ? 'PRIORITY_A' : item.priority === 'LOW' ? 'PRIORITY_C' : (item.priority as any),
-      authority_status: item.authority_status || 'TIER_4_UNRESOLVED',
-      is_qc_certified: item.is_qc_certified !== undefined ? item.is_qc_certified : (item.workflow_stage === 'READY' || item.workflow_stage === 'DELIVERED'),
-    }));
+    return data.map(mapOpportunityItem);
   },
 
   async getOpportunityWorkbench(id: string): Promise<FullPOFDossier> {
@@ -86,7 +106,11 @@ export const ApiService = {
     return handleResponse<QualityControlAuditSummary>(res);
   },
 
-  async transitionFSM(id: string, targetStage: string, notes?: string): Promise<{ opportunity_id: string; workflow_stage: string }> {
+  async transitionFSM(
+    id: string,
+    targetStage: string,
+    notes?: string
+  ): Promise<{ opportunity_id: string; workflow_stage: string }> {
     const res = await fetch(`${API_BASE}/opportunities/${id}/fsm`, {
       method: 'POST',
       headers: DEFAULT_HEADERS,
@@ -111,7 +135,10 @@ export const ApiService = {
     return handleResponse<CaseItem[]>(res);
   },
 
-  async triggerScraper(countyFips: string, lookbackDays: number = 7): Promise<{
+  async triggerScraper(
+    countyFips: string,
+    lookbackDays: number = 7
+  ): Promise<{
     status: string;
     county_fips: string;
     cases_ingested_count: number;
@@ -132,10 +159,13 @@ export const ApiService = {
   },
 
   async resolveException(id: string, resolutionText: string): Promise<ExceptionItem> {
-    const res = await fetch(`${API_BASE}/exceptions/${id}/resolve?resolution_text=${encodeURIComponent(resolutionText)}`, {
-      method: 'POST',
-      headers: DEFAULT_HEADERS,
-    });
+    const res = await fetch(
+      `${API_BASE}/exceptions/${id}/resolve?resolution_text=${encodeURIComponent(resolutionText)}`,
+      {
+        method: 'POST',
+        headers: DEFAULT_HEADERS,
+      }
+    );
     return handleResponse<ExceptionItem>(res);
   },
 
@@ -155,7 +185,10 @@ export const ApiService = {
   },
 
   // AI Investigator
-  async investigateAI(prompt: string, opportunityId?: string): Promise<{ response: string; narrative?: string; timestamp?: string }> {
+  async investigateAI(
+    prompt: string,
+    opportunityId?: string
+  ): Promise<{ response: string; narrative?: string; timestamp?: string }> {
     const res = await fetch(`${API_BASE}/ai/investigate`, {
       method: 'POST',
       headers: DEFAULT_HEADERS,
@@ -165,7 +198,11 @@ export const ApiService = {
   },
 
   // CRM Webhook Export
-  async exportCrm(id: string, webhookUrl?: string, platform?: string): Promise<{ status: string; crm_webhook_acknowledged: boolean; message?: string }> {
+  async exportCrm(
+    id: string,
+    webhookUrl?: string,
+    platform?: string
+  ): Promise<{ status: string; crm_webhook_acknowledged: boolean; message?: string }> {
     const res = await fetch(`${API_BASE}/opportunities/${id}/export-crm`, {
       method: 'POST',
       headers: DEFAULT_HEADERS,

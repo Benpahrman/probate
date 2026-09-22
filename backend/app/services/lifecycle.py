@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.models.intelligence import Opportunity
 from app.models.enums import LifecycleStage, AuthorityTier
 from app.services.fsm import OpportunityLifecycleFSM
-from app.services.gatekeeper import QualityControlGatekeeper, QualityControlAuditSummary
+from app.services.gatekeeper import QualityControlGatekeeper, QualityControlAuditSummary, GatekeeperEvaluationContext
 from app.services.exceptions import TaskExceptionRouter
 from app.engines.pas import ParcelAttributionResult
 from app.engines.equity import EquityWaterfallResult
@@ -36,39 +36,33 @@ class LifecycleCoordinatorService:
     def execute_qc_audit_and_transition(
         db: Session,
         opportunity: Opportunity,
-        case_number: str,
-        filing_date_valid: bool,
-        petition_pdf_sha256: Optional[str],
-        pas_result: ParcelAttributionResult,
-        equity_result: EquityWaterfallResult,
-        authority_tier: AuthorityTier,
-        has_contested_caveats: bool,
-        primary_phone_active: bool,
-        dnc_filtered: bool,
-        is_attorney_quarantined: bool,
-        scoring_result: OpportunityScoringResult,
-        evidence_records_count: int,
-        is_in_partner_buybox: bool = True
+        context: Optional[GatekeeperEvaluationContext] = None,
+        **kwargs
     ) -> QualityControlAuditSummary:
         """Executes full QC audit. If passed, toggles is_qc_certified=True and advances stage.
         If any gate fails, creates a quarantine ticket in Tasks & Exceptions.
+        Supports both GatekeeperEvaluationContext and legacy keyword arguments.
         """
-        audit_summary = QualityControlGatekeeper.evaluate_all_gates(
-            case_number=case_number,
-            filing_date_valid=filing_date_valid,
-            petition_pdf_sha256=petition_pdf_sha256,
-            pas_result=pas_result,
-            equity_result=equity_result,
-            authority_tier=authority_tier,
-            has_contested_caveats=has_contested_caveats,
-            primary_phone_active=primary_phone_active,
-            dnc_filtered=dnc_filtered,
-            is_attorney_quarantined=is_attorney_quarantined,
-            scoring_result=scoring_result,
-            evidence_records_count=evidence_records_count,
-            is_in_partner_buybox=is_in_partner_buybox
-        )
+        if context is None:
+            context = GatekeeperEvaluationContext(
+                case_number=kwargs["case_number"],
+                filing_date_valid=kwargs["filing_date_valid"],
+                petition_pdf_sha256=kwargs.get("petition_pdf_sha256"),
+                pas_result=kwargs["pas_result"],
+                equity_result=kwargs["equity_result"],
+                authority_tier=kwargs["authority_tier"],
+                has_contested_caveats=kwargs["has_contested_caveats"],
+                primary_phone_active=kwargs["primary_phone_active"],
+                dnc_filtered=kwargs["dnc_filtered"],
+                is_attorney_quarantined=kwargs["is_attorney_quarantined"],
+                scoring_result=kwargs["scoring_result"],
+                evidence_records_count=kwargs["evidence_records_count"],
+                is_in_partner_buybox=kwargs.get("is_in_partner_buybox", True)
+            )
 
+        audit_summary = QualityControlGatekeeper.evaluate_all_gates(context=context)
+
+        scoring_result = context.scoring_result
         if audit_summary.is_fully_certified:
             opportunity.is_qc_certified = True
             opportunity.composite_viability_score = scoring_result.composite_viability_score
@@ -93,7 +87,7 @@ class LifecycleCoordinatorService:
                 case_id=opportunity.case_id,
                 failed_gate=audit_summary.failed_gate or 1,
                 exception_type=f"Gate {audit_summary.failed_gate} Failure",
-                net_equity=equity_result.net_actionable_equity,
+                net_equity=context.equity_result.net_actionable_equity,
                 resolution_notes=audit_summary.disqualification_reason or "Unknown gate failure"
             )
             db.commit()

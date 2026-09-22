@@ -138,6 +138,8 @@ def test_exceptions_api_list_and_resolve():
     # Confirm status is updated to RESOLVED
     db2 = SessionLocal()
     resolved = db2.query(TaskException).filter(TaskException.exception_id == uuid.UUID(ticket_id)).first()
+    assert resolved is not None
     assert resolved.status == "RESOLVED"
+    assert resolved.resolution_notes is not None
     assert "Title cleared" in resolved.resolution_notes
     db2.close()
