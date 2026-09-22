@@ -9,10 +9,16 @@ __pycache__/
 *$py.class
 .pytest_cache/
 .coverage
+coverage.xml
 htmlcov/
 dist/
 build/
 *.egg-info/
+
+# Codecov binary & signatures
+codecov.exe
+codecov.asc
+codecov.exe.SHA256SUM*
 
 # Binary documents & compiled assets
 *.pdf

@@ -147,14 +147,20 @@ def test_opportunity_crm_export_with_webhook():
         assert res_fail.status_code == 400
 
         # 2. Valid webhook dispatches cleanly
-        res_ok = client.post(
-            f"/api/v1/opportunities/{opp_id}/export-crm",
-            json={"webhook_url": "https://httpbin.org/post"}
-        )
-        assert res_ok.status_code == 200
-        data = res_ok.json()
-        assert data["status"] == "SUCCESS"
-        assert data["response_code"] == 200
+        from unittest.mock import patch, MagicMock
+        mock_resp = MagicMock()
+        mock_resp.is_success = True
+        mock_resp.status_code = 200
+
+        with patch("httpx.Client.post", return_value=mock_resp):
+            res_ok = client.post(
+                f"/api/v1/opportunities/{opp_id}/export-crm",
+                json={"webhook_url": "https://api.crm.example/webhook"}
+            )
+            assert res_ok.status_code == 200
+            data = res_ok.json()
+            assert data["status"] == "SUCCESS"
+            assert data["response_code"] == 200
     finally:
         db.close()
 
@@ -172,3 +178,13 @@ def test_qc_gate_audit_alias():
             assert "overall_passed" in data
     finally:
         db.close()
+
+
+def test_honeybadger_telemetry_integration():
+    """Verifies that Honeybadger is configured and mounted in the FastAPI ASGI middleware stack."""
+    from honeybadger import honeybadger, contrib
+    from app.core.config import settings
+
+    assert settings.HONEYBADGER_API_KEY is not None
+    assert honeybadger.config.api_key == settings.HONEYBADGER_API_KEY
+    assert any(m.cls == contrib.ASGIHoneybadger for m in app.user_middleware)

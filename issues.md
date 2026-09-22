@@ -1,7 +1,7 @@
 # Gieni OS — Production Readiness & Remediation Issues
 
 > **Generated**: 2026-09-22  
-> **Target**: Frontend SPA (`frontend/src`) & Backend Platform API (`src/gieni_os`)  
+> **Target**: Frontend SPA (`frontend/src`) & Canonical Backend Platform API (`backend/app`)  
 > **Status**: Active Remediation Backlog  
 
 ---
