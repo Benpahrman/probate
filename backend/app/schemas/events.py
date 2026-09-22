@@ -1,16 +1,7 @@
-"""
-Gieni OS Canonical Event DTOs (Pydantic v2)
-Strict, immutable data transfer objects for inter-service event contracts.
-Used by the test suite, ingest workers, and API routes.
-
-Transplanted from backend/app/schemas/events.py.
-Imports rewritten: app.models.enums → gieni_os.domain.enums
-"""
-
 from datetime import datetime
 from uuid import UUID
 from pydantic import BaseModel, Field, ConfigDict
-from gieni_os.domain.enums import AuthorityTier, LettersStatus, PowerScope, PriorityTier, VestingType
+from app.models.enums import AuthorityTier, LettersStatus, PowerScope, PriorityTier, VestingType
 
 
 class SitusAddressDTO(BaseModel):
