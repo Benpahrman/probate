@@ -32,7 +32,7 @@ class InvestigateResponse(BaseModel):
 
 
 def _lookup_opportunity(db: Session, opportunity_id: Optional[str]) -> Optional[Opportunity]:
-    """Safely retrieves an Opportunity by UUID string if provided."""
+    """Safely retrieves an Opportunity by UUID string if valid opportunity_id provided."""
     if not opportunity_id:
         return None
     try:

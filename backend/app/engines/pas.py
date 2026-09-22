@@ -40,23 +40,8 @@ class ParcelAttributionResult(BaseModel):
     requires_manual_triage: bool
 
 
-def calculate_jaro_winkler(s1: str, s2: str, scaling_factor: float = 0.1) -> float:
-    """Deterministic Jaro-Winkler similarity implementation for legal entity names."""
-    s1 = s1.strip().upper()
-    s2 = s2.strip().upper()
-
-    if not s1 and not s2:
-        return 1.0
-    if not s1 or not s2:
-        return 0.0
-    if s1 == s2:
-        return 1.0
-
+def _find_matches(s1: str, s2: str, max_dist: int) -> tuple[int, list[bool], list[bool]]:
     len1, len2 = len(s1), len(s2)
-    max_dist = max(len1, len2) // 2 - 1
-    if max_dist < 0:
-        max_dist = 0
-
     s1_matches = [False] * len1
     s2_matches = [False] * len2
     matches = 0
@@ -65,20 +50,19 @@ def calculate_jaro_winkler(s1: str, s2: str, scaling_factor: float = 0.1) -> flo
         start = max(0, i - max_dist)
         end = min(i + max_dist + 1, len2)
         for j in range(start, end):
-            if s2_matches[j]:
-                continue
-            if s1[i] == s2[j]:
+            if not s2_matches[j] and s1[i] == s2[j]:
                 s1_matches[i] = True
                 s2_matches[j] = True
                 matches += 1
                 break
 
-    if matches == 0:
-        return 0.0
+    return matches, s1_matches, s2_matches
 
+
+def _count_transpositions(s1: str, s2: str, s1_matches: list[bool], s2_matches: list[bool]) -> int:
     k = 0
     transpositions = 0
-    for i in range(len1):
+    for i in range(len(s1)):
         if not s1_matches[i]:
             continue
         while not s2_matches[k]:
@@ -86,8 +70,37 @@ def calculate_jaro_winkler(s1: str, s2: str, scaling_factor: float = 0.1) -> flo
         if s1[i] != s2[k]:
             transpositions += 1
         k += 1
+    return transpositions // 2
 
-    transpositions //= 2
+
+def _common_prefix_length(s1: str, s2: str, max_prefix: int = 4) -> int:
+    prefix = 0
+    for c1, c2 in zip(s1[:max_prefix], s2[:max_prefix]):
+        if c1 == c2:
+            prefix += 1
+        else:
+            break
+    return prefix
+
+
+def calculate_jaro_winkler(s1: str, s2: str, scaling_factor: float = 0.1) -> float:
+    """Deterministic Jaro-Winkler similarity implementation for legal entity names."""
+    s1 = s1.strip().upper()
+    s2 = s2.strip().upper()
+
+    if s1 == s2:
+        return 1.0
+    if not s1 or not s2:
+        return 0.0
+
+    len1, len2 = len(s1), len(s2)
+    max_dist = max(0, max(len1, len2) // 2 - 1)
+
+    matches, s1_matches, s2_matches = _find_matches(s1, s2, max_dist)
+    if matches == 0:
+        return 0.0
+
+    transpositions = _count_transpositions(s1, s2, s1_matches, s2_matches)
 
     # Jaro Metric
     jaro = (
@@ -96,15 +109,17 @@ def calculate_jaro_winkler(s1: str, s2: str, scaling_factor: float = 0.1) -> flo
         ((matches - transpositions) / matches)
     ) / 3.0
 
-    # Winkler prefix extension
-    prefix = 0
-    for i in range(min(4, min(len1, len2))):
-        if s1[i] == s2[i]:
-            prefix += 1
-        else:
-            break
-
+    prefix = _common_prefix_length(s1, s2, max_prefix=4)
     return round(jaro + (prefix * scaling_factor * (1.0 - jaro)), 4)
+
+
+def _classify_pas_tier(score: float) -> tuple[PASCategory, bool, bool]:
+    """Classifies PAS score into gate verification category, pass status, and triage requirement."""
+    if score >= 90.0:
+        return PASCategory.VERIFIED_MATCH, True, False
+    if score >= 70.0:
+        return PASCategory.PROBABLE_MATCH, True, False
+    return PASCategory.MANUAL_REVIEW, False, True
 
 
 def calculate_pas(inputs: ParcelAttributionInputs) -> ParcelAttributionResult:
@@ -121,19 +136,7 @@ def calculate_pas(inputs: ParcelAttributionInputs) -> ParcelAttributionResult:
         (inputs.tax_alignment * 10.0)
     )
     score = round(max(0.0, min(100.0, raw_score)), 2)
-
-    if score >= 90.0:
-        category = PASCategory.VERIFIED_MATCH
-        gate_2_passed = True
-        requires_manual_triage = False
-    elif score >= 70.0:
-        category = PASCategory.PROBABLE_MATCH
-        gate_2_passed = True
-        requires_manual_triage = False
-    else:
-        category = PASCategory.MANUAL_REVIEW
-        gate_2_passed = False
-        requires_manual_triage = True
+    category, gate_2_passed, requires_manual_triage = _classify_pas_tier(score)
 
     return ParcelAttributionResult(
         pas_score=score,

@@ -56,3 +56,4 @@ ENV/
 .tox/
 .mypy_cache/
 .ruff_cache/
+.scripts/*

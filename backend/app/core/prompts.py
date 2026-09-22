@@ -8,14 +8,35 @@ from typing import Dict, List, Optional
 
 
 @dataclass
+class PromptSpec:
+    key: str
+    version: str = "v1"
+    category: str = "general"
+    description: str = ""
+
+
+@dataclass
 class PromptTemplate:
     """Represents a versioned system prompt template."""
-    key: str
-    version: str
-    category: str
+    spec: PromptSpec
     template_text: str
     required_variables: List[str]
-    description: str = ""
+
+    @property
+    def key(self) -> str:
+        return self.spec.key
+
+    @property
+    def version(self) -> str:
+        return self.spec.version
+
+    @property
+    def category(self) -> str:
+        return self.spec.category
+
+    @property
+    def description(self) -> str:
+        return self.spec.description
 
     def format(self, **kwargs) -> str:
         """Render the prompt template ensuring all required variables are supplied."""
@@ -23,6 +44,91 @@ class PromptTemplate:
         if missing:
             raise ValueError(f"Prompt '{self.key}:{self.version}' missing required variables: {missing}")
         return self.template_text.format(**kwargs)
+
+
+DEFAULT_PROMPTS: List[PromptTemplate] = [
+    PromptTemplate(
+        spec=PromptSpec(
+            key="ownership-analysis",
+            version="v1",
+            category="ownership",
+            description="Analyzes equity waterfall, encumbrances, and deed vesting.",
+        ),
+        template_text=(
+            "You are the Gieni Ownership Intelligence Engine (OIE). "
+            "Analyze the title vesting and equity waterfall for {property_address}. "
+            "Assessed Value: ${assessed_value:,.0f} | Estimated ARV: ${arv:,.0f} | Total Encumbrances: ${encumbrances:,.0f}. "
+            "Deed Vesting on Record: {vesting_status}. "
+            "Determine whether title is clouded, identify surviving joint tenants or probate necessity under RCW 11.04, "
+            "and calculate distributable net equity cushion."
+        ),
+        required_variables=["property_address", "assessed_value", "arv", "encumbrances", "vesting_status"],
+    ),
+    PromptTemplate(
+        spec=PromptSpec(
+            key="authority-reasoning",
+            version="v1",
+            category="authority",
+            description="Evaluates RCW Title 11 nonintervention powers and fiduciary authority.",
+        ),
+        template_text=(
+            "You are the Gieni Authority Resolution Engine (ARE). "
+            "Evaluate statutory fiduciary powers for estate of {decedent} in {county_name} County. "
+            "Docket Number: {docket_number} | Oversight: {oversight_model} | Fiduciary: {fiduciary_name}. "
+            "Statutory Basis: {statutory_basis}. "
+            "Determine whether Nonintervention Powers under RCW 11.68.011 exist to allow execution of binding PSAs "
+            "without judicial confirmation."
+        ),
+        required_variables=["decedent", "county_name", "docket_number", "oversight_model", "fiduciary_name", "statutory_basis"],
+    ),
+    PromptTemplate(
+        spec=PromptSpec(
+            key="control-classification",
+            version="v1",
+            category="control",
+            description="Maps heirship network, friction archetypes, and signing capacity.",
+        ),
+        template_text=(
+            "You are the Gieni Control Intelligence Engine (CIE). "
+            "Map the decision-making network for {estate_name}. "
+            "Identified Heirs: {heir_count} | Primary Decision Maker: {decision_maker} ({relationship}). "
+            "Classify into archetypes (UNIFIED_SOLE_PR, BALANCED_CONSENSUS, CONFLICT_MULTI_HEIR) "
+            "and prescribe dispute avoidance tactics."
+        ),
+        required_variables=["estate_name", "heir_count", "decision_maker", "relationship"],
+    ),
+    PromptTemplate(
+        spec=PromptSpec(
+            key="qc-validation",
+            version="v1",
+            category="qc",
+            description="Validates 6-gate statutory integrity prior to dispatch.",
+        ),
+        template_text=(
+            "You are the Gieni Quality Control Engine (QCE). "
+            "Verify the 6-Gate statutory compliance for Opportunity #{opportunity_id}. "
+            "Gates checked: Docket ({gate_docket}), APN ({gate_apn}), Vesting ({gate_vesting}), "
+            "Authority ({gate_auth}), Valuation ({gate_val}), Contact ({gate_contact}). "
+            "State whether opportunity is approved for delivery or flagged for human review."
+        ),
+        required_variables=["opportunity_id", "gate_docket", "gate_apn", "gate_vesting", "gate_auth", "gate_val", "gate_contact"],
+    ),
+    PromptTemplate(
+        spec=PromptSpec(
+            key="delivery-pitch",
+            version="v1",
+            category="delivery",
+            description="Generates executive deal packet and conversational framing script.",
+        ),
+        template_text=(
+            "You are the Gieni Deal Delivery Engine (DDE). "
+            "Generate the institutional investment summary for {situs_address}. "
+            "Net Equity: ${net_equity:,.0f} | Target MAO: ${mao:,.0f} | Priority: {priority_tier}. "
+            "Synthesize the rapid-acquisition thesis for B2B wholesale buyers."
+        ),
+        required_variables=["situs_address", "net_equity", "mao", "priority_tier"],
+    ),
+]
 
 
 class PromptRegistry:
@@ -48,93 +154,9 @@ class PromptRegistry:
         return tmpl.format(**kwargs)
 
     def _register_default_templates(self):
-        self._register_estate_templates()
-        self._register_governance_templates()
-
-    def _register_estate_templates(self):
-        self.register(
-            PromptTemplate(
-                key="ownership-analysis",
-                version="v1",
-                category="ownership",
-                template_text=(
-                    "You are the Gieni Ownership Intelligence Engine (OIE). "
-                    "Analyze the title vesting and equity waterfall for {property_address}. "
-                    "Assessed Value: ${assessed_value:,.0f} | Estimated ARV: ${arv:,.0f} | Total Encumbrances: ${encumbrances:,.0f}. "
-                    "Deed Vesting on Record: {vesting_status}. "
-                    "Determine whether title is clouded, identify surviving joint tenants or probate necessity under RCW 11.04, "
-                    "and calculate distributable net equity cushion."
-                ),
-                required_variables=["property_address", "assessed_value", "arv", "encumbrances", "vesting_status"],
-                description="Analyzes equity waterfall, encumbrances, and deed vesting.",
-            )
-        )
-        self.register(
-            PromptTemplate(
-                key="authority-reasoning",
-                version="v1",
-                category="authority",
-                template_text=(
-                    "You are the Gieni Authority Resolution Engine (ARE). "
-                    "Evaluate statutory fiduciary powers for estate of {decedent} in {county_name} County. "
-                    "Docket Number: {docket_number} | Oversight: {oversight_model} | Fiduciary: {fiduciary_name}. "
-                    "Statutory Basis: {statutory_basis}. "
-                    "Determine whether Nonintervention Powers under RCW 11.68.011 exist to allow execution of binding PSAs "
-                    "without judicial confirmation."
-                ),
-                required_variables=["decedent", "county_name", "docket_number", "oversight_model", "fiduciary_name", "statutory_basis"],
-                description="Evaluates RCW Title 11 nonintervention powers and fiduciary authority.",
-            )
-        )
-        self.register(
-            PromptTemplate(
-                key="control-classification",
-                version="v1",
-                category="control",
-                template_text=(
-                    "You are the Gieni Control Intelligence Engine (CIE). "
-                    "Map the decision-making network for {estate_name}. "
-                    "Identified Heirs: {heir_count} | Primary Decision Maker: {decision_maker} ({relationship}). "
-                    "Classify into archetypes (UNIFIED_SOLE_PR, BALANCED_CONSENSUS, CONFLICT_MULTI_HEIR) "
-                    "and prescribe dispute avoidance tactics."
-                ),
-                required_variables=["estate_name", "heir_count", "decision_maker", "relationship"],
-                description="Maps heirship network, friction archetypes, and signing capacity.",
-            )
-        )
-
-    def _register_governance_templates(self):
-        self.register(
-            PromptTemplate(
-                key="qc-validation",
-                version="v1",
-                category="qc",
-                template_text=(
-                    "You are the Gieni Quality Control Engine (QCE). "
-                    "Verify the 6-Gate statutory compliance for Opportunity #{opportunity_id}. "
-                    "Gates checked: Docket ({gate_docket}), APN ({gate_apn}), Vesting ({gate_vesting}), "
-                    "Authority ({gate_auth}), Valuation ({gate_val}), Contact ({gate_contact}). "
-                    "State whether opportunity is approved for delivery or flagged for human review."
-                ),
-                required_variables=["opportunity_id", "gate_docket", "gate_apn", "gate_vesting", "gate_auth", "gate_val", "gate_contact"],
-                description="Validates 6-gate statutory integrity prior to dispatch.",
-            )
-        )
-        self.register(
-            PromptTemplate(
-                key="delivery-pitch",
-                version="v1",
-                category="delivery",
-                template_text=(
-                    "You are the Gieni Deal Delivery Engine (DDE). "
-                    "Generate the institutional investment summary for {situs_address}. "
-                    "Net Equity: ${net_equity:,.0f} | Target MAO: ${mao:,.0f} | Priority: {priority_tier}. "
-                    "Synthesize the rapid-acquisition thesis for B2B wholesale buyers."
-                ),
-                required_variables=["situs_address", "net_equity", "mao", "priority_tier"],
-                description="Generates executive deal packet and conversational framing script.",
-            )
-        )
+        for template in DEFAULT_PROMPTS:
+            self.register(template)
 
 
 default_prompt_registry = PromptRegistry()
+

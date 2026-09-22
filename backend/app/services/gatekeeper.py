@@ -251,15 +251,13 @@ class QualityControlGatekeeper:
     @classmethod
     def evaluate_all_gates(
         cls,
-        context: Optional[GatekeeperEvaluationContext] = None,
-        **kwargs
+        context: GatekeeperEvaluationContext
     ) -> QualityControlAuditSummary:
         """Executes the full 6-gate sequential audit and produces certification status."""
-        ctx = context if context is not None else GatekeeperEvaluationContext(**kwargs)
         results: List[GateCheckResult] = []
 
         # Gate 1
-        g1 = cls.verify_gate_1_docket_integrity(ctx.case_number, ctx.filing_date_valid, ctx.petition_pdf_sha256)
+        g1 = cls.verify_gate_1_docket_integrity(context.case_number, context.filing_date_valid, context.petition_pdf_sha256)
         results.append(g1)
         if not g1.passed:
             return QualityControlAuditSummary(
@@ -267,7 +265,7 @@ class QualityControlGatekeeper:
             )
 
         # Gate 2
-        g2 = cls.verify_gate_2_parcel_attribution(ctx.pas_result)
+        g2 = cls.verify_gate_2_parcel_attribution(context.pas_result)
         results.append(g2)
         if not g2.passed:
             return QualityControlAuditSummary(
@@ -275,7 +273,7 @@ class QualityControlGatekeeper:
             )
 
         # Gate 3
-        g3 = cls.verify_gate_3_encumbrance_equity(ctx.equity_result)
+        g3 = cls.verify_gate_3_encumbrance_equity(context.equity_result)
         results.append(g3)
         if not g3.passed:
             return QualityControlAuditSummary(
@@ -283,7 +281,7 @@ class QualityControlGatekeeper:
             )
 
         # Gate 4
-        g4 = cls.verify_gate_4_fiduciary_authority(ctx.authority_tier, ctx.has_contested_caveats)
+        g4 = cls.verify_gate_4_fiduciary_authority(context.authority_tier, context.has_contested_caveats)
         results.append(g4)
         if not g4.passed:
             return QualityControlAuditSummary(
@@ -291,7 +289,7 @@ class QualityControlGatekeeper:
             )
 
         # Gate 5
-        g5 = cls.verify_gate_5_contact_scrubbing(ctx.primary_phone_active, ctx.dnc_filtered, ctx.is_attorney_quarantined)
+        g5 = cls.verify_gate_5_contact_scrubbing(context.primary_phone_active, context.dnc_filtered, context.is_attorney_quarantined)
         results.append(g5)
         if not g5.passed:
             return QualityControlAuditSummary(
@@ -299,7 +297,7 @@ class QualityControlGatekeeper:
             )
 
         # Gate 6
-        g6 = cls.verify_gate_6_predelivery_certification(ctx.scoring_result, ctx.evidence_records_count, ctx.is_in_partner_buybox)
+        g6 = cls.verify_gate_6_predelivery_certification(context.scoring_result, context.evidence_records_count, context.is_in_partner_buybox)
         results.append(g6)
         if not g6.passed:
             return QualityControlAuditSummary(

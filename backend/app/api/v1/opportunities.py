@@ -8,6 +8,7 @@ from app.core.database import get_db
 from app.models.intelligence import Opportunity
 from app.models.enums import LifecycleStage, PriorityTier, AuthorityTier, PowerScope, ControlArchetype, VestingType
 from app.services.lifecycle import LifecycleCoordinatorService
+from app.services.gatekeeper import GatekeeperEvaluationContext
 from app.services.fsm import InvalidStateTransitionError
 from app.engines.pas import calculate_pas, ParcelAttributionInputs
 from app.engines.equity import compute_net_actionable_equity, EncumbranceWaterfallInputs
@@ -151,9 +152,7 @@ def execute_quality_control_audit(
         is_vacant=True
     ))
 
-    audit_summary = LifecycleCoordinatorService.execute_qc_audit_and_transition(
-        db=db,
-        opportunity=opp,
+    qc_context = GatekeeperEvaluationContext(
         case_number=opp.case.case_number,
         filing_date_valid=True,
         petition_pdf_sha256="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -167,6 +166,11 @@ def execute_quality_control_audit(
         scoring_result=scoring_res,
         evidence_records_count=2,
         is_in_partner_buybox=True
+    )
+    audit_summary = LifecycleCoordinatorService.execute_qc_audit_and_transition(
+        db=db,
+        opportunity=opp,
+        context=qc_context
     )
 
     stage_str = opp.lifecycle_stage.value if hasattr(opp.lifecycle_stage, "value") else str(opp.lifecycle_stage)

@@ -18,36 +18,53 @@ def test_jaro_winkler_similarity():
     assert calculate_jaro_winkler("", "JOHN") == 0.0
 
 
-def test_pas_calculation_verified_tier():
-    """Confirm PAS >= 90.0 triggers Verified Parcel Match and passes Gate 2."""
-    inputs = ParcelAttributionInputs(
-        source_agreement=0.95,      # 0.95 * 30 = 28.5
-        name_similarity=0.98,       # 0.98 * 25 = 24.5
-        address_correlation=1.00,   # 1.00 * 20 = 20.0
-        title_continuity=1.00,      # 1.00 * 15 = 15.0
-        tax_alignment=1.00          # 1.00 * 10 = 10.0 => Total = 98.0
-    )
+@pytest.mark.parametrize(
+    "inputs,expected",
+    [
+        pytest.param(
+            ParcelAttributionInputs(
+                source_agreement=0.95,      # 0.95 * 30 = 28.5
+                name_similarity=0.98,       # 0.98 * 25 = 24.5
+                address_correlation=1.00,   # 1.00 * 20 = 20.0
+                title_continuity=1.00,      # 1.00 * 15 = 15.0
+                tax_alignment=1.00          # 1.00 * 10 = 10.0 => Total = 98.0
+            ),
+            {
+                "score": 98.0,
+                "category": PASCategory.VERIFIED_MATCH,
+                "gate_2_passed": True,
+                "requires_manual_triage": False,
+            },
+            id="verified_tier_passes_gate_2",
+        ),
+        pytest.param(
+            ParcelAttributionInputs(
+                source_agreement=0.40,      # 12.0
+                name_similarity=0.50,       # 12.5
+                address_correlation=0.60,   # 12.0
+                title_continuity=0.50,      # 7.5
+                tax_alignment=0.40          # 4.0 => Total = 48.0
+            ),
+            {
+                "score": 48.0,
+                "category": PASCategory.MANUAL_REVIEW,
+                "gate_2_passed": False,
+                "requires_manual_triage": True,
+            },
+            id="failure_quarantine_fails_gate_2",
+        ),
+    ],
+)
+def test_pas_calculation_gates(
+    inputs: ParcelAttributionInputs,
+    expected: dict,
+):
+    """Verify PAS calculation, threshold gating, and triage routing across tiers."""
     res = calculate_pas(inputs)
-    assert res.pas_score == 98.0
-    assert res.category == PASCategory.VERIFIED_MATCH
-    assert res.gate_2_passed is True
-    assert res.requires_manual_triage is False
-
-
-def test_pas_calculation_failure_quarantine():
-    """Confirm PAS < 70.0 fails Gate 2 and routes to Tasks & Exceptions."""
-    inputs = ParcelAttributionInputs(
-        source_agreement=0.40,      # 12.0
-        name_similarity=0.50,       # 12.5
-        address_correlation=0.60,   # 12.0
-        title_continuity=0.50,      # 7.5
-        tax_alignment=0.40          # 4.0 => Total = 48.0
-    )
-    res = calculate_pas(inputs)
-    assert res.pas_score == 48.0
-    assert res.category == PASCategory.MANUAL_REVIEW
-    assert res.gate_2_passed is False
-    assert res.requires_manual_triage is True
+    assert res.pas_score == expected["score"]
+    assert res.category == expected["category"]
+    assert res.gate_2_passed is expected["gate_2_passed"]
+    assert res.requires_manual_triage is expected["requires_manual_triage"]
 
 
 # =====================================================================

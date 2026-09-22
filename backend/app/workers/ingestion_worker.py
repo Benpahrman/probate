@@ -216,7 +216,7 @@ class MunicipalIngestionWorker:
         """Validates filings, computes SHA-256 hashes, saves evidence artifacts,
         and initializes Opportunity records at stage DISCOVERED.
         """
-        committed_case_ids = []
+        committed_case_ids: list[uuid.UUID] = []
         db: Session = SessionLocal()
 
         try:

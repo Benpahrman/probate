@@ -4,8 +4,8 @@ import pytest
 from app.models.enums import LifecycleStage, AuthorityTier, PriorityTier
 from app.models.intelligence import Opportunity
 from app.services.fsm import OpportunityLifecycleFSM, InvalidStateTransitionError
-from app.services.gatekeeper import QualityControlGatekeeper
-from app.services.exceptions import TaskExceptionRouter, ExceptionPriority
+from app.services.gatekeeper import QualityControlGatekeeper, GatekeeperEvaluationContext
+from app.services.exceptions import TaskExceptionRouter, ExceptionPriority, QuarantineTicketPayload
 from app.services.lifecycle import LifecycleCoordinatorService
 from app.engines.pas import ParcelAttributionResult, PASCategory
 from app.engines.equity import EquityWaterfallResult, EquityTier
@@ -276,7 +276,7 @@ def test_evaluate_all_gates_sequential_execution():
     )
 
     # All pass
-    summary = QualityControlGatekeeper.evaluate_all_gates(
+    ctx_pass = GatekeeperEvaluationContext(
         case_number="2026-PR-009182",
         filing_date_valid=True,
         petition_pdf_sha256="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -291,6 +291,7 @@ def test_evaluate_all_gates_sequential_execution():
         evidence_records_count=3,
         is_in_partner_buybox=True
     )
+    summary = QualityControlGatekeeper.evaluate_all_gates(context=ctx_pass)
     assert summary.is_fully_certified is True
     assert summary.failed_gate is None
     assert len(summary.gate_results) == 6
@@ -299,7 +300,7 @@ def test_evaluate_all_gates_sequential_execution():
     fail_pas = ParcelAttributionResult(
         pas_score=45.0, category=PASCategory.MANUAL_REVIEW, gate_2_passed=False, requires_manual_triage=True
     )
-    summary_fail = QualityControlGatekeeper.evaluate_all_gates(
+    ctx_fail = GatekeeperEvaluationContext(
         case_number="2026-PR-009182",
         filing_date_valid=True,
         petition_pdf_sha256="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -314,6 +315,7 @@ def test_evaluate_all_gates_sequential_execution():
         evidence_records_count=3,
         is_in_partner_buybox=True
     )
+    summary_fail = QualityControlGatekeeper.evaluate_all_gates(context=ctx_fail)
     assert summary_fail.is_fully_certified is False
     assert summary_fail.failed_gate == 2
     assert len(summary_fail.gate_results) == 2
@@ -337,12 +339,14 @@ def test_create_quarantine_ticket():
 
     ticket = TaskExceptionRouter.create_quarantine_ticket(
         db=db_mock,
-        case_id=case_id,
-        failed_gate=3,
-        exception_type="Gate 3 Failure",
-        net_equity=250000.0,
-        resolution_notes="Encumbrance exceeds threshold",
-        assigned_to="Triage Specialist"
+        payload=QuarantineTicketPayload(
+            case_id=case_id,
+            failed_gate=3,
+            exception_type="Gate 3 Failure",
+            net_equity=250000.0,
+            resolution_notes="Encumbrance exceeds threshold",
+            assigned_to="Triage Specialist"
+        )
     )
     assert ticket.case_id == case_id
     assert ticket.priority == ExceptionPriority.CRITICAL
@@ -357,15 +361,22 @@ def test_create_quarantine_ticket():
 # 4. LIFECYCLE COORDINATOR TESTS
 # =====================================================================
 
+def _create_mock_opportunity(
+    stage: LifecycleStage = LifecycleStage.SCORED,
+    is_qc_certified: bool = False
+) -> Opportunity:
+    return Opportunity(
+        case_id=uuid.uuid4(),
+        property_id=uuid.uuid4(),
+        lifecycle_stage=stage,
+        is_qc_certified=is_qc_certified
+    )
+
+
 def test_lifecycle_coordinator_transition_stage():
     """Verify Opportunity lifecycle stage transitions with validation."""
     db_mock = MagicMock()
-    opp = Opportunity(
-        case_id=uuid.uuid4(),
-        property_id=uuid.uuid4(),
-        lifecycle_stage=LifecycleStage.DISCOVERED,
-        is_qc_certified=False
-    )
+    opp = _create_mock_opportunity(LifecycleStage.DISCOVERED, False)
     updated_opp = LifecycleCoordinatorService.transition_stage(
         db=db_mock,
         opportunity=opp,
@@ -400,9 +411,7 @@ def _build_test_qc_dataset():
 
 def _run_test_qc_audit(db_mock: MagicMock, opp: Opportunity, pas_result: ParcelAttributionResult):
     equity, scoring = _build_test_qc_dataset()
-    return LifecycleCoordinatorService.execute_qc_audit_and_transition(
-        db=db_mock,
-        opportunity=opp,
+    context = GatekeeperEvaluationContext(
         case_number="2026-PR-009182",
         filing_date_valid=True,
         petition_pdf_sha256="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -417,17 +426,17 @@ def _run_test_qc_audit(db_mock: MagicMock, opp: Opportunity, pas_result: ParcelA
         evidence_records_count=2,
         is_in_partner_buybox=True
     )
+    return LifecycleCoordinatorService.execute_qc_audit_and_transition(
+        db=db_mock,
+        opportunity=opp,
+        context=context
+    )
 
 
 def test_lifecycle_coordinator_qc_audit_success():
     """Verify QC audit passing advances opportunity to QC_CERTIFIED."""
     db_mock = MagicMock()
-    opp = Opportunity(
-        case_id=uuid.uuid4(),
-        property_id=uuid.uuid4(),
-        lifecycle_stage=LifecycleStage.SCORED,
-        is_qc_certified=False
-    )
+    opp = _create_mock_opportunity(LifecycleStage.SCORED, False)
     valid_pas = ParcelAttributionResult(
         pas_score=85.0, category=PASCategory.PROBABLE_MATCH, gate_2_passed=True, requires_manual_triage=False
     )
@@ -443,12 +452,7 @@ def test_lifecycle_coordinator_qc_audit_success():
 def test_lifecycle_coordinator_qc_audit_failure_quarantine():
     """Verify QC audit failure creates quarantine ticket and does not advance stage."""
     db_mock = MagicMock()
-    opp = Opportunity(
-        case_id=uuid.uuid4(),
-        property_id=uuid.uuid4(),
-        lifecycle_stage=LifecycleStage.SCORED,
-        is_qc_certified=False
-    )
+    opp = _create_mock_opportunity(LifecycleStage.SCORED, False)
     fail_pas = ParcelAttributionResult(
         pas_score=50.0, category=PASCategory.MANUAL_REVIEW, gate_2_passed=False, requires_manual_triage=True
     )

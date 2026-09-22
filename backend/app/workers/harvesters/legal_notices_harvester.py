@@ -41,13 +41,14 @@ class LegalNoticesHarvester:
         ]
     }
 
+    COUNTY_PREFIXES: Dict[str, str] = {
+        "cty_king": "26-4-0",
+        "cty_thurston": "26-4-00",
+    }
+
     @classmethod
     def _get_county_prefix(cls, county_id: str) -> str:
-        if county_id == "cty_king":
-            return "26-4-0"
-        if county_id == "cty_thurston":
-            return "26-4-00"
-        return "26-4"
+        return cls.COUNTY_PREFIXES.get(county_id, "26-4")
 
     @classmethod
     def _generate_fixtures(cls, county_id: str, days_back: int) -> List[ScrapedDocket]:
@@ -83,6 +84,18 @@ class LegalNoticesHarvester:
         return dockets
 
     @classmethod
+    def _try_live_harvest(
+        cls, endpoint: str, county_id: str, days_back: int, demo_mode: bool
+    ) -> Optional[List[ScrapedDocket]]:
+        try:
+            return cls._harvest_live_feed(endpoint, county_id, days_back)
+        except Exception as e:
+            logger.error(f"[LegalNoticesHarvester] Live notice feed query failed: {e}", exc_info=True)
+            if not demo_mode:
+                raise HarvesterUnavailableError(f"Live newspaper notice feed failed: {e}")
+            return None
+
+    @classmethod
     def harvest(cls, county_id: str, days_back: int = 7) -> List[ScrapedDocket]:
         """
         Parses published Notice to Creditors for the specified Washington county.
@@ -94,12 +107,9 @@ class LegalNoticesHarvester:
 
         # 1. Live I/O Query Path
         if live_endpoint:
-            try:
-                return cls._harvest_live_feed(live_endpoint, county_id, days_back)
-            except Exception as e:
-                logger.error(f"[LegalNoticesHarvester] Live notice feed query failed: {e}", exc_info=True)
-                if not demo_mode:
-                    raise HarvesterUnavailableError(f"Live newspaper notice feed failed: {e}")
+            live_result = cls._try_live_harvest(live_endpoint, county_id, days_back, demo_mode)
+            if live_result is not None:
+                return live_result
 
         # 2. Authenticity Enforcement
         if not demo_mode:

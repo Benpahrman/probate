@@ -75,6 +75,18 @@ class AuditorHarvester:
         return dockets
 
     @classmethod
+    def _try_live_harvest(
+        cls, endpoint: str, county_id: str, days_back: int, demo_mode: bool
+    ) -> Optional[List[ScrapedDocket]]:
+        try:
+            return cls._harvest_live_feed(endpoint, county_id, days_back)
+        except Exception as e:
+            logger.error(f"[AuditorHarvester] Live recording query failed: {e}", exc_info=True)
+            if not demo_mode:
+                raise HarvesterUnavailableError(f"Live County Auditor recording endpoint failed: {e}")
+            return None
+
+    @classmethod
     def harvest(cls, county_id: str, days_back: int = 14) -> List[ScrapedDocket]:
         """
         Extracts non-probate real estate transfers from County Auditor recordings.
@@ -86,12 +98,9 @@ class AuditorHarvester:
 
         # 1. Live I/O Query Path
         if live_endpoint:
-            try:
-                return cls._harvest_live_feed(live_endpoint, county_id, days_back)
-            except Exception as e:
-                logger.error(f"[AuditorHarvester] Live recording query failed: {e}", exc_info=True)
-                if not demo_mode:
-                    raise HarvesterUnavailableError(f"Live County Auditor recording endpoint failed: {e}")
+            live_result = cls._try_live_harvest(live_endpoint, county_id, days_back, demo_mode)
+            if live_result is not None:
+                return live_result
 
         # 2. Authenticity Enforcement
         if not demo_mode:

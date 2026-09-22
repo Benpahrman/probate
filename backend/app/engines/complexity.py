@@ -48,19 +48,18 @@ VESTING_ARCHETYPES: dict[VestingType, tuple[int, str]] = {
 }
 
 
+FLAG_PENALTIES: tuple[tuple[str, int], ...] = (
+    ("has_unrecorded_trust_reference", 10),
+    ("has_title_cloud_or_wild_deed", 15),
+    ("has_foreign_or_ancillary_jurisdiction", 10),
+)
+
+
 def _calculate_penalties(inputs: OwnershipComplexityInputs) -> int:
-    penalties = 0
-    if inputs.heir_count > 4:
-        penalties += min(20, (inputs.heir_count - 4) * 4)
-    if inputs.ancestor_probates_unresolved > 0:
-        penalties += inputs.ancestor_probates_unresolved * 15
-    if inputs.has_unrecorded_trust_reference:
-        penalties += 10
-    if inputs.has_title_cloud_or_wild_deed:
-        penalties += 15
-    if inputs.has_foreign_or_ancillary_jurisdiction:
-        penalties += 10
-    return penalties
+    heir_penalty = min(20, (inputs.heir_count - 4) * 4) if inputs.heir_count > 4 else 0
+    ancestor_penalty = inputs.ancestor_probates_unresolved * 15 if inputs.ancestor_probates_unresolved > 0 else 0
+    flag_penalties = sum(points for attr, points in FLAG_PENALTIES if getattr(inputs, attr, False))
+    return heir_penalty + ancestor_penalty + flag_penalties
 
 
 def compute_ownership_complexity(inputs: OwnershipComplexityInputs) -> OwnershipComplexityResult:

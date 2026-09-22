@@ -37,13 +37,9 @@ class TaskExceptionRouter:
     def create_quarantine_ticket(
         cls,
         db: Session,
-        payload: Optional[QuarantineTicketPayload] = None,
-        **kwargs
+        payload: QuarantineTicketPayload
     ) -> TaskException:
         """Persists a new quarantined exception entry to prevent bad data dispatch."""
-        if payload is None:
-            payload = QuarantineTicketPayload(**kwargs)
-
         priority = cls.calculate_priority(payload.net_equity)
         sla_target = "4 Hours" if priority == ExceptionPriority.CRITICAL else "24 Hours"
 

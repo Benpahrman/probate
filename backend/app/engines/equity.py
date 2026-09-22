@@ -34,27 +34,32 @@ class EquityWaterfallResult(BaseModel):
     disqualification_reason: str | None = None
 
 
+ENCUMBRANCE_FIELDS: tuple[str, ...] = (
+    "open_mortgage_balance",
+    "junior_mortgages_and_helocs",
+    "delinquent_real_property_taxes",
+    "municipal_and_mechanics_liens",
+    "federal_and_state_tax_liens",
+    "merp_statutory_claim",
+    "estimated_probate_statutory_fees",
+    "recorded_creditor_claims",
+)
+
+EQUITY_TIER_THRESHOLDS: tuple[tuple[float, EquityTier], ...] = (
+    (0.70, EquityTier.EXCEPTIONAL),
+    (0.50, EquityTier.HIGH),
+    (0.30, EquityTier.MODERATE),
+)
+
+
 def _sum_encumbrances(inputs: EncumbranceWaterfallInputs) -> float:
-    return round(
-        inputs.open_mortgage_balance +
-        inputs.junior_mortgages_and_helocs +
-        inputs.delinquent_real_property_taxes +
-        inputs.municipal_and_mechanics_liens +
-        inputs.federal_and_state_tax_liens +
-        inputs.merp_statutory_claim +
-        inputs.estimated_probate_statutory_fees +
-        inputs.recorded_creditor_claims,
-        2
-    )
+    return round(sum(getattr(inputs, field, 0.0) for field in ENCUMBRANCE_FIELDS), 2)
 
 
 def _classify_equity_tier(equity_pct: float) -> EquityTier:
-    if equity_pct >= 0.70:
-        return EquityTier.EXCEPTIONAL
-    if equity_pct >= 0.50:
-        return EquityTier.HIGH
-    if equity_pct >= 0.30:
-        return EquityTier.MODERATE
+    for threshold, tier in EQUITY_TIER_THRESHOLDS:
+        if equity_pct >= threshold:
+            return tier
     return EquityTier.LOW_OR_UNDERWATER
 
 
