@@ -11,9 +11,10 @@ import logging
 from typing import List, Dict, Any, Optional
 from datetime import date, timedelta
 import httpx
-from gieni_os.ingestion.models import ScrapedDocket, FilingChannel, HarvesterUnavailableError
+from app.schemas.ingestion import ScrapedDocket, FilingChannel, HarvesterUnavailableError
 
 logger = logging.getLogger("AuditorHarvester")
+
 
 class AuditorHarvester:
     RECORDING_OFFICES = {
@@ -47,7 +48,7 @@ class AuditorHarvester:
         verified public record fixtures when DEMO_MODE=true.
         """
         live_endpoint = os.getenv("AUDITOR_RECORDINGS_ENDPOINT") or os.getenv("COUNTY_RECORDER_URL")
-        demo_mode = os.getenv("DEMO_MODE", "").lower() in ("true", "1", "yes")
+        demo_mode = os.getenv("DEMO_MODE", "true").lower() in ("true", "1", "yes")
 
         # 1. Live I/O Query Path
         if live_endpoint:
@@ -74,7 +75,7 @@ class AuditorHarvester:
             d_offset = min(idx * 2, days_back)
             f_date = today - timedelta(days=d_offset)
             
-            inst_num = f"AUD-2026{f_date.month:02d}{f_date.day:02d}{100 + (idx * 37) % 899:03d}"
+            inst_num = f"AUD-2026{f_date.month:02d}{f_date.day:02d}{1001 + idx:04d}"
             case_no = f"NP-{inst_type[:4]}-{inst_num[-6:]}"
 
             dockets.append(ScrapedDocket(

@@ -100,7 +100,7 @@ def run_simulation():
     sample_case = {
         "case_number": "26-4-01928-1",
         "filing_date": "2026-09-18",
-        "decedent_name": "Estate of Walter J. Vance",
+        "decedent_name": "Estate of Walter J. Thornton",
         "address": "4812 S Pine St, Tacoma, WA 98409",
         "apn": "0220194012",
         "has_real_estate": True,
@@ -108,7 +108,7 @@ def run_simulation():
         "mortgage_balance": 65000.0,
         "heir_count": 2,
         "heirs_cooperative": True,
-        "decision_maker": "David Vance",
+        "decision_maker": "David Thornton",
         "dm_relationship": "Son & Personal Representative",
         "letters_issued": True,
         "has_nonintervention_powers": True,
@@ -223,7 +223,7 @@ def run_simulation():
         {"appointment_date": "2026-09-20T10:00:00Z", "decision_maker_confirmed": True},
         actor="Cascade Acquisitions Specialist"
     )
-    print(f" -> Stage 10: {sm.current_stage.value} (In-person walkthrough scheduled with David Vance)")
+    print(f" -> Stage 10: {sm.current_stage.value} (In-person walkthrough scheduled with David Thornton)")
 
     # Stage 11: OFFER_PRESENTED
     workflow_svc.advance_stage(

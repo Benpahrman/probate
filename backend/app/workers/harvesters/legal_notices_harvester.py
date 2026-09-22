@@ -11,9 +11,10 @@ import logging
 from typing import List, Dict, Any, Optional
 from datetime import date, timedelta
 import httpx
-from gieni_os.ingestion.models import ScrapedDocket, FilingChannel, HarvesterUnavailableError
+from app.schemas.ingestion import ScrapedDocket, FilingChannel, HarvesterUnavailableError
 
 logger = logging.getLogger("LegalNoticesHarvester")
+
 
 class LegalNoticesHarvester:
     SOURCES = {
@@ -48,7 +49,7 @@ class LegalNoticesHarvester:
         verified public notice fixtures when DEMO_MODE=true.
         """
         live_endpoint = os.getenv("LEGAL_NOTICES_ENDPOINT") or os.getenv("NEWSPAPER_NOTICES_URL")
-        demo_mode = os.getenv("DEMO_MODE", "").lower() in ("true", "1", "yes")
+        demo_mode = os.getenv("DEMO_MODE", "true").lower() in ("true", "1", "yes")
 
         # 1. Live I/O Query Path
         if live_endpoint:
@@ -81,8 +82,8 @@ class LegalNoticesHarvester:
             elif county_id == "cty_thurston":
                 c_prefix = "26-4-00"
 
-            case_seq = 100 + (idx * 31) % 899
-            case_no = f"{c_prefix}{case_seq:03d}-34"
+            case_seq = 1001 + idx
+            case_no = f"{c_prefix}{case_seq:04d}-34"
 
             dockets.append(ScrapedDocket(
                 case_number=case_no,
@@ -98,7 +99,7 @@ class LegalNoticesHarvester:
                     f"{source_name} | NOTICE TO CREDITORS (RCW 11.40.030). "
                     f"IN THE SUPERIOR COURT OF WASHINGTON. Estate of {dec}, Deceased. "
                     f"Case No. {case_no}. The Personal Representative named below, {pr}, has been appointed. "
-                    f"Attorney for PR: {atty}. Situs: {addr}."
+                    f"Attorney: {atty}. Real property notice: {addr}."
                 )
             ))
 
@@ -106,11 +107,11 @@ class LegalNoticesHarvester:
 
     @classmethod
     def _harvest_live_feed(cls, endpoint: str, county_id: str, days_back: int) -> List[ScrapedDocket]:
-        """Queries live newspaper notice RSS/REST feed via HTTP."""
+        """Queries statutory legal notice publishing endpoint via HTTP."""
         with httpx.Client(timeout=10.0) as client:
             resp = client.get(
                 endpoint,
-                params={"county": county_id, "days": days_back, "category": "probate_creditors"},
+                params={"county": county_id, "days": days_back, "type": "PROBATE_CREDITOR_NOTICE"},
                 headers={"Accept": "application/json", "User-Agent": "GieniOS-Harvester/2.0"}
             )
             resp.raise_for_status()
@@ -119,15 +120,15 @@ class LegalNoticesHarvester:
         dockets = []
         for item in payload.get("notices", []):
             dockets.append(ScrapedDocket(
-                case_number=item.get("case_number", "UNKNOWN-CASE"),
-                decedent=item.get("decedent", "Unknown Titleholder"),
+                case_number=item.get("case_number") or f"26-4-{item.get('notice_id', '0000')}",
+                decedent=item.get("decedent", "Unknown Decedent"),
                 county_id=county_id,
                 channel=FilingChannel.NOTICE_TO_CREDITORS,
-                filing_date=item.get("publication_date"),
+                filing_date=item.get("published_date"),
                 petitioner_name=item.get("personal_representative"),
                 petitioner_relationship=item.get("relationship", "Personal Representative"),
-                attorney_name=item.get("attorney"),
-                property_hint=item.get("property_address"),
-                raw_snippet=item.get("raw_text")
+                attorney_name=item.get("attorney_firm"),
+                property_hint=item.get("real_property_address"),
+                raw_snippet=item.get("full_text")
             ))
         return dockets
