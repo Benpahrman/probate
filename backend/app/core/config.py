@@ -16,10 +16,6 @@ class Settings(BaseSettings):
     POSTGRES_PORT: int = 5432
     POSTGRES_DB: str = "gieni_production"
 
-    # Honeybadger Error Monitoring & Telemetry
-    HONEYBADGER_API_KEY: Optional[str] = "hbp_asH0fxWHZFiDasdh2Fd9IT8ojCIEJf48P0nb"
-    HONEYBADGER_INSIGHTS_ENABLED: bool = True
-
     @computed_field
     @property
     def sync_database_url(self) -> str:
