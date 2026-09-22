@@ -1,12 +1,3 @@
-"""
-Parcel Attribution Score (PAS) Engine
-Deterministic 0-100 weighted score linking a probate decedent to a recorded
-parcel using five independent evidence vectors. Implements the Jaro-Winkler
-string similarity metric natively (no external NLP dependency).
-
-Transplanted from backend/app/engines/pas.py.
-"""
-
 from enum import Enum
 from pydantic import BaseModel, Field, ConfigDict
 

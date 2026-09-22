@@ -1,11 +1,9 @@
 """
-Gieni OS Prompt Registry (Subsystem 7)
-Eliminates hardcoded prompts across all agents and engines with
-versioned, strictly typed, parameter-validated templates.
+Prompt Registry & Jurisprudence Templates for Gieni OS
+Provides versioned, strictly typed, parameter-validated templates for AI reasoning.
 """
 
 from typing import Dict, Any, List, Optional
-import re
 
 
 class PromptTemplate:
@@ -45,7 +43,6 @@ class PromptRegistry:
     def register(self, template: PromptTemplate):
         full_key = f"{template.key}:{template.version}"
         self._templates[full_key] = template
-        # Also map latest default key
         self._templates[template.key] = template
 
     def get(self, key: str, version: Optional[str] = None) -> PromptTemplate:

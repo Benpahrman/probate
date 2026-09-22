@@ -1,23 +1,14 @@
-"""
-Gieni OS Lifecycle Coordinator Service
-Orchestrates lifecycle stage transitions, QC gate evaluation, and
-exception ticket creation in a single transactional unit.
-
-Transplanted from backend/app/services/lifecycle.py.
-Imports rewritten: app.* → gieni_os.*
-"""
-
 import uuid
 from typing import Optional
 from sqlalchemy.orm import Session
-from gieni_os.models.orm import Opportunity
-from gieni_os.domain.enums import LifecycleStage, AuthorityTier
-from gieni_os.lifecycle.fsm import OpportunityLifecycleFSM
-from gieni_os.validation.gatekeeper import QualityControlGatekeeper, QualityControlAuditSummary
-from gieni_os.workflow.exceptions import TaskExceptionRouter
-from gieni_os.engines.pas import ParcelAttributionResult
-from gieni_os.engines.equity import EquityWaterfallResult
-from gieni_os.engines.scoring import OpportunityScoringResult
+from app.models.intelligence import Opportunity
+from app.models.enums import LifecycleStage, AuthorityTier
+from app.services.fsm import OpportunityLifecycleFSM
+from app.services.gatekeeper import QualityControlGatekeeper, QualityControlAuditSummary
+from app.services.exceptions import TaskExceptionRouter
+from app.engines.pas import ParcelAttributionResult
+from app.engines.equity import EquityWaterfallResult
+from app.engines.scoring import OpportunityScoringResult
 
 
 class LifecycleCoordinatorService:

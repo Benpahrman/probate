@@ -1,15 +1,5 @@
-"""
-Composite Opportunity Viability Scoring Engine
-Computes the 0-100 Composite Viability Score balancing four weighted pillars
-(Net Equity, Signatory Authority, Distress Indicators, Market Liquidity) against
-a Deal Friction Score (DFS) deduction.
-
-Transplanted from backend/app/engines/scoring.py.
-Imports rewritten: app.models.enums → gieni_os.domain.enums
-"""
-
 from pydantic import BaseModel, Field, ConfigDict
-from gieni_os.domain.enums import PriorityTier, AuthorityTier, PowerScope, ControlArchetype
+from app.models.enums import PriorityTier, AuthorityTier, PowerScope, ControlArchetype
 
 
 class OpportunityScoringInputs(BaseModel):

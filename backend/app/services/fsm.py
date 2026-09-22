@@ -1,15 +1,5 @@
-"""
-Gieni OS 14-Stage Opportunity Lifecycle FSM
-Canonical finite state machine governing all OLE lifecycle transitions.
-Enforces forward-only progressions, gate certification requirements,
-and terminal archiving logic per the Build Sheets specification.
-
-Transplanted from backend/app/services/fsm.py.
-Import rewritten: app.models.enums → gieni_os.domain.enums
-"""
-
 from typing import Dict, Set, Union
-from gieni_os.domain.enums import LifecycleStage
+from app.models.enums import LifecycleStage
 
 
 class InvalidStateTransitionError(Exception):
@@ -43,7 +33,7 @@ class OpportunityLifecycleFSM:
         },
         LifecycleStage.OWNERSHIP_RESOLVED: {
             LifecycleStage.CONTROL_MAPPED,
-            LifecycleStage.ARCHIVED  # Underwater equity (< 30% or < $50k)
+            LifecycleStage.ARCHIVED  # Underwater equity (<30% or <$50k)
         },
         LifecycleStage.CONTROL_MAPPED: {
             LifecycleStage.AUTHORITY_RESOLVED,

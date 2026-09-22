@@ -1,13 +1,3 @@
-"""
-Net Actionable Equity Waterfall Engine
-Audits the full legal and debt encumbrance waterfall in priority-lien order
-to isolate actionable net equity available for a wholesale transaction.
-
-Gate 3 Standard: Net Actionable Equity >= $50,000 AND Equity Percentage >= 30.0%.
-
-Transplanted from backend/app/engines/equity.py.
-"""
-
 from enum import Enum
 from pydantic import BaseModel, Field, ConfigDict
 
@@ -46,7 +36,7 @@ class EquityWaterfallResult(BaseModel):
 
 def compute_net_actionable_equity(inputs: EncumbranceWaterfallInputs) -> EquityWaterfallResult:
     """Audits the legal and debt encumbrance waterfall to isolate actionable net equity.
-
+    
     Gate 3 Standard: Net Actionable Equity must be >= $50,000 AND Equity Percentage >= 30.0%.
     """
     total_encumbrances = round(
@@ -62,7 +52,7 @@ def compute_net_actionable_equity(inputs: EncumbranceWaterfallInputs) -> EquityW
     )
 
     net_equity = round(inputs.gross_market_value - total_encumbrances, 2)
-
+    
     if inputs.gross_market_value > 0.0:
         equity_pct = round(net_equity / inputs.gross_market_value, 4)
     else:

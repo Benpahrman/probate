@@ -1,15 +1,5 @@
-"""
-Ownership Complexity Score (OCS) Engine
-Computes a 10-100 integer score reflecting the legal complexity of clearing
-title for a probate-estate transaction. Higher scores indicate greater friction
-and longer time-to-close.
-
-Transplanted from backend/app/engines/complexity.py.
-Imports rewritten: app.models.enums → gieni_os.domain.enums
-"""
-
 from pydantic import BaseModel, Field, ConfigDict
-from gieni_os.domain.enums import VestingType
+from app.models.enums import VestingType
 
 
 class OwnershipComplexityInputs(BaseModel):
@@ -32,7 +22,7 @@ class OwnershipComplexityResult(BaseModel):
 
 def compute_ownership_complexity(inputs: OwnershipComplexityInputs) -> OwnershipComplexityResult:
     """Computes the Ownership Complexity Score (OCS, 10-100) based on title structure:
-
+    
     Base Archetypes:
     - Sole Fee Simple: 10 pts
     - Joint Tenancy (JTWROS / TBE): 35 pts
