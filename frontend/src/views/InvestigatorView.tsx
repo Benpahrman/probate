@@ -44,11 +44,14 @@ const OpportunitySelector: React.FC<OpportunitySelectorProps> = ({
           className="bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white font-mono focus:outline-none"
         >
           <option value="">Select Opportunity to Investigate...</option>
-          {opportunities.map((o) => (
-            <option key={o.id} value={o.id}>
-              {getOpportunityLabel(o)}
-            </option>
-          ))}
+          {opportunities.map((o, index) => {
+            const oppKey = o.id || o.opportunity_id || `opp-${index}`;
+            return (
+              <option key={oppKey} value={oppKey}>
+                {getOpportunityLabel(o)}
+              </option>
+            );
+          })}
         </select>
       </div>
 

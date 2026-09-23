@@ -113,17 +113,22 @@ export interface CountyBoardMetric {
 }
 
 export interface RawOpportunityApiItem {
-  id: OpportunityId;
+  id?: OpportunityId;
+  opportunity_id?: OpportunityId;
   case_id: CaseId;
   case_number?: string;
   decedent?: string;
+  decedent_name?: string;
   estate_name?: string;
   county_id: CountyId;
   county_name?: string;
-  workflow_stage: LifecycleStage | string;
+  workflow_stage?: LifecycleStage | string;
   lifecycle_stage?: LifecycleStage;
   score?: number;
+  composite_viability_score?: number;
+  deal_friction_score?: number;
   priority?: string;
+  priority_tier?: PriorityTier | string;
   authority_status?: string;
   is_qc_certified?: boolean;
   [key: string]: unknown;
@@ -173,28 +178,30 @@ const resolveEstateName = (estateName?: string, decedent?: string, id = ''): str
 const fallback = <T>(value: T | null | undefined, defaultValue: T): T => value || defaultValue;
 
 const mapOpportunityItem = (item: RawOpportunityApiItem): OpportunitySummary => {
-  const decedent = fallback(item.decedent, 'Unknown Estate');
-  const score = fallback(item.score, 0);
-  const priority = fallback(item.priority, 'PRIORITY_B');
+  const oppId = ((item.opportunity_id || item.id) ?? '') as string;
+  const decedent = item.decedent_name || item.decedent || 'Unknown Estate';
+  const score = item.composite_viability_score ?? item.score ?? 0;
+  const priority = (item.priority_tier || item.priority || 'PRIORITY_B') as string;
+  const stage = (item.lifecycle_stage || item.workflow_stage || 'DISCOVERED') as LifecycleStage;
 
   return {
-    id: item.id,
-    opportunity_id: item.id,
-    case_id: item.case_id,
+    id: oppId,
+    opportunity_id: oppId,
+    case_id: (item.case_id ?? '') as string,
     case_number: fallback(item.case_number, 'N/A'),
     decedent,
     decedent_name: decedent,
-    estate_name: resolveEstateName(item.estate_name, item.decedent, item.id),
-    county_id: item.county_id,
-    county_name: fallback(item.county_name, item.county_id),
-    workflow_stage: item.workflow_stage,
-    lifecycle_stage: item.lifecycle_stage,
+    estate_name: resolveEstateName(item.estate_name, decedent, oppId),
+    county_id: (item.county_id ?? '') as string,
+    county_name: fallback(item.county_name, item.county_id as string),
+    workflow_stage: stage,
+    lifecycle_stage: stage,
     score,
     composite_viability_score: score,
     priority,
     priority_tier: mapPriorityTier(priority),
     authority_status: fallback(item.authority_status, 'TIER_4_UNRESOLVED'),
-    is_qc_certified: resolveQcStatus(item.is_qc_certified, item.workflow_stage),
+    is_qc_certified: resolveQcStatus(item.is_qc_certified, stage),
   };
 };
 

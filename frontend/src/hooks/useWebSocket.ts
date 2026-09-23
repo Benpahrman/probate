@@ -12,21 +12,28 @@ export function useWebSocket(url?: string) {
     const defaultUrl = `${protocol}//${host}/api/v1/ws/telemetry`;
     const targetUrl = url || defaultUrl;
 
-    let ws: WebSocket;
-    let reconnectTimer: any;
+    let isMounted = true;
+    let ws: WebSocket | null = null;
+    let reconnectTimer: any = null;
 
     function connect() {
+      if (!isMounted) return;
       try {
         ws = new WebSocket(targetUrl);
         wsRef.current = ws;
 
         ws.onopen = () => {
+          if (!isMounted) {
+            ws?.close();
+            return;
+          }
           setIsConnected(true);
           // Initial greeting
-          ws.send(JSON.stringify({ type: 'SUBSCRIBE', channel: 'TELEMETRY' }));
+          ws?.send(JSON.stringify({ type: 'SUBSCRIBE', channel: 'TELEMETRY' }));
         };
 
         ws.onmessage = (event) => {
+          if (!isMounted) return;
           try {
             const data = JSON.parse(event.data);
             setEvents((prev) => [data, ...prev].slice(0, 50));
@@ -44,16 +51,18 @@ export function useWebSocket(url?: string) {
         };
 
         ws.onclose = () => {
+          if (!isMounted) return;
           setIsConnected(false);
           // Reconnect after 3s
           reconnectTimer = setTimeout(connect, 3000);
         };
 
         ws.onerror = () => {
+          if (!isMounted) return;
           setIsConnected(false);
-          ws.close();
         };
       } catch (err) {
+        if (!isMounted) return;
         setIsConnected(false);
       }
     }
@@ -61,10 +70,21 @@ export function useWebSocket(url?: string) {
     connect();
 
     return () => {
+      isMounted = false;
       clearTimeout(reconnectTimer);
-      if (wsRef.current) {
-        wsRef.current.close();
+      if (ws) {
+        ws.onclose = null;
+        ws.onerror = null;
+        ws.onmessage = null;
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.close();
+        } else if (ws.readyState === WebSocket.CONNECTING) {
+          ws.onopen = () => {
+            ws?.close();
+          };
+        }
       }
+      wsRef.current = null;
     };
   }, [url]);
 

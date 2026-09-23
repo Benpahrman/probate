@@ -1,8 +1,16 @@
+import sys
+import asyncio
+from contextlib import asynccontextmanager
 from typing import Any, cast
+
+if sys.platform == "win32":
+    asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from honeybadger import honeybadger, contrib
 from app.core.config import settings
+from app.core.database import Base, engine
 from app.api.v1.router import api_v1_router
 import app.models  # Register all domain models on Base.metadata
 
@@ -13,10 +21,18 @@ if settings.HONEYBADGER_API_KEY:
         insights_enabled=settings.HONEYBADGER_INSIGHTS_ENABLED,
     )
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    Base.metadata.create_all(bind=engine)
+    yield
+
+
 app = FastAPI(
     title="Gieni Acquisition Decision Intelligence Platform",
     version="2.0.0",
-    description="Deterministic Acquisition Engine, 14-Stage OLE, and Quality Control Gatekeeper."
+    description="Deterministic Acquisition Engine, 14-Stage OLE, and Quality Control Gatekeeper.",
+    lifespan=lifespan,
 )
 
 if settings.HONEYBADGER_API_KEY:
