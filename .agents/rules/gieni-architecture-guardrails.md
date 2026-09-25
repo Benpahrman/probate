@@ -56,12 +56,11 @@
 - Consecutive failures (e.g., 3 failures) must trip the circuit breaker into a cooldown state (e.g., 60s) to prevent cascading thread exhaustion or worker pool starvation.
 - All startup configuration keys defined in `.env.example` must be validated via `validate_environment()` upon boot, failing fast if mandatory environment variables are missing.
 
-## 9. Frontend DOM & Template Injection Defense Invariant (Zero Raw `innerHTML`)
-- In all vanilla JS applications (`apps/workbench`, `apps/dashboard`, `apps/ops-center`, `apps/client-portal`):
-  1. **Strict HTML Escaping**: Any API data, database record, or model property interpolated into `innerHTML` template literals **MUST** be processed through an `escapeHTML()` helper before insertion.
-  2. **Free-Text Sanitization**: User-editable freeform text (e.g. `notes`, `comments`, `log_entries`) must never be inserted without explicit HTML entity encoding.
-  3. **No String Interpolation in Inline Handlers**: Never interpolate dynamic string variables (e.g., addresses or names that may contain single quotes or special characters) into inline `onclick="...('${val}')"` attributes. Always pass sanitized IDs or bind listeners programmatically using state lookup.
-  4. **Institutional Server HTML**: Server-side generated HTML reports (e.g. `POF Institutional Dossiers`) must wrap all interpolated data fields using Python's `html.escape()`.
+## 9. Modern Frontend Architecture & Security Invariant (React 18 SPA)
+- The user interface is exclusively implemented as a unified React 18 + TypeScript SPA located in `frontend/`.
+- **Zero Legacy Mock Apps**: Never build, maintain, or serve legacy static mock folders (`apps/*`).
+- **Safe Rendering**: All dynamic data, court records, and decedent information must be rendered via standard React JSX binding (never `dangerouslySetInnerHTML`) to prevent XSS.
+- **Strongly-Typed API Service**: Frontend API communication must use `frontend/src/services/api.ts` with branded ID types, strict DTO models, and `/api/v1` route endpoints.
 
 ## 10. Adversarial Audit & Backlog Verification Invariant
 - **Zero Self-Certification without Adversarial Check**: Never mark an audit issue, defect, or backlog item as `[x] Remediated` or `Verified` based on a partial fix or happy-path test.
@@ -69,4 +68,27 @@
 - **Dual Verification Requirement**:
   1. Automated test suite (pytest) covering the specific defect scenario and edge cases.
   2. Forensic source-code spot-check verifying all relevant files adhere to the fix.
+
+## 11. Canonical Single-Brain Codebase Layout Invariant
+- **STRICT INVARIANT**: The repository has exactly two active application directories:
+  1. `backend/app/` — FastAPI API, ORM models, scoring engines, harvesters, and services.
+  2. `frontend/` — Consolidated React 18 SPA (Vite + Tailwind CSS).
+- **Banned Split-Brain Generations**:
+  - **NEVER** re-create, maintain, or push code into `src/` or `src/gieni_os/`.
+  - **NEVER** re-create or maintain legacy `apps/` mock folders.
+  - Any attempt to resurrect legacy directories is an architectural regression.
+
+## 12. Unified Server & SPA Mount Invariant
+- `backend/app/main.py` is the single operational application entrypoint.
+- `frontend/dist` must be served directly by FastAPI:
+  - `/assets` mounts static distribution assets via `StaticFiles`.
+  - `/favicon.svg` serves the brand favicon.
+  - `/`, `/portal`, and `/app` serve `frontend/dist/index.html`.
+- Development testing and production delivery must operate seamlessly from a single origin (`http://127.0.0.1:8000`).
+
+## 13. Canonical 14-Stage Opportunity Lifecycle Engine (OLE) Invariant
+- **Single FSM Source of Truth**: All lifecycle stages, transitions, and gate checks must strictly enforce the 14-stage OLE state machine (`backend/app/services/fsm.py` and `backend/app/models/enums.py`).
+- **Banned State Machine Variants**: Competing 9-stage or 15-stage state machines are strictly prohibited.
+- **Deterministic Quality Gate**: Transitions to `DELIVERED` require `is_qc_certified == True` passing all 6 deterministic gates.
+
 
