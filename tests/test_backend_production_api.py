@@ -188,3 +188,16 @@ def test_honeybadger_telemetry_integration():
     assert settings.HONEYBADGER_API_KEY is not None
     assert honeybadger.config.api_key == settings.HONEYBADGER_API_KEY
     assert any(m.cls == contrib.ASGIHoneybadger for m in app.user_middleware)
+
+
+def test_unified_spa_mounted():
+    """Verifies that the unified React 18 SPA is mounted at root, /portal, /app, and static assets."""
+    for path in ["/", "/portal", "/app"]:
+        res = client.get(path)
+        assert res.status_code == 200
+        assert "Gieni OS" in res.text
+        assert '<div id="root">' in res.text
+
+    res_fav = client.get("/favicon.svg")
+    assert res_fav.status_code == 200
+
