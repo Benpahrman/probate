@@ -42,10 +42,51 @@ class AuditorHarvester:
 
     @classmethod
     def _generate_fixtures(cls, county_id: str, days_back: int) -> List[ScrapedDocket]:
-        records = cls.NON_PROBATE_FIXTURES.get(county_id, cls.NON_PROBATE_FIXTURES["cty_thurston"])
-        dockets: List[ScrapedDocket] = []
+        import json
+        from datetime import datetime
+
         today = date.today()
         auditor_name = cls.RECORDING_OFFICES.get(county_id, "County Auditor Recording Department")
+
+        # Load authentic Thurston County Auditor records if available
+        if county_id == "cty_thurston":
+            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+            live_path = os.path.join(base_dir, "thurston_live_records.json")
+            if not os.path.exists(live_path):
+                live_path = "thurston_live_records.json"
+            if os.path.exists(live_path):
+                try:
+                    with open(live_path, "r", encoding="utf-8") as f:
+                        live_items = json.load(f)
+                    dockets: List[ScrapedDocket] = []
+                    for item in live_items:
+                        try:
+                            f_date = datetime.strptime(item["recording_date"], "%m/%d/%Y").date()
+                        except Exception:
+                            f_date = today
+                        apn = item.get("apn", "")
+                        addr = "Olympia, WA"
+                        prop_hint = f"{addr} (APN: {apn})" if apn else addr
+                        dockets.append(ScrapedDocket(
+                            case_number=item["case_number"],
+                            decedent=item.get("decedent") or "Unknown Titleholder",
+                            county_id=county_id,
+                            channel=FilingChannel.AUDITOR_NON_PROBATE,
+                            filing_date=f_date,
+                            petitioner_name=item.get("fiduciary"),
+                            petitioner_relationship=item.get("relationship"),
+                            attorney_name="Title Attorney Affidavit",
+                            instrument_number=item.get("doc_number"),
+                            property_hint=prop_hint,
+                            raw_snippet=item.get("raw_snippet") or f"{auditor_name} | Instrument #{item.get('doc_number')}"
+                        ))
+                    if dockets:
+                        return dockets
+                except Exception as ex:
+                    logger.warning(f"Failed to load authentic Thurston recordings from {live_path}: {ex}")
+
+        records = cls.NON_PROBATE_FIXTURES.get(county_id, cls.NON_PROBATE_FIXTURES["cty_thurston"])
+        dockets: List[ScrapedDocket] = []
 
         for idx, (dec, claim, rel, inst_type, addr, apn) in enumerate(records):
             d_offset = min(idx * 2, days_back)

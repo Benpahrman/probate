@@ -77,19 +77,25 @@ def parse_address_hint(
     case_number: str
 ) -> Tuple[str, str, str, str, str]:
     """Extracts (apn, street, city, state, zip_code) from an optional address hint."""
+    import re
     meta = COUNTY_META.get(county_fips, {})
-    default_city = meta.get("city", "Tacoma")
-    default_zip = meta.get("zip", "98402")
+    default_city = meta.get("city", "Olympia" if county_fips == "53067" else "Tacoma")
+    default_zip = meta.get("zip", "98501" if county_fips == "53067" else "98402")
     default_state = meta.get("state", "WA")
 
-    case_num_hash = abs(hash(case_number))
-    apn = f"022{case_num_hash % 10000000:07d}"
+    apn_match = re.search(r'APN:\s*([0-9]{6,14})', hint) if hint else None
+    if apn_match:
+        apn = apn_match.group(1)
+    else:
+        case_num_hash = abs(hash(case_number))
+        apn = f"022{case_num_hash % 10000000:07d}"
 
     if not hint:
         street = f"{case_num_hash % 8000 + 100} Pacific Ave"
         return apn, street, default_city, default_state, default_zip
 
-    parts = [p.strip() for p in hint.split(",") if p.strip()]
+    clean_hint = re.sub(r'\(APN:.*?\)', '', hint).strip()
+    parts = [p.strip() for p in clean_hint.split(",") if p.strip()]
     street = parts[0] if parts else f"{case_num_hash % 8000 + 100} Pacific Ave"
     city = parts[1] if len(parts) > 1 else default_city
 
@@ -313,6 +319,29 @@ class MunicipalIngestionWorker:
         )
         pas_res = calculate_pas(pas_inputs)
 
+        existing_prop = db.query(Property).filter(
+            Property.county_id == county.county_id,
+            Property.apn == apn
+        ).first()
+
+        if existing_prop:
+            prop = existing_prop
+            assessment = db.query(PropertyAssessment).filter(
+                PropertyAssessment.property_id == prop.property_id
+            ).first()
+            if not assessment:
+                assessment = PropertyAssessment(
+                    property_id=prop.property_id,
+                    tax_year=datetime.now().year,
+                    assessed_land_value=median_val * 0.35,
+                    assessed_improvement_value=median_val * 0.65,
+                    total_assessed_value=median_val,
+                    avm_market_estimate=median_val
+                )
+                db.add(assessment)
+                db.flush()
+            return prop, assessment, apn, pas_res
+
         prop = Property(
             case_id=case_id,
             county_id=county.county_id,
@@ -377,17 +406,22 @@ class MunicipalIngestionWorker:
         )
         equity_res = compute_net_actionable_equity(equity_inputs)
 
-        ownership = OwnershipAssessment(
-            property_id=property_id,
-            vesting_type=VestingType.SOLE_FEE_SIMPLE,
-            deceased_titleholder=f"{decedent.first_name} {decedent.last_name}",
-            avm_market_value=equity_res.gross_market_value,
-            total_encumbrances=equity_res.total_encumbrances,
-            net_equity=equity_res.net_actionable_equity,
-            equity_pct=equity_res.equity_percentage,
-            ownership_complexity_score=10
-        )
-        db.add(ownership)
+        existing_ownership = db.query(OwnershipAssessment).filter(
+            OwnershipAssessment.property_id == property_id
+        ).first()
+
+        if not existing_ownership:
+            ownership = OwnershipAssessment(
+                property_id=property_id,
+                vesting_type=VestingType.SOLE_FEE_SIMPLE,
+                deceased_titleholder=f"{decedent.first_name} {decedent.last_name}",
+                avm_market_value=equity_res.gross_market_value,
+                total_encumbrances=equity_res.total_encumbrances,
+                net_equity=equity_res.net_actionable_equity,
+                equity_pct=equity_res.equity_percentage,
+                ownership_complexity_score=10
+            )
+            db.add(ownership)
         return equity_res
 
     def _create_candidate_opportunity(
@@ -410,6 +444,19 @@ class MunicipalIngestionWorker:
         ))
 
         dispatch_sla = "PRIORITY_DISPATCH" if scoring_res.composite_viability_score >= 80 else "STANDARD_BATCH"
+
+        existing_opp = db.query(Opportunity).filter(
+            Opportunity.property_id == property_id
+        ).first()
+
+        if existing_opp:
+            existing_opp.case_id = case_id
+            existing_opp.composite_viability_score = scoring_res.composite_viability_score
+            existing_opp.deal_friction_score = scoring_res.deal_friction_score
+            existing_opp.priority_tier = scoring_res.priority_tier
+            existing_opp.dispatch_sla = dispatch_sla
+            return existing_opp, scoring_res
+
         opportunity = Opportunity(
             case_id=case_id,
             property_id=property_id,
@@ -487,8 +534,12 @@ class MunicipalIngestionWorker:
             self.county_fips, record["case_number"], record["filing_date"]
         )
 
-        if db.query(ProbateCase).filter(ProbateCase.invariant_hash == inv_hash).first():
-            return None
+        existing_case = db.query(ProbateCase).filter(
+            (ProbateCase.invariant_hash == inv_hash) |
+            ((ProbateCase.county_id == county.county_id) & (ProbateCase.case_number == record["case_number"]))
+        ).first()
+        if existing_case:
+            return existing_case.case_id
 
         # 1. Identity Ingestion
         decedent, petitioner_id, petitioner = self._ingest_parties(db, record)
