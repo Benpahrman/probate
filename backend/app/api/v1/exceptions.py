@@ -1,5 +1,5 @@
 import uuid
-from typing import List
+from typing import List, Optional, Dict, Any
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from app.core.database import get_db
 from app.models.evidence import TaskException
 from app.models.enums import ExceptionPriority
+from app.services.exceptions import TaskExceptionRouter
 
 router = APIRouter(prefix="/exceptions", tags=["Tasks & Exceptions"])
 
@@ -40,18 +41,22 @@ def list_open_exceptions(db: Session = Depends(get_db)):
     ]
 
 
+
+
 @router.post("/{exception_id}/resolve")
 def resolve_exception(
     exception_id: uuid.UUID,
-    resolution_text: str,
+    resolution_text: str = "",
     db: Session = Depends(get_db)
-):
-    """Resolves an exception ticket and permits re-audit of the opportunity."""
-    exc = db.query(TaskException).filter(TaskException.exception_id == exception_id).first()
-    if not exc:
-        raise HTTPException(status_code=404, detail="Exception ticket not found.")
+) -> Dict[str, Any]:
+    """Resolves an exception ticket and triggers an immediate 6-gate re-audit of the opportunity."""
+    result = TaskExceptionRouter.resolve_and_reaudit(
+        db=db,
+        exception_id=exception_id,
+        resolution_text=resolution_text
+    )
+    if result.get("status") == "ERROR":
+        raise HTTPException(status_code=404, detail=result.get("message", "Exception ticket not found."))
 
-    exc.status = "RESOLVED"
-    exc.resolution_notes = f"RESOLVED: {resolution_text}"
-    db.commit()
-    return {"status": "SUCCESS", "exception_id": str(exception_id)}
+    return result
+

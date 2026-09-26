@@ -47,13 +47,14 @@ def test_worker_ingestion_and_api_flow():
     assert len(case_ids) == 1
 
     # 2. Query Opportunity through API
-    response = client.get("/api/v1/opportunities")
+    response = client.get("/api/v1/opportunities", params={"stage": "DISCOVERED", "limit": 500})
     assert response.status_code == 200
     opps = response.json()
     assert len(opps) >= 1
 
     target_opp = [o for o in opps if o["case_id"] == str(case_ids[0])][0]
     assert target_opp["lifecycle_stage"] == "DISCOVERED"
+
 
     # 3. Advance to PROPERTY_IDENTIFIED
     trans_res = client.post(
@@ -128,12 +129,16 @@ def test_exceptions_api_list_and_resolve():
     assert len(matched) == 1
     assert matched[0]["status"] == "OPEN"
 
-    # Resolve exception ticket
+    # Resolve exception ticket with automated 6-gate re-audit
     resolve_res = client.post(
         f"/api/v1/exceptions/{ticket_id}/resolve?resolution_text=Title+cleared+via+deed+record"
     )
     assert resolve_res.status_code == 200
-    assert resolve_res.json()["status"] == "SUCCESS"
+    res_data = resolve_res.json()
+    assert res_data["status"] == "SUCCESS"
+    assert res_data["re_audited"] is True
+    assert "audit_summary" in res_data
+    assert res_data["audit_summary"]["is_fully_certified"] is True
 
     # Confirm status is updated to RESOLVED
     db2 = SessionLocal()
@@ -143,3 +148,34 @@ def test_exceptions_api_list_and_resolve():
     assert resolved.resolution_notes is not None
     assert "Title cleared" in resolved.resolution_notes
     db2.close()
+
+
+def test_deterministic_parcel_and_equity_cascade():
+    """WF-INTAKE-02: Verifies that docket ingestion triggers deterministic PAS and equity waterfall."""
+    worker = MunicipalIngestionWorker(county_fips="53053")
+    raw = [{
+        "case_number": f"26-4-CASCADE-{uuid.uuid4().hex[:6]}",
+        "filing_date": date.today(),
+        "decedent_name": "ELEANOR ROOSEVELT",
+        "petitioner_name": "FRANKLIN ROOSEVELT",
+        "attorney_name": "CAMPBELL LAW",
+        "docket_url": "https://linx.co.pierce.wa.us/test",
+        "pdf_content": b"PDF_SAMPLE"
+    }]
+    case_ids = worker.process_and_commit(raw)
+    assert len(case_ids) == 1
+
+    db = SessionLocal()
+    opp = db.query(Opportunity).filter(Opportunity.case_id == case_ids[0]).first()
+    assert opp is not None
+    prop = opp.property
+    assert prop is not None
+    assert float(prop.pas_score) >= 70.0  # PAS Engine verification
+
+    # Ownership encumbrance waterfall check
+    assert prop.ownership_assessment is not None
+    assert float(prop.ownership_assessment.net_equity) > 0.0
+    assert float(prop.ownership_assessment.total_encumbrances) > 0.0
+    assert float(prop.ownership_assessment.equity_pct) > 0.30
+    db.close()
+

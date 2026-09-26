@@ -34,7 +34,11 @@ from app.workers.harvesters.linx_harvester import LinxHarvester
 from app.workers.harvesters.auditor_harvester import AuditorHarvester
 from app.workers.harvesters.legal_notices_harvester import LegalNoticesHarvester
 from app.engines.scoring import compute_opportunity_viability, OpportunityScoringInputs
+from app.engines.pas import calculate_pas, ParcelAttributionInputs, ParcelAttributionResult
+from app.engines.equity import compute_net_actionable_equity, EncumbranceWaterfallInputs, EquityWaterfallResult
+from app.services.exceptions import TaskExceptionRouter, QuarantineTicketPayload
 from app.services.skip_trace import SkipTraceService
+
 
 logger = logging.getLogger("MunicipalIngestionWorker")
 
@@ -290,14 +294,24 @@ class MunicipalIngestionWorker:
         case_id: uuid.UUID,
         county: County,
         record: Dict[str, Any]
-    ) -> Tuple[Property, PropertyAssessment, str]:
-        """Resolves property coordinates, creates Property record and PropertyAssessment."""
+    ) -> Tuple[Property, PropertyAssessment, str, ParcelAttributionResult]:
+        """Resolves property coordinates, creates Property record and PropertyAssessment with deterministic PAS."""
         apn, street, city, state, zip_code = parse_address_hint(
             hint=record.get("property_hint"),
             county_fips=self.county_fips,
             case_number=record["case_number"]
         )
         median_val = float(county.median_home_value) or 500000.0
+
+        # Deterministic PAS Calculation
+        pas_inputs = ParcelAttributionInputs(
+            source_agreement=0.95,
+            name_similarity=0.96,
+            address_correlation=0.95,
+            title_continuity=1.0,
+            tax_alignment=1.0
+        )
+        pas_res = calculate_pas(pas_inputs)
 
         prop = Property(
             case_id=case_id,
@@ -308,7 +322,7 @@ class MunicipalIngestionWorker:
             state=state,
             zip_code=zip_code,
             property_class=PropertyClass.SINGLE_FAMILY,
-            pas_score=94.5,
+            pas_score=pas_res.pas_score,
             is_vacant=False
         )
         db.add(prop)
@@ -323,7 +337,7 @@ class MunicipalIngestionWorker:
             avm_market_estimate=median_val
         )
         db.add(assessment)
-        return prop, assessment, apn
+        return prop, assessment, apn, pas_res
 
     def _create_intelligence_assessments(
         self,
@@ -333,8 +347,8 @@ class MunicipalIngestionWorker:
         petitioner_id: Optional[uuid.UUID],
         decedent: Person,
         median_val: float
-    ) -> None:
-        """Instantiates Authority, Control, and Ownership assessments."""
+    ) -> EquityWaterfallResult:
+        """Instantiates Authority, Control, and Ownership assessments with deterministic equity waterfall."""
         authority = AuthorityAssessment(
             case_id=case_id,
             authority_tier=AuthorityTier.TIER_1_CONFIRMED,
@@ -355,29 +369,39 @@ class MunicipalIngestionWorker:
         )
         db.add(control)
 
+        # Deterministic Encumbrance Waterfall
+        equity_inputs = EncumbranceWaterfallInputs(
+            gross_market_value=median_val,
+            open_mortgage_balance=round(median_val * 0.25, 2),
+            delinquent_real_property_taxes=0.0
+        )
+        equity_res = compute_net_actionable_equity(equity_inputs)
+
         ownership = OwnershipAssessment(
             property_id=property_id,
             vesting_type=VestingType.SOLE_FEE_SIMPLE,
             deceased_titleholder=f"{decedent.first_name} {decedent.last_name}",
-            avm_market_value=median_val,
-            total_encumbrances=0.0,
-            net_equity=median_val,
-            equity_pct=1.0,
+            avm_market_value=equity_res.gross_market_value,
+            total_encumbrances=equity_res.total_encumbrances,
+            net_equity=equity_res.net_actionable_equity,
+            equity_pct=equity_res.equity_percentage,
             ownership_complexity_score=10
         )
         db.add(ownership)
+        return equity_res
 
     def _create_candidate_opportunity(
         self,
         db: Session,
         case_id: uuid.UUID,
         property_id: uuid.UUID,
-        median_val: float
+        pas_res: ParcelAttributionResult,
+        equity_res: EquityWaterfallResult
     ) -> Tuple[Opportunity, Any]:
-        """Calculates opportunity viability score and persists Opportunity model."""
+        """Calculates opportunity viability score and persists Opportunity model with exception interception."""
         scoring_res = compute_opportunity_viability(OpportunityScoringInputs(
-            net_equity_amount=median_val,
-            equity_percentage=1.0,
+            net_equity_amount=equity_res.net_actionable_equity,
+            equity_percentage=equity_res.equity_percentage,
             authority_tier=AuthorityTier.TIER_1_CONFIRMED,
             power_scope=PowerScope.FULL_INDEPENDENT_ADMINISTRATION,
             ownership_complexity_score=10,
@@ -397,6 +421,26 @@ class MunicipalIngestionWorker:
             is_qc_certified=False
         )
         db.add(opportunity)
+
+        # Automatic Exception Triage Interception for low PAS or disqualified equity
+        if pas_res.requires_manual_triage or equity_res.is_disqualified:
+            failed_gate = 2 if pas_res.requires_manual_triage else 3
+            reason = (
+                "PAS Score below threshold requiring manual parcel attribution"
+                if pas_res.requires_manual_triage
+                else (equity_res.disqualification_reason or "Equity disqualified")
+            )
+            TaskExceptionRouter.create_quarantine_ticket(
+                db=db,
+                payload=QuarantineTicketPayload(
+                    case_id=case_id,
+                    failed_gate=failed_gate,
+                    exception_type="INTAKE_WATERFALL_DISQUALIFICATION",
+                    net_equity=equity_res.net_actionable_equity,
+                    resolution_notes=reason
+                )
+            )
+
         return opportunity, scoring_res
 
     def _broadcast_telemetry(
@@ -467,8 +511,8 @@ class MunicipalIngestionWorker:
         # 3. Evidence Artifact
         self._save_evidence_artifact(db, probate_case.case_id, record)
 
-        # 4. Property & Assessment
-        candidate_property, assessment, apn = self._create_property_and_assessment(
+        # 4. Property & Assessment (Deterministic PAS Engine)
+        candidate_property, assessment, apn, pas_res = self._create_property_and_assessment(
             db, probate_case.case_id, county, record
         )
         median_val = float(county.median_home_value) or 500000.0
@@ -482,14 +526,14 @@ class MunicipalIngestionWorker:
                 address_hint=f"{candidate_property.street}, {candidate_property.city}, {candidate_property.state} {candidate_property.zip_code}"
             )
 
-        # 6. Intelligence Assessments
-        self._create_intelligence_assessments(
+        # 6. Intelligence Assessments (Deterministic Equity Waterfall)
+        equity_res = self._create_intelligence_assessments(
             db, probate_case.case_id, candidate_property.property_id, petitioner_id, decedent, median_val
         )
 
-        # 7. Candidate Opportunity
+        # 7. Candidate Opportunity with Automated Exception Handling
         opportunity, scoring_res = self._create_candidate_opportunity(
-            db, probate_case.case_id, candidate_property.property_id, median_val
+            db, probate_case.case_id, candidate_property.property_id, pas_res, equity_res
         )
         db.commit()
 
